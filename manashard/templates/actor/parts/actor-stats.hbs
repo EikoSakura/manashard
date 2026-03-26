@@ -1,0 +1,473 @@
+<section class="tab-content {{tab.cssClass}}" data-tab="stats">
+
+  {{#if isCharacter}}
+  {{!-- Adventurer: Combat Profile + Status + Effects (core stats and elements are in the sidebar) --}}
+
+  {{!-- Combat Profile (Derived Stats) --}}
+  <div class="adv-combat-profile">
+    <div class="adv-section-title">Combat Profile</div>
+
+    {{!-- Offense --}}
+    <div class="adv-derived-group">
+      <div class="adv-derived-group-label"><i class="fas fa-swords"></i> Offense</div>
+      <div class="adv-combat-main-grid">
+        <div class="adv-cm-cell highlight" data-stat="damage">
+          <div class="adv-cm-val {{derivedModifiers.damage.modClass}}">{{system.damage}}</div>
+          <div class="adv-cm-lbl">DMG</div>
+          {{#if derivedSources.damage}}<div class="adv-cm-source">{{derivedSources.damage}}</div>{{/if}}
+        </div>
+        <div class="adv-cm-cell" data-stat="accuracy">
+          <div class="adv-cm-val {{derivedModifiers.accuracy.modClass}}">{{system.accuracy}}</div>
+          <div class="adv-cm-lbl">ACC</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="critical">
+          <div class="adv-cm-val {{derivedModifiers.critical.modClass}}">{{system.critical}}</div>
+          <div class="adv-cm-lbl">CRIT</div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Defense --}}
+    <div class="adv-derived-group">
+      <div class="adv-derived-group-label"><i class="fas fa-shield"></i> Defense</div>
+      <div class="adv-combat-defense-grid">
+        <div class="adv-cm-cell" data-stat="peva">
+          <div class="adv-cm-val {{derivedModifiers.peva.modClass}}">{{system.peva}}</div>
+          <div class="adv-cm-lbl">P.EVA</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="meva">
+          <div class="adv-cm-val {{derivedModifiers.meva.modClass}}">{{system.meva}}</div>
+          <div class="adv-cm-lbl">M.EVA</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="critAvoid">
+          <div class="adv-cm-val {{derivedModifiers.critAvoid.modClass}}">{{system.critAvoid}}</div>
+          <div class="adv-cm-lbl">C.AVO</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="pdef">
+          <div class="adv-cm-val {{derivedModifiers.pdef.modClass}}">{{system.pdef}}</div>
+          <div class="adv-cm-lbl">P.DEF</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="mdef">
+          <div class="adv-cm-val {{derivedModifiers.mdef.modClass}}">{{system.mdef}}</div>
+          <div class="adv-cm-lbl">M.DEF</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="blockChance">
+          <div class="adv-cm-val {{derivedModifiers.blockChance.modClass}}">{{system.blockChance}}%</div>
+          <div class="adv-cm-lbl">BLK</div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Tactical --}}
+    <div class="adv-derived-group">
+      <div class="adv-derived-group-label"><i class="fas fa-compass"></i> Tactical</div>
+      <div class="adv-combat-secondary">
+        <div class="adv-cm-small" data-stat="mov">
+          <span class="adv-cm-small-lbl">MOV</span>
+          <span class="adv-cm-small-val {{derivedModifiers.mov.modClass}}">{{system.mov}}</span>
+        </div>
+        <div class="adv-cm-small" data-stat="vision">
+          <span class="adv-cm-small-lbl">VIS</span>
+          <span class="adv-cm-small-val {{derivedModifiers.vision.modClass}}">{{system.vision}}</span>
+        </div>
+        <div class="adv-cm-small" data-stat="mpRegen">
+          <span class="adv-cm-small-lbl">MP RGN</span>
+          <span class="adv-cm-small-val {{derivedModifiers.mpRegen.modClass}}">{{system.mpRegen}}</span>
+        </div>
+        <div class="adv-cm-small" data-stat="carry">
+          <span class="adv-cm-small-lbl">CARRY</span>
+          <span class="adv-cm-small-val {{#if system.overencumbered}}overencumbered{{/if}}">{{system.totalWeight}} / {{system.carryingCapacity}}</span>
+        </div>
+      </div>
+      <div class="adv-tactical-tags">
+        <div class="adv-tactical-tag-group">
+          <span class="adv-tactical-tag-label">Move</span>
+          <div class="adv-tactical-tag-chips">{{{movementModeTags}}}</div>
+        </div>
+        <div class="adv-tactical-tag-group">
+          <span class="adv-tactical-tag-label">Type</span>
+          <div class="adv-tactical-tag-chips">{{{creatureTypeTags}}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{!-- Status Effects --}}
+  <div class="adv-status-section">
+    <div class="adv-section-title">Status Effects</div>
+    <div class="lh-status-bar">
+      {{#each statusEffectEntries}}
+      <a class="lh-status-badge {{#if active}}active{{else}}inactive{{/if}} condition-{{key}}"
+         data-action="toggleStatus" data-status="{{key}}">
+        <span class="lh-status-label">{{label}}</span>
+        {{#if duration}}<span class="lh-status-duration">{{duration}}</span>{{/if}}
+      </a>
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- ═══ Weapon Attack ═══ --}}
+  <div class="combat-section">
+    <h3><i class="fas fa-sword"></i> Weapon Attack</h3>
+    <div class="adv-tile-grid">
+      {{#if equippedWeapon}}
+      <details class="adv-tile" data-item-id="{{equippedWeapon.id}}">
+        <summary>
+          <img src="{{equippedWeapon.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{equippedWeapon.name}}</span>
+          <a class="adv-tile-action attack-button" data-action="rollAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+        </summary>
+        <div class="adv-tile-details">
+          <div class="adv-tile-stats">
+            <span class="adv-tile-stat">Mt {{equippedWeapon.system.might}}</span>
+            <span class="adv-tile-stat">Hit {{equippedWeapon.system.hit}}</span>
+            {{#if equippedWeapon.system.element}}<span class="adv-tile-stat element-pip element-{{equippedWeapon.system.element}}">{{equippedWeapon.system.element}}</span>{{/if}}
+          </div>
+        </div>
+      </details>
+      {{else}}
+      <div class="adv-tile">
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;">
+          <i class="fas fa-sword" style="color:var(--manashard-text-muted);"></i>
+          <span class="adv-tile-name" style="color:var(--manashard-text-muted);">Unarmed</span>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ═══ Natural Weapons ═══ --}}
+  {{#if naturalWeapons.length}}
+  <div class="combat-section">
+    <h3><i class="fas fa-paw"></i> Natural Weapons</h3>
+    <div class="adv-tile-grid">
+      {{#each naturalWeapons}}
+      <details class="adv-tile" data-item-id="{{this.id}}">
+        <summary>
+          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          <a class="adv-tile-action attack-button" data-action="rollNaturalAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+        </summary>
+        <div class="adv-tile-details">
+          <div class="adv-tile-stats">
+            <span class="adv-tile-stat">Mt {{this.system.might}}</span>
+            <span class="adv-tile-stat">Hit {{this.system.hit}}</span>
+            {{#if this.system.element}}<span class="adv-tile-stat element-pip element-{{this.system.element}}">{{this.system.element}}</span>{{/if}}
+          </div>
+        </div>
+      </details>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ Skills ═══ --}}
+  <div class="combat-section">
+    <h3><i class="fas fa-magic-wand-sparkles"></i> Skills</h3>
+    <div class="skill-card-grid">
+
+      {{#each combatSkills}}
+      <details class="skill-grid-card {{this.system.skillType}} {{#if this._isTaught}}taught{{/if}}" data-item-id="{{this.id}}">
+        <summary class="skill-grid-card-summary">
+          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
+          <span class="skill-grid-card-name">{{this.name}}</span>
+          {{#if (eq this.system.skillType "magic")}}
+          <a class="skill-card-action cast-button" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
+          {{else}}
+          <a class="skill-card-action activate-button" data-action="useSkill" title="Activate"><i class="fas fa-dice-d20"></i></a>
+          {{/if}}
+        </summary>
+        <div class="skill-grid-card-desc">
+          {{#if this.system.mpCost}}<span class="skill-stat mp-cost">MP {{this.system.mpCost}}</span> {{/if}}
+          {{#if this.system.element}}<span class="skill-stat element-pip element-{{this.system.element}}">{{this.system.element}}</span>{{/if}}
+          {{#if this._enrichedDescription}}<div style="margin-top:4px;">{{{this._enrichedDescription}}}</div>{{/if}}
+        </div>
+      </details>
+      {{/each}}
+
+    </div>
+
+    {{#unless combatSkills.length}}
+    <div class="adv-empty-state">
+      <i class="fas fa-magic-wand-sparkles"></i>
+      <span>No Skills Available</span>
+    </div>
+    {{/unless}}
+  </div>
+
+  {{!-- ═══ Passives ═══ --}}
+  {{#if passiveAbilities.length}}
+  <div class="combat-section">
+    <h3><i class="fas fa-star"></i> Passives</h3>
+    <div class="skill-card-grid">
+      {{#each passiveAbilities}}
+      <details class="skill-grid-card passive" data-item-id="{{this.id}}">
+        <summary class="skill-grid-card-summary">
+          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
+          <span class="skill-grid-card-name">{{this.name}}</span>
+        </summary>
+        <div class="skill-grid-card-desc">
+          {{#if this._enrichedDescription}}<div>{{{this._enrichedDescription}}}</div>{{/if}}
+        </div>
+      </details>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ Consumables ═══ --}}
+  {{#if consumables.length}}
+  <div class="combat-section">
+    <h3><i class="fas fa-flask"></i> Items</h3>
+    <div class="adv-tile-grid">
+      {{#each consumables}}
+      <details class="adv-tile" data-item-id="{{this.id}}">
+        <summary>
+          <img src="{{this.img}}" class="adv-tile-img" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          <span class="adv-tile-badge">x{{this.system.quantity}}</span>
+          <a class="adv-tile-action consumable-button" data-action="useConsumable" title="Use"><i class="fas fa-flask"></i></a>
+        </summary>
+        <div class="adv-tile-details">
+          {{#if this._enrichedDescription}}<div>{{{this._enrichedDescription}}}</div>{{/if}}
+        </div>
+      </details>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{else}}
+
+  {{#if isThreat}}
+  {{!-- Threat: Combat profile + Status + Effects (core stats & elements in sidebar) --}}
+
+  {{!-- Combat Profile (Derived Stats) --}}
+  <div class="adv-combat-profile">
+    <div class="adv-section-title">Combat Profile</div>
+
+    {{!-- Offense --}}
+    <div class="adv-derived-group">
+      <div class="adv-derived-group-label"><i class="fas fa-swords"></i> Offense</div>
+      <div class="adv-combat-main-grid">
+        <div class="adv-cm-cell highlight" data-stat="damage">
+          <div class="adv-cm-val {{derivedModifiers.damage.modClass}}">{{system.damage}}</div>
+          <div class="adv-cm-lbl">DMG</div>
+          {{#if derivedSources.damage}}<div class="adv-cm-source">{{derivedSources.damage}}</div>{{/if}}
+        </div>
+        <div class="adv-cm-cell" data-stat="accuracy">
+          <div class="adv-cm-val {{derivedModifiers.accuracy.modClass}}">{{system.accuracy}}</div>
+          <div class="adv-cm-lbl">ACC</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="critical">
+          <div class="adv-cm-val {{derivedModifiers.critical.modClass}}">{{system.critical}}</div>
+          <div class="adv-cm-lbl">CRIT</div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Defense --}}
+    <div class="adv-derived-group">
+      <div class="adv-derived-group-label"><i class="fas fa-shield"></i> Defense</div>
+      <div class="adv-combat-defense-grid">
+        <div class="adv-cm-cell" data-stat="peva">
+          <div class="adv-cm-val {{derivedModifiers.peva.modClass}}">{{system.peva}}</div>
+          <div class="adv-cm-lbl">P.EVA</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="meva">
+          <div class="adv-cm-val {{derivedModifiers.meva.modClass}}">{{system.meva}}</div>
+          <div class="adv-cm-lbl">M.EVA</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="critAvoid">
+          <div class="adv-cm-val {{derivedModifiers.critAvoid.modClass}}">{{system.critAvoid}}</div>
+          <div class="adv-cm-lbl">C.AVO</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="pdef">
+          <div class="adv-cm-val {{derivedModifiers.pdef.modClass}}">{{system.pdef}}</div>
+          <div class="adv-cm-lbl">P.DEF</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="mdef">
+          <div class="adv-cm-val {{derivedModifiers.mdef.modClass}}">{{system.mdef}}</div>
+          <div class="adv-cm-lbl">M.DEF</div>
+        </div>
+        <div class="adv-cm-cell" data-stat="blockChance">
+          <div class="adv-cm-val {{derivedModifiers.blockChance.modClass}}">{{system.blockChance}}%</div>
+          <div class="adv-cm-lbl">BLK</div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Tactical --}}
+    <div class="adv-derived-group">
+      <div class="adv-derived-group-label"><i class="fas fa-compass"></i> Tactical</div>
+      <div class="adv-combat-secondary">
+        <div class="adv-cm-small" data-stat="mov">
+          <span class="adv-cm-small-lbl">MOV</span>
+          <span class="adv-cm-small-val {{derivedModifiers.mov.modClass}}">{{system.mov}}</span>
+        </div>
+        <div class="adv-cm-small" data-stat="vision">
+          <span class="adv-cm-small-lbl">VIS</span>
+          <span class="adv-cm-small-val {{derivedModifiers.vision.modClass}}">{{system.vision}}</span>
+        </div>
+        <div class="adv-cm-small" data-stat="mpRegen">
+          <span class="adv-cm-small-lbl">MP RGN</span>
+          <span class="adv-cm-small-val {{derivedModifiers.mpRegen.modClass}}">{{system.mpRegen}}</span>
+        </div>
+        <div class="adv-cm-small" data-stat="carry">
+          <span class="adv-cm-small-lbl">CARRY</span>
+          <span class="adv-cm-small-val {{#if system.overencumbered}}overencumbered{{/if}}">{{system.totalWeight}} / {{system.carryingCapacity}}</span>
+        </div>
+      </div>
+      <div class="adv-tactical-tags">
+        <div class="adv-tactical-tag-group">
+          <span class="adv-tactical-tag-label">Move</span>
+          <div class="adv-tactical-tag-chips">{{{movementModeTags}}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{!-- Status Effects --}}
+  <div class="adv-status-section">
+    <div class="adv-section-title">Status Effects</div>
+    <div class="lh-status-bar">
+      {{#each statusEffectEntries}}
+      <a class="lh-status-badge {{#if active}}active{{else}}inactive{{/if}} condition-{{key}}"
+         data-action="toggleStatus" data-status="{{key}}">
+        <span class="lh-status-label">{{label}}</span>
+        {{#if duration}}<span class="lh-status-duration">{{duration}}</span>{{/if}}
+      </a>
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- ═══ Weapon Attack ═══ --}}
+  <div class="combat-section">
+    <h3><i class="fas fa-sword"></i> Weapon Attack</h3>
+    <div class="adv-tile-grid">
+      {{#if equippedWeapon}}
+      <details class="adv-tile" data-item-id="{{equippedWeapon.id}}">
+        <summary>
+          <img src="{{equippedWeapon.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{equippedWeapon.name}}</span>
+          <a class="adv-tile-action attack-button" data-action="rollAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+        </summary>
+        <div class="adv-tile-details">
+          <div class="adv-tile-stats">
+            <span class="adv-tile-stat">Mt {{equippedWeapon.system.might}}</span>
+            <span class="adv-tile-stat">Hit {{equippedWeapon.system.hit}}</span>
+            {{#if equippedWeapon.system.element}}<span class="adv-tile-stat element-pip element-{{equippedWeapon.system.element}}">{{equippedWeapon.system.element}}</span>{{/if}}
+          </div>
+        </div>
+      </details>
+      {{else}}
+      <div class="adv-tile">
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;">
+          <i class="fas fa-sword" style="color:var(--manashard-text-muted);"></i>
+          <span class="adv-tile-name" style="color:var(--manashard-text-muted);">Unarmed</span>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ═══ Natural Weapons ═══ --}}
+  {{#if naturalWeapons.length}}
+  <div class="combat-section">
+    <h3><i class="fas fa-paw"></i> Natural Weapons</h3>
+    <div class="adv-tile-grid">
+      {{#each naturalWeapons}}
+      <details class="adv-tile" data-item-id="{{this.id}}">
+        <summary>
+          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          <a class="adv-tile-action attack-button" data-action="rollNaturalAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+        </summary>
+        <div class="adv-tile-details">
+          <div class="adv-tile-stats">
+            <span class="adv-tile-stat">Mt {{this.system.might}}</span>
+            <span class="adv-tile-stat">Hit {{this.system.hit}}</span>
+            {{#if this.system.element}}<span class="adv-tile-stat element-pip element-{{this.system.element}}">{{this.system.element}}</span>{{/if}}
+          </div>
+        </div>
+      </details>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ Skills ═══ --}}
+  <div class="combat-section">
+    <h3><i class="fas fa-magic-wand-sparkles"></i> Skills
+      {{#if allActiveSkills.length}}<span class="section-count-badge">{{allActiveSkills.length}}</span>{{/if}}
+    </h3>
+    <div class="skill-card-grid">
+
+      {{#each allActiveSkills}}
+      <div class="skill-grid-card {{this.skillType}} {{#if this._isTaught}}taught{{/if}}" data-item-id="{{this.id}}">
+        <div class="skill-grid-card-summary">
+          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
+          <span class="skill-grid-card-name">{{this.name}}</span>
+          {{#if (eq this.skillType "magic")}}
+          <a class="skill-card-action cast-button" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
+          {{else}}
+          <a class="skill-card-action activate-button" data-action="useSkill" title="Activate"><i class="fas fa-dice-d20"></i></a>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+
+    </div>
+
+    {{#unless allActiveSkills.length}}
+    <div class="adv-empty-state">
+      <i class="fas fa-magic-wand-sparkles"></i>
+      <span>No Skills Available</span>
+    </div>
+    {{/unless}}
+  </div>
+
+  {{!-- ═══ Passives ═══ --}}
+  {{#if passiveAbilities.length}}
+  <div class="combat-section">
+    <h3><i class="fas fa-star"></i> Passives
+      <span class="section-count-badge">{{passiveAbilities.length}}</span>
+    </h3>
+    <div class="skill-card-grid">
+      {{#each passiveAbilities}}
+      <div class="skill-grid-card passive" data-item-id="{{this.id}}">
+        <div class="skill-grid-card-summary">
+          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
+          <span class="skill-grid-card-name">{{this.name}}</span>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ Consumables ═══ --}}
+  {{#if consumables.length}}
+  <div class="combat-section">
+    <h3><i class="fas fa-flask"></i> Items</h3>
+    <div class="adv-tile-grid">
+      {{#each consumables}}
+      <details class="adv-tile" data-item-id="{{this.id}}">
+        <summary>
+          <img src="{{this.img}}" class="adv-tile-img" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          <span class="adv-tile-badge">x{{this.system.quantity}}</span>
+          <a class="adv-tile-action consumable-button" data-action="useConsumable" title="Use"><i class="fas fa-flask"></i></a>
+        </summary>
+        <div class="adv-tile-details">
+          {{#if this._enrichedDescription}}<div>{{{this._enrichedDescription}}}</div>{{/if}}
+        </div>
+      </details>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{/if}}{{!-- /isThreat --}}
+  {{/if}}{{!-- /isCharacter --}}
+</section>

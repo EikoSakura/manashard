@@ -1,0 +1,1273 @@
+/* ═══════════════════════════════════════════════════════════
+ * ENCOUNTER BUILDER — Manashard TTRPG System
+ * ═══════════════════════════════════════════════════════════ */
+
+.encounter-builder {
+  --eb-bg: var(--manashard-bg-dark);
+  --eb-bg-mid: var(--manashard-bg-mid);
+  --eb-bg-light: var(--manashard-bg-light);
+  --eb-text: var(--manashard-text);
+  --eb-text-dim: var(--manashard-text-dim);
+  --eb-accent: var(--manashard-accent);
+  --eb-accent-glow: var(--manashard-accent-glow);
+  --eb-border: rgba(0, 228, 160, 0.15);
+  --eb-radius: 6px;
+}
+
+.encounter-builder .window-content {
+  background: var(--eb-bg);
+  color: var(--eb-text);
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ─── Container ────────────────────────────────────────── */
+
+.eb-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.eb-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* ─── Tab Bar ──────────────────────────────────────────── */
+
+.eb-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--eb-bg-mid);
+  border-bottom: 1px solid var(--eb-border);
+  flex-shrink: 0;
+}
+
+.eb-tab {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: var(--eb-text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  transition: color 0.15s, background 0.15s;
+  border-bottom: 2px solid transparent;
+}
+
+.eb-tab:hover {
+  color: var(--eb-text);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.eb-tab.active {
+  color: var(--eb-accent);
+  border-bottom-color: var(--eb-accent);
+  background: rgba(0, 228, 160, 0.05);
+}
+
+/* ─── Sections ─────────────────────────────────────────── */
+
+.eb-section {
+  margin-bottom: 12px;
+}
+
+.eb-section-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--eb-accent);
+  margin: 0 0 6px 0;
+  padding: 0;
+}
+
+.eb-divider {
+  border: none;
+  border-top: 1px solid var(--eb-border);
+  margin: 8px 0;
+}
+
+/* ─── Threat Builder Layout ────────────────────────────── */
+
+.eb-threat-layout {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 16px;
+  min-height: 100%;
+}
+
+@media (max-width: 700px) {
+  .eb-threat-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eb-threat-form {
+  min-width: 0;
+}
+
+/* ─── Header Row ───────────────────────────────────────── */
+
+.eb-header-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.eb-portrait {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--eb-radius);
+  border: 2px solid var(--eb-border);
+  object-fit: cover;
+  object-position: top center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.eb-portrait:hover {
+  border-color: var(--eb-accent);
+}
+
+.eb-header-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eb-name-input {
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  color: var(--eb-text);
+  padding: 6px 10px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+}
+
+.eb-header-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ─── Inline Labels ────────────────────────────────────── */
+
+.eb-inline-label,
+.eb-select-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--eb-text-dim);
+  white-space: nowrap;
+}
+
+.eb-inline-label input[type="number"],
+.eb-inline-label select,
+.eb-select-label select {
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  color: var(--eb-text);
+  padding: 4px 6px;
+  font-size: 12px;
+  width: auto;
+  min-width: 50px;
+}
+
+.eb-inline-label input[type="number"] {
+  width: 55px;
+}
+
+/* ─── Selectors Row ────────────────────────────────────── */
+
+.eb-selectors-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+/* ─── Buttons ──────────────────────────────────────────── */
+
+.eb-btn {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--eb-radius);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--eb-bg-light);
+  color: var(--eb-text);
+  border: 1px solid var(--eb-border);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.eb-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(0, 228, 160, 0.3);
+}
+
+.eb-btn-accent {
+  background: rgba(0, 228, 160, 0.15);
+  border-color: rgba(0, 228, 160, 0.3);
+  color: var(--eb-accent);
+}
+
+.eb-btn-accent:hover {
+  background: rgba(0, 228, 160, 0.25);
+}
+
+.eb-btn-danger {
+  color: var(--manashard-failure);
+  border-color: rgba(255, 102, 68, 0.2);
+}
+
+.eb-btn-danger:hover {
+  background: rgba(255, 102, 68, 0.1);
+}
+
+.eb-btn-sm {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: var(--eb-radius);
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--eb-text-dim);
+  background: var(--eb-bg-light);
+  border: 1px solid var(--eb-border);
+}
+
+.eb-btn-sm:hover {
+  color: var(--eb-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.eb-remove-btn {
+  all: unset;
+  cursor: pointer;
+  color: var(--eb-text-dim);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.eb-remove-btn:hover {
+  color: var(--manashard-failure);
+  background: rgba(255, 102, 68, 0.1);
+}
+
+/* ─── Stat Grid ────────────────────────────────────────── */
+
+.eb-resource-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.eb-resource-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.eb-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.eb-stat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 4px;
+  background: var(--eb-bg-mid);
+  border-radius: var(--eb-radius);
+  border: 1px solid var(--eb-border);
+}
+
+.eb-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--eb-text-dim);
+}
+
+.eb-stat-cell input[type="number"],
+.eb-resource-cell input[type="number"] {
+  background: var(--eb-bg);
+  border: 1px solid var(--eb-border);
+  border-radius: 4px;
+  color: var(--eb-text);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  width: 50px;
+  padding: 3px;
+}
+
+.eb-stat-cell.over-cap input[type="number"],
+.eb-resource-cell .over-cap input[type="number"] {
+  color: var(--manashard-failure);
+}
+
+.eb-cap-bar {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.eb-cap-fill {
+  height: 100%;
+  background: var(--eb-accent);
+  border-radius: 2px;
+  transition: width 0.2s;
+}
+
+.eb-cap-fill.over-cap {
+  background: var(--manashard-failure);
+}
+
+.eb-cap-text {
+  font-size: 9px;
+  color: var(--eb-text-dim);
+}
+
+/* ─── Element Grid ─────────────────────────────────────── */
+
+.eb-element-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+}
+
+.eb-tier-btn {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 2px;
+  border-radius: var(--eb-radius);
+  cursor: pointer;
+  font-size: 10px;
+  text-align: center;
+  border: 1px solid var(--eb-border);
+  background: var(--eb-bg-mid);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.eb-tier-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.eb-tier-icon {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.eb-tier-value {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Element colors */
+.eb-element-fire    { color: var(--manashard-fire); }
+.eb-element-ice     { color: var(--manashard-ice); }
+.eb-element-water   { color: var(--manashard-water); }
+.eb-element-lightning { color: var(--manashard-lightning); }
+.eb-element-wind    { color: var(--manashard-wind); }
+.eb-element-earth   { color: var(--manashard-earth); }
+.eb-element-light   { color: var(--manashard-light); }
+.eb-element-dark    { color: var(--manashard-dark); }
+
+/* Tier highlights */
+.eb-tier-btn.tier-weak    { border-color: rgba(255, 102, 68, 0.4); background: rgba(255, 102, 68, 0.08); }
+.eb-tier-btn.tier-resist  { border-color: rgba(0, 228, 160, 0.3); background: rgba(0, 228, 160, 0.06); }
+.eb-tier-btn.tier-immune  { border-color: rgba(51, 136, 238, 0.4); background: rgba(51, 136, 238, 0.08); }
+.eb-tier-btn.tier-absorb  { border-color: rgba(170, 102, 238, 0.4); background: rgba(170, 102, 238, 0.08); }
+.eb-tier-btn.tier-vulnerable { border-color: rgba(255, 68, 68, 0.5); background: rgba(255, 68, 68, 0.1); }
+
+/* ─── Status Grid ──────────────────────────────────────── */
+
+.eb-status-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+}
+
+.eb-status-btn i {
+  font-size: 14px;
+}
+
+/* ─── Movement Modes ───────────────────────────────────── */
+
+.eb-movement-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eb-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--eb-text);
+  cursor: pointer;
+}
+
+.eb-checkbox-label input[type="checkbox"] {
+  accent-color: var(--eb-accent);
+}
+
+/* ─── Creature Tags ────────────────────────────────────── */
+
+.eb-creature-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.eb-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: var(--eb-bg-light);
+  border: 1px solid var(--eb-border);
+  border-radius: 12px;
+  font-size: 11px;
+  color: var(--eb-text);
+}
+
+.eb-tag-remove {
+  all: unset;
+  cursor: pointer;
+  color: var(--eb-text-dim);
+  font-size: 10px;
+}
+
+.eb-tag-remove:hover {
+  color: var(--manashard-failure);
+}
+
+.eb-tag-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.eb-tag-input-wrap input {
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  color: var(--eb-text);
+  padding: 4px 8px;
+  font-size: 11px;
+  width: 120px;
+}
+
+/* ─── Drop Zones ───────────────────────────────────────── */
+
+.eb-drop-zone {
+  min-height: 48px;
+  padding: 8px;
+  border: 1px dashed var(--eb-border);
+  border-radius: var(--eb-radius);
+  background: var(--eb-bg-mid);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.eb-drop-zone.drop-target-highlight {
+  border-color: var(--eb-accent);
+  background: rgba(0, 228, 160, 0.06);
+  box-shadow: inset 0 0 12px var(--eb-accent-glow);
+}
+
+.eb-drop-hint {
+  text-align: center;
+  color: var(--eb-text-dim);
+  font-size: 12px;
+  margin: 8px 0;
+}
+
+.eb-drop-hint i {
+  margin-right: 4px;
+}
+
+/* ─── Item Rows ────────────────────────────────────────── */
+
+.eb-item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+}
+
+.eb-item-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.eb-item-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  object-fit: cover;
+}
+
+.eb-item-name {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.eb-item-type {
+  font-size: 10px;
+  color: var(--eb-text-dim);
+  text-transform: capitalize;
+}
+
+/* ─── Loot Table ───────────────────────────────────────── */
+
+.eb-loot-table {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eb-loot-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eb-loot-row input[type="text"] {
+  flex: 1;
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+  border-radius: 4px;
+  color: var(--eb-text);
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.eb-loot-chance {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--eb-text-dim);
+}
+
+.eb-loot-chance input[type="number"] {
+  width: 48px;
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+  border-radius: 4px;
+  color: var(--eb-text);
+  padding: 4px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.eb-loot-stolen {
+  cursor: pointer;
+  color: var(--eb-text-dim);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+}
+
+/* ─── Actions Row ──────────────────────────────────────── */
+
+.eb-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid var(--eb-border);
+}
+
+/* ─── Preview Panel ────────────────────────────────────── */
+
+.eb-threat-preview {
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  padding: 12px;
+  position: sticky;
+  top: 12px;
+  align-self: start;
+}
+
+.eb-preview-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  font-size: 12px;
+}
+
+.eb-preview-label {
+  color: var(--eb-text-dim);
+}
+
+.eb-preview-value {
+  font-weight: 700;
+  color: var(--eb-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.eb-tl-value {
+  font-size: 18px;
+  color: var(--eb-accent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+ * ENCOUNTER COMPOSER
+ * ═══════════════════════════════════════════════════════════ */
+
+.eb-encounter-layout,
+.eb-mission-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─── Party Panel ──────────────────────────────────────── */
+
+.eb-party-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.eb-party-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.eb-party-badge {
+  font-size: 12px;
+  color: var(--eb-text-dim);
+}
+
+.eb-party-badge strong {
+  color: var(--eb-text);
+}
+
+.eb-budget-badge strong {
+  color: var(--eb-accent);
+}
+
+.eb-level-override {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--eb-text-dim);
+}
+
+.eb-level-override input {
+  width: 50px;
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+  border-radius: 4px;
+  color: var(--eb-text);
+  padding: 3px 6px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.eb-party-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.eb-pc-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--eb-bg-light);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+}
+
+.eb-pc-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.eb-pc-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.eb-pc-level {
+  font-size: 11px;
+  color: var(--eb-text-dim);
+}
+
+.eb-hint {
+  font-size: 12px;
+  color: var(--eb-text-dim);
+  font-style: italic;
+}
+
+/* ─── Roster ───────────────────────────────────────────── */
+
+.eb-roster-section {
+  flex: 1;
+}
+
+.eb-roster-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+  background: var(--eb-bg-light);
+  border: 1px solid transparent;
+}
+
+.eb-roster-row:hover {
+  border-color: var(--eb-border);
+}
+
+.eb-roster-row.placeholder {
+  opacity: 0.5;
+  border-style: dashed;
+  border-color: var(--eb-border);
+}
+
+.eb-roster-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.eb-roster-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.eb-roster-name {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eb-roster-meta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--eb-text-dim);
+}
+
+.eb-rank-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.eb-rank-badge.rank-f { color: var(--manashard-rank-f); }
+.eb-rank-badge.rank-e { color: var(--manashard-rank-e); }
+.eb-rank-badge.rank-d { color: var(--manashard-rank-d); }
+.eb-rank-badge.rank-c { color: var(--manashard-rank-c); }
+.eb-rank-badge.rank-b { color: var(--manashard-rank-b); }
+.eb-rank-badge.rank-a { color: var(--manashard-rank-a); }
+.eb-rank-badge.rank-s { color: var(--manashard-rank-s); }
+
+.eb-role-badge {
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.eb-roster-tl {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--eb-accent);
+  white-space: nowrap;
+}
+
+.eb-roster-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.eb-count-btn {
+  all: unset;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--eb-text-dim);
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+}
+
+.eb-count-btn:hover {
+  color: var(--eb-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.eb-count-value {
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+
+.eb-roster-total-tl {
+  font-size: 11px;
+  color: var(--eb-text-dim);
+  white-space: nowrap;
+}
+
+.eb-roster-total {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  font-size: 14px;
+  color: var(--eb-text-dim);
+}
+
+.eb-roster-total strong {
+  font-size: 18px;
+  color: var(--eb-accent);
+}
+
+/* ─── Summary Bar ──────────────────────────────────────── */
+
+.eb-summary-bar {
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Difficulty Meter */
+.eb-difficulty-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eb-difficulty-meter {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.eb-difficulty-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s, background 0.3s;
+}
+
+.eb-difficulty-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.eb-difficulty-label {
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.eb-difficulty-ratio {
+  font-size: 12px;
+  color: var(--eb-text-dim);
+}
+
+/* EXP Preview */
+.eb-exp-section {
+  width: 100%;
+}
+
+.eb-exp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.eb-exp-table th {
+  text-align: left;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--eb-text-dim);
+  border-bottom: 1px solid var(--eb-border);
+}
+
+.eb-exp-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Templates */
+.eb-template-section {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.eb-template-btn {
+  font-size: 11px;
+  padding: 4px 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+ * MISSION PLANNER — Zones, Waves, Objective
+ * ═══════════════════════════════════════════════════════════ */
+
+/* ─── Mission Header ──────────────────────────────────────── */
+
+.eb-mission-header {
+  background: var(--eb-bg-mid);
+  border-radius: var(--eb-radius);
+  padding: 10px 12px;
+}
+
+.eb-mission-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.eb-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.eb-field-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--eb-text-dim);
+}
+
+.eb-select {
+  background: var(--eb-bg);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  color: var(--eb-text);
+  padding: 4px 8px;
+  font-size: 12px;
+  min-width: 140px;
+}
+
+.eb-select:focus {
+  border-color: var(--eb-accent);
+  outline: none;
+}
+
+.eb-obj-mod {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(0, 228, 160, 0.08);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  font-size: 12px;
+  color: var(--eb-accent);
+  font-weight: 700;
+}
+
+.eb-ambush-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  font-size: 11px;
+  background: var(--eb-bg);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  color: var(--eb-text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.eb-ambush-btn:hover {
+  color: var(--eb-text);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.eb-ambush-btn.active {
+  color: #ee5544;
+  border-color: rgba(238, 85, 68, 0.4);
+  background: rgba(238, 85, 68, 0.1);
+}
+
+/* ─── Zones ───────────────────────────────────────────────── */
+
+.eb-zones-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.eb-zone {
+  background: var(--eb-bg-mid);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.eb-zone-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(0, 228, 160, 0.04);
+  border-bottom: 1px solid var(--eb-border);
+}
+
+.eb-zone-icon {
+  color: var(--eb-accent);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.eb-zone-label-input {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--eb-text);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 6px;
+  flex: 1;
+  min-width: 100px;
+}
+
+.eb-zone-label-input:hover {
+  border-color: var(--eb-border);
+}
+
+.eb-zone-label-input:focus {
+  border-color: var(--eb-accent);
+  outline: none;
+  background: var(--eb-bg);
+}
+
+.eb-zone-tl {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--eb-accent);
+  white-space: nowrap;
+}
+
+.eb-zone-drop {
+  min-height: 40px;
+  padding: 4px;
+}
+
+.eb-starting-total {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--eb-text-dim);
+}
+
+.eb-starting-total strong {
+  color: var(--eb-accent);
+  font-size: 14px;
+}
+
+/* ─── Reinforcement Waves ─────────────────────────────────── */
+
+.eb-wave-section {
+  background: var(--eb-bg-mid);
+  border: 1px solid rgba(238, 136, 68, 0.15);
+  border-radius: var(--eb-radius);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.eb-wave-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(238, 136, 68, 0.05);
+  border-bottom: 1px solid rgba(238, 136, 68, 0.15);
+}
+
+.eb-wave-icon {
+  color: #ee8844;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.eb-wave-label-input {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--eb-text);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 6px;
+  flex: 1;
+  min-width: 100px;
+}
+
+.eb-wave-label-input:hover {
+  border-color: rgba(238, 136, 68, 0.2);
+}
+
+.eb-wave-label-input:focus {
+  border-color: #ee8844;
+  outline: none;
+  background: var(--eb-bg);
+}
+
+.eb-wave-tl {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ee8844;
+  white-space: nowrap;
+}
+
+.eb-wave-config {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid rgba(238, 136, 68, 0.1);
+}
+
+.eb-field-sm {
+  gap: 1px;
+}
+
+.eb-field-sm .eb-field-label {
+  font-size: 8px;
+}
+
+.eb-select-sm {
+  min-width: 100px;
+  padding: 3px 6px;
+  font-size: 11px;
+}
+
+.eb-input-sm {
+  background: var(--eb-bg);
+  border: 1px solid var(--eb-border);
+  border-radius: 4px;
+  color: var(--eb-text);
+  padding: 3px 6px;
+  font-size: 11px;
+  width: 80px;
+}
+
+.eb-input-sm:focus {
+  border-color: var(--eb-accent);
+  outline: none;
+}
+
+.eb-wave-drop {
+  min-height: 36px;
+  padding: 4px;
+}
+
+.eb-hint-sm {
+  font-size: 11px;
+  color: var(--eb-text-dim);
+  text-align: center;
+  padding: 8px;
+  font-style: italic;
+}
+
+.eb-btn-danger-sm {
+  color: var(--eb-text-dim);
+  opacity: 0.6;
+}
+
+.eb-btn-danger-sm:hover {
+  color: #ee5544;
+  opacity: 1;
+}
+
+/* ─── EXP Totals Row ──────────────────────────────────────── */
+
+.eb-exp-totals td {
+  border-top: 1px solid var(--eb-border);
+  padding-top: 6px;
+}

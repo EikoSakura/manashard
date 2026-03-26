@@ -1,0 +1,66 @@
+<div class="manashard retaliate-buff-card">
+
+  {{!-- ═══ HEADER: Portrait + Caster Info ═══ --}}
+  <div class="rbc-header">
+    <div class="rbc-portrait-frame">
+      <img src="{{actorImg}}" class="rbc-portrait" />
+    </div>
+    <div class="rbc-header-text">
+      <span class="rbc-actor-name">{{actorName}}</span>
+      <span class="rbc-action">casts retaliate</span>
+    </div>
+    {{#if (gt mpCost 0)}}
+      <div class="rbc-mp-badge">MP &minus;{{mpCost}}</div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ SKILL ROW: Icon + Skill Name + Badges ═══ --}}
+  <div class="rbc-skill-row">
+    <div class="rbc-skill-icon-frame">
+      <img src="{{skillImg}}" class="rbc-skill-icon" alt="{{skillName}}" />
+    </div>
+    <div class="rbc-skill-info">
+      <div class="rbc-skill-name">{{skillName}}</div>
+      <div class="rbc-badges">
+        <span class="rbc-badge rbc-badge-retaliatory"><i class="fas fa-fire-flame-curved"></i> Retaliatory</span>
+        {{#if element}}
+          <span class="rbc-badge rbc-badge-elem">{{upper element}}</span>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ EFFECT DETAIL ═══ --}}
+  <div class="rbc-effect-zone">
+    <div class="rbc-effect-row">
+      <span class="rbc-effect-label">Effect</span>
+      <span class="rbc-effect-value">
+        {{#if (eq retaliationMode "flat")}}
+          {{retaliationValue}} true damage when hit
+        {{else if (eq retaliationMode "percent")}}
+          {{retaliationValue}}% of damage taken
+        {{else if (eq retaliationMode "stat")}}
+          {{retaliationStatLabel}}-scaled true damage when hit
+        {{/if}}
+      </span>
+    </div>
+    {{#if (gt buffDuration 0)}}
+    <div class="rbc-effect-row">
+      <span class="rbc-effect-label">Duration</span>
+      <span class="rbc-effect-value">{{buffDuration}} {{#if (eq buffDuration 1)}}turn{{else}}turns{{/if}}</span>
+    </div>
+    {{/if}}
+    {{#if targetName}}
+    <div class="rbc-effect-row">
+      <span class="rbc-effect-label">Target</span>
+      <span class="rbc-effect-value">{{targetName}}</span>
+    </div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ CONFIRMATION FOOTER ═══ --}}
+  <div class="rbc-confirm">
+    <i class="fas fa-shield-halved"></i> Retaliate buff applied
+  </div>
+
+</div>

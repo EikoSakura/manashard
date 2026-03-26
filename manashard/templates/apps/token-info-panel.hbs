@@ -1,0 +1,43 @@
+{{!-- Log Horizon-style token info nameplate --}}
+<div class="token-info-panel {{#if isBoss}}boss{{/if}}">
+  {{#if showName}}
+  <div class="tip-banner">
+    <span class="tip-chevrons">&laquo;</span>
+    <span class="tip-name">{{name}}</span>
+    <span class="tip-level">Lv.{{level}}</span>
+    <span class="tip-chevrons">&raquo;</span>
+  </div>
+  {{/if}}
+
+  {{#if showHP}}
+  <div class="tip-bar hp-bar">
+    <div class="tip-bar-label">HP</div>
+    <div class="tip-bar-track">
+      <div class="tip-bar-fill hp-fill" style="width: {{hpPercent}}%"></div>
+      {{#if barrier}}
+      <div class="tip-bar-fill barrier-fill" style="right: {{barrierRight}}%; width: {{barrierPercent}}%"></div>
+      {{/if}}
+    </div>
+    <div class="tip-bar-value">{{hp.value}}{{#if barrier}}+{{barrier}}{{/if}}/{{hp.max}}</div>
+  </div>
+  {{/if}}
+
+  {{#if showMP}}
+  <div class="tip-bar mp-bar">
+    <div class="tip-bar-label">MP</div>
+    <div class="tip-bar-track">
+      <div class="tip-bar-fill mp-fill" style="width: {{mpPercent}}%"></div>
+    </div>
+    <div class="tip-bar-value">{{mp.value}}/{{mp.max}}</div>
+  </div>
+  {{/if}}
+
+  {{#if showType}}
+  <div class="tip-type-tag">
+    <span class="tip-diamond">&loz;</span>
+    <span class="tip-type-label">{{typeTag}}</span>
+    <span class="tip-diamond">&loz;</span>
+  </div>
+  {{/if}}
+
+</div>

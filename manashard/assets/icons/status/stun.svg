@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#ffd740" stroke-width="4"/>
+  <!-- Stars indicating dazed/stunned -->
+  <polygon points="128,40 138,80 178,80 145,105 158,145 128,118 98,145 111,105 78,80 118,80" fill="#ffd740"/>
+  <!-- Spiral/dizzy eyes -->
+  <path d="M88 175 Q88 160 100 160 Q112 160 112 175 Q112 190 100 190" fill="none" stroke="#ffd740" stroke-width="5" stroke-linecap="round"/>
+  <path d="M168 175 Q168 160 156 160 Q144 160 144 175 Q144 190 156 190" fill="none" stroke="#ffd740" stroke-width="5" stroke-linecap="round"/>
+  <!-- Small accent stars -->
+  <polygon points="60,55 64,67 76,67 66,75 70,87 60,79 50,87 54,75 44,67 56,67" fill="#ffd740"/>
+  <polygon points="196,55 200,67 212,67 202,75 206,87 196,79 186,87 190,75 180,67 192,67" fill="#ffd740"/>
+</svg>

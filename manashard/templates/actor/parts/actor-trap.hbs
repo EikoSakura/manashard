@@ -1,0 +1,93 @@
+<section class="tab-content trap-tab {{tab.cssClass}}" data-tab="trap">
+
+  {{!-- ═══ TRIGGER & DETECTION ═══ --}}
+  <div class="trap-section">
+    <h3 class="trap-section-title"><i class="fas fa-crosshairs"></i> Trigger & Detection</h3>
+    <div class="trap-form-grid">
+      <div class="trap-field">
+        <label>Trigger Type</label>
+        <select name="system.triggerType">
+          {{#each triggerTypeOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="trap-field">
+        <label>Disarm Stat</label>
+        <select name="system.disarmStat">
+          {{#each disarmStatOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="trap-field">
+        <label>Difficulty Penalty</label>
+        <input type="number" name="system.difficultyPenalty" value="{{system.difficultyPenalty}}" min="-50" max="0" data-dtype="Number" />
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ DAMAGE & EFFECT ═══ --}}
+  <div class="trap-section">
+    <h3 class="trap-section-title"><i class="fas fa-burst"></i> Damage & Effect</h3>
+    <div class="trap-form-grid">
+      <div class="trap-field">
+        <label>Damage</label>
+        <input type="number" name="system.damage" value="{{system.damage}}" min="0" data-dtype="Number" />
+      </div>
+      <div class="trap-field">
+        <label>Damage Type</label>
+        <select name="system.damageType">
+          {{#each damageTypeOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="trap-field">
+        <label>Element</label>
+        <select name="system.element">
+          {{#each elementOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ STATUS INFLICTION ═══ --}}
+  <div class="trap-section">
+    <h3 class="trap-section-title"><i class="fas fa-skull-crossbones"></i> Status Infliction</h3>
+    <div class="trap-form-grid">
+      <div class="trap-field">
+        <label>Status Effect</label>
+        <select name="system.statusInflict">
+          {{#each statusInflictOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="trap-field">
+        <label>Inflict Chance (%)</label>
+        <input type="number" name="system.statusChance" value="{{system.statusChance}}" min="0" max="100" data-dtype="Number" />
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ AREA & BEHAVIOR ═══ --}}
+  <div class="trap-section">
+    <h3 class="trap-section-title"><i class="fas fa-expand"></i> Area & Behavior</h3>
+    <div class="trap-form-grid">
+      <div class="trap-field">
+        <label>AoE Size (tiles)</label>
+        <input type="number" name="system.aoeSize" value="{{system.aoeSize}}" min="0" max="3" data-dtype="Number" />
+      </div>
+      <div class="trap-field trap-field-checkbox">
+        <label class="trap-checkbox-label">
+          <input type="checkbox" name="system.repeating" {{#if system.repeating}}checked{{/if}} />
+          Repeating Trap
+        </label>
+      </div>
+    </div>
+  </div>
+
+</section>

@@ -1,0 +1,384 @@
+<div class="browser-container">
+
+  {{!-- Tab Bar --}}
+  <nav class="browser-tabs">
+    {{#each tabs}}
+    <button class="browser-tab {{#if this.active}}active{{/if}}"
+            data-action="switchTab" data-tab="{{this.id}}">
+      <i class="fas {{this.icon}}"></i>
+      <span>{{this.label}}</span>
+    </button>
+    {{/each}}
+  </nav>
+
+  {{!-- Body: Sidebar + Results --}}
+  <div class="browser-body">
+
+    {{!-- Filter Sidebar --}}
+    <aside class="browser-filters">
+      <div class="browser-search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" class="browser-search-input" name="browser-search"
+               placeholder="Search by name..." value="{{searchQuery}}" />
+      </div>
+
+      {{!-- ═══ EQUIPMENT FILTERS ═══ --}}
+      {{#if (eq activeTab "equipment")}}
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Type</h4>
+          <div class="browser-filter-group">
+            {{#each filters.equipType}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="equipType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Rank</h4>
+          <div class="browser-filter-group">
+            {{#each filters.rank}}
+            <button class="browser-filter-chip rank-{{this.key}} {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="rank" data-filter-value="{{this.key}}">
+              {{upper this.key}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Weapon Category</h4>
+          <div class="browser-filter-group">
+            {{#each filters.weaponCategory}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="weaponCategory" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Handedness</h4>
+          <div class="browser-filter-group">
+            {{#each filters.handedness}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="handedness" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Range</h4>
+          <div class="browser-filter-group">
+            {{#each filters.rangeType}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="rangeType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Element</h4>
+          <div class="browser-filter-group">
+            {{#each filters.element}}
+            <button class="browser-filter-chip el-{{this.key}} {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="element" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+
+      {{!-- ═══ MANACITE FILTERS ═══ --}}
+      {{#if (eq activeTab "manacite")}}
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Manacite Type</h4>
+          <div class="browser-filter-group">
+            {{#each filters.manaciteType}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="manaciteType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Skill Type</h4>
+          <div class="browser-filter-group">
+            {{#each filters.skillType}}
+            <button class="browser-filter-chip filter-{{this.key}} {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="skillType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Element</h4>
+          <div class="browser-filter-group">
+            {{#each filters.element}}
+            <button class="browser-filter-chip el-{{this.key}} {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="element" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Damage Type</h4>
+          <div class="browser-filter-group">
+            {{#each filters.damageType}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="damageType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Target</h4>
+          <div class="browser-filter-group">
+            {{#each filters.targetType}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="targetType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Range</h4>
+          <div class="browser-filter-group">
+            {{#each filters.rangeType}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="rangeType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+
+      {{!-- ═══ CONSUMABLES FILTERS ═══ --}}
+      {{#if (eq activeTab "consumables")}}
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Target</h4>
+          <div class="browser-filter-group">
+            {{#each filters.targetType}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="targetType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+
+      {{!-- ═══ BESTIARY FILTERS ═══ --}}
+      {{#if (eq activeTab "bestiary")}}
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Rank</h4>
+          <div class="browser-filter-group">
+            {{#each filters.rank}}
+            <button class="browser-filter-chip rank-{{this.key}} {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="rank" data-filter-value="{{this.key}}">
+              {{upper this.key}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="browser-filter-section">
+          <h4 class="browser-filter-label">Creature Type</h4>
+          <div class="browser-filter-group">
+            {{#each filters.creatureType}}
+            <button class="browser-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="creatureType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+
+      <button class="browser-clear-btn" data-action="clearFilters">
+        <i class="fas fa-filter-circle-xmark"></i> Clear Filters
+      </button>
+    </aside>
+
+    {{!-- Results Panel --}}
+    <section class="browser-results">
+      <div class="browser-results-header">
+        <span class="browser-result-count">{{resultCount}} result{{#unless (eq resultCount 1)}}s{{/unless}}</span>
+        <div class="browser-sort-controls">
+          {{#each sortOptions}}
+          <button class="browser-sort-btn {{#if this.active}}active{{/if}}"
+                  data-action="sortResults" data-sort-field="{{this.field}}">
+            {{this.label}}
+            {{#if this.active}}<span class="sort-dir">{{#if (eq ../sortDir "asc")}}▲{{else}}▼{{/if}}</span>{{/if}}
+          </button>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="browser-results-list">
+        {{#if loading}}
+          <div class="browser-loading">
+            <i class="fas fa-spinner"></i> Loading...
+          </div>
+        {{else if (eq resultCount 0)}}
+          <div class="browser-empty">
+            <i class="fas fa-search"></i>
+            <span>No items match your filters.</span>
+          </div>
+        {{else}}
+
+          {{!-- ═══ EQUIPMENT RESULTS ═══ --}}
+          {{#if (eq activeTab "equipment")}}
+            {{#each results}}
+            <div class="browser-result-row" data-uuid="{{this.uuid}}" data-doc-type="Item" draggable="true">
+              <img class="browser-result-icon" src="{{this.img}}" alt="{{this.name}}" loading="lazy" />
+              <div class="browser-result-info">
+                <div class="browser-result-name">{{this.name}}</div>
+                <div class="browser-result-meta">
+                  <span class="browser-result-badge badge-type">{{this.typeLabel}}</span>
+                  {{#if this.categoryLabel}}<span class="browser-result-badge badge-type">{{this.categoryLabel}}</span>{{/if}}
+                  {{#if this.rank}}<span class="browser-result-badge badge-rank badge-rank-{{this.rank}}">{{upper this.rank}}</span>{{/if}}
+                  {{#if this.handedness}}<span class="browser-result-badge badge-type">{{this.handedness}}</span>{{/if}}
+                </div>
+              </div>
+              <div class="browser-result-stats">
+                {{#if this.might}}<div class="browser-result-stat"><span class="stat-label">Might</span><span class="stat-value">{{this.might}}</span></div>{{/if}}
+                {{#if this.hit}}<div class="browser-result-stat"><span class="stat-label">Hit</span><span class="stat-value">{{this.hit}}</span></div>{{/if}}
+                {{#if this.pdef}}<div class="browser-result-stat"><span class="stat-label">PDef</span><span class="stat-value">{{this.pdef}}</span></div>{{/if}}
+                {{#if this.mdef}}<div class="browser-result-stat"><span class="stat-label">MDef</span><span class="stat-value">{{this.mdef}}</span></div>{{/if}}
+                {{#if this.block}}<div class="browser-result-stat"><span class="stat-label">Block</span><span class="stat-value">{{this.block}}</span></div>{{/if}}
+              </div>
+              <button class="browser-view-btn" data-action="viewItem" data-uuid="{{this.uuid}}">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            {{/each}}
+          {{/if}}
+
+          {{!-- ═══ MANACITE RESULTS ═══ --}}
+          {{#if (eq activeTab "manacite")}}
+            {{#each results}}
+            <div class="browser-result-row" data-uuid="{{this.uuid}}" data-doc-type="Item" draggable="true">
+              <img class="browser-result-icon" src="{{this.img}}" alt="{{this.name}}" loading="lazy" />
+              <div class="browser-result-info">
+                <div class="browser-result-name">{{this.name}}</div>
+                <div class="browser-result-meta">
+                  {{#if (eq this.manaciteType "job")}}
+                    <span class="browser-result-badge badge-type">Job</span>
+                  {{else}}
+                    {{#if this.skillType}}<span class="browser-result-badge badge-{{this.skillType}}">{{this.skillTypeLabel}}</span>{{/if}}
+                  {{/if}}
+                  {{#if this.elementLabel}}<span class="browser-result-badge badge-type">{{this.elementLabel}}</span>{{/if}}
+                  {{#if this.damageTypeLabel}}<span class="browser-result-badge badge-type">{{this.damageTypeLabel}}</span>{{/if}}
+                </div>
+              </div>
+              <div class="browser-result-stats">
+                {{#if this.mpCost}}<div class="browser-result-stat"><span class="stat-label">MP</span><span class="stat-value">{{this.mpCost}}</span></div>{{/if}}
+                {{#if this.baseRate}}<div class="browser-result-stat"><span class="stat-label">Base</span><span class="stat-value">{{this.baseRate}}</span></div>{{/if}}
+                {{#if this.rangeLabel}}<div class="browser-result-stat"><span class="stat-label">Range</span><span class="stat-value">{{this.rangeLabel}}</span></div>{{/if}}
+              </div>
+              <button class="browser-view-btn" data-action="viewItem" data-uuid="{{this.uuid}}">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            {{/each}}
+          {{/if}}
+
+          {{!-- ═══ CONSUMABLES RESULTS ═══ --}}
+          {{#if (eq activeTab "consumables")}}
+            {{#each results}}
+            <div class="browser-result-row" data-uuid="{{this.uuid}}" data-doc-type="Item" draggable="true">
+              <img class="browser-result-icon" src="{{this.img}}" alt="{{this.name}}" loading="lazy" />
+              <div class="browser-result-info">
+                <div class="browser-result-name">{{this.name}}</div>
+                <div class="browser-result-meta">
+                  <span class="browser-result-badge badge-type">Consumable</span>
+                  {{#if this.targetTypeLabel}}<span class="browser-result-badge badge-type">{{this.targetTypeLabel}}</span>{{/if}}
+                </div>
+              </div>
+              <div class="browser-result-stats">
+                {{#if this.price}}<div class="browser-result-stat"><span class="stat-label">Price</span><span class="stat-value">{{this.price}}</span></div>{{/if}}
+              </div>
+              <button class="browser-view-btn" data-action="viewItem" data-uuid="{{this.uuid}}">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            {{/each}}
+          {{/if}}
+
+          {{!-- ═══ MATERIALS RESULTS ═══ --}}
+          {{#if (eq activeTab "materials")}}
+            {{#each results}}
+            <div class="browser-result-row" data-uuid="{{this.uuid}}" data-doc-type="Item" draggable="true">
+              <img class="browser-result-icon" src="{{this.img}}" alt="{{this.name}}" loading="lazy" />
+              <div class="browser-result-info">
+                <div class="browser-result-name">{{this.name}}</div>
+                <div class="browser-result-meta">
+                  <span class="browser-result-badge badge-type">{{this.typeLabel}}</span>
+                </div>
+              </div>
+              <div class="browser-result-stats">
+                {{#if this.price}}<div class="browser-result-stat"><span class="stat-label">Price</span><span class="stat-value">{{this.price}}</span></div>{{/if}}
+              </div>
+              <button class="browser-view-btn" data-action="viewItem" data-uuid="{{this.uuid}}">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            {{/each}}
+          {{/if}}
+
+          {{!-- ═══ SPECIES RESULTS ═══ --}}
+          {{#if (eq activeTab "species")}}
+            {{#each results}}
+            <div class="browser-result-row" data-uuid="{{this.uuid}}" data-doc-type="Item" draggable="true">
+              <img class="browser-result-icon" src="{{this.img}}" alt="{{this.name}}" loading="lazy" />
+              <div class="browser-result-info">
+                <div class="browser-result-name">{{this.name}}</div>
+                <div class="browser-result-meta">
+                  <span class="browser-result-badge badge-type">Species</span>
+                  {{#if this.size}}<span class="browser-result-badge badge-type">Size {{this.size}}</span>{{/if}}
+                </div>
+              </div>
+              <button class="browser-view-btn" data-action="viewItem" data-uuid="{{this.uuid}}">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            {{/each}}
+          {{/if}}
+
+          {{!-- ═══ BESTIARY RESULTS ═══ --}}
+          {{#if (eq activeTab "bestiary")}}
+            {{#each results}}
+            <div class="browser-result-row" data-uuid="{{this.uuid}}" data-doc-type="Actor" draggable="true">
+              <img class="browser-result-icon" src="{{this.img}}" alt="{{this.name}}" loading="lazy" />
+              <div class="browser-result-info">
+                <div class="browser-result-name">{{this.name}}</div>
+                <div class="browser-result-meta">
+                  {{#if this.rank}}<span class="browser-result-badge badge-rank badge-rank-{{this.rank}}">{{upper this.rank}}</span>{{/if}}
+                  {{#if this.creatureTypeLabel}}<span class="browser-result-badge badge-type">{{this.creatureTypeLabel}}</span>{{/if}}
+                </div>
+              </div>
+              <div class="browser-result-stats">
+                {{#if this.hp}}<div class="browser-result-stat"><span class="stat-label">HP</span><span class="stat-value">{{this.hp}}</span></div>{{/if}}
+                {{#if this.mov}}<div class="browser-result-stat"><span class="stat-label">Mov</span><span class="stat-value">{{this.mov}}</span></div>{{/if}}
+              </div>
+              <button class="browser-view-btn" data-action="viewItem" data-uuid="{{this.uuid}}">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            {{/each}}
+          {{/if}}
+
+        {{/if}}
+      </div>
+    </section>
+  </div>
+</div>

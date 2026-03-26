@@ -1,0 +1,171 @@
+<div class="manager-container">
+
+  {{!-- Tab Bar --}}
+  <nav class="manager-tabs">
+    {{#each tabs}}
+    <button class="manager-tab {{#if this.active}}active{{/if}}"
+            data-action="switchTab" data-tab="{{this.id}}">
+      <i class="fas {{this.icon}}"></i>
+      <span>{{this.label}}</span>
+    </button>
+    {{/each}}
+    <div class="manager-loadout-info">
+      <i class="fas fa-th-large"></i>
+      <span class="loadout-counter {{#if (gt loadoutSlotsUsed maxLoadoutSlots)}}over{{else if (eq loadoutSlotsUsed maxLoadoutSlots)}}full{{/if}}">{{loadoutSlotsUsed}} / {{maxLoadoutSlots}}</span>
+    </div>
+  </nav>
+
+  {{!-- Body: Sidebar + Results --}}
+  <div class="manager-body">
+
+    {{!-- Filter Sidebar --}}
+    <aside class="manager-filters">
+      <div class="manager-search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" class="manager-search-input" name="manager-search"
+               placeholder="Search by name..." value="{{searchQuery}}" />
+      </div>
+
+      {{!-- Library Filters --}}
+      {{#if (eq activeTab "library")}}
+        <div class="manager-filter-section">
+          <h4 class="manager-filter-label">Skill Type</h4>
+          <div class="manager-filter-group">
+            {{#each filters.skillType}}
+            <button class="manager-filter-chip filter-{{this.key}} {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="skillType" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+        <div class="manager-filter-section">
+          <h4 class="manager-filter-label">Loadout</h4>
+          <div class="manager-filter-group">
+            {{#each filters.loadoutStatus}}
+            <button class="manager-filter-chip {{#if this.active}}active{{/if}}"
+                    data-action="toggleFilter" data-filter-key="loadoutStatus" data-filter-value="{{this.key}}">
+              {{this.label}}
+            </button>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+
+      <button class="manager-clear-btn" data-action="clearFilters">
+        <i class="fas fa-filter-circle-xmark"></i> Clear
+      </button>
+    </aside>
+
+    {{!-- Results Panel --}}
+    <section class="manager-results">
+
+      {{!-- ═══ LIBRARY TAB ═══ --}}
+      {{#if (eq activeTab "library")}}
+        {{#if (eq resultCount 0)}}
+        <div class="manager-empty">
+          <i class="fas fa-book"></i>
+          <span>No skills match your filters.</span>
+        </div>
+        {{else}}
+          {{#each results}}
+          <div class="manager-skill-row {{this.skillType}} {{#if this.inLoadout}}in-loadout{{/if}}" data-item-id="{{this.id}}">
+            <img class="manager-skill-icon" src="{{this.img}}" alt="{{this.name}}" data-action="viewItem" title="Open sheet" />
+            <div class="manager-skill-info">
+              <span class="manager-skill-name">{{this.name}}</span>
+              <div class="manager-skill-meta">
+                <span class="manager-badge badge-{{this.skillType}}">{{this.skillType}}</span>
+                {{#if this.mpCost}}<span class="manager-stat">MP {{this.mpCost}}</span>{{/if}}
+                {{#if this.element}}<span class="manager-stat element-{{this.element}}">{{this.element}}</span>{{/if}}
+                {{#if this.isFree}}<span class="manager-badge badge-free">Free</span>{{/if}}
+              </div>
+            </div>
+            <button class="manager-loadout-toggle {{#if this.inLoadout}}active{{/if}}"
+                    data-action="toggleLoadout" title="{{#if this.inLoadout}}Remove from loadout{{else}}Add to loadout{{/if}}">
+              {{#if this.inLoadout}}
+              <i class="fas fa-check-circle"></i>
+              {{else}}
+              <i class="fas fa-plus-circle"></i>
+              {{/if}}
+            </button>
+            <button class="manager-action-btn delete" data-action="deleteItem" title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          {{/each}}
+        {{/if}}
+      {{/if}}
+
+      {{!-- ═══ CRYSTALS TAB ═══ --}}
+      {{#if (eq activeTab "crystals")}}
+
+        {{!-- Job Manacites --}}
+        {{#if jobManacites.length}}
+        <div class="manager-subsection">
+          <h4 class="manager-subsection-label"><i class="fas fa-briefcase"></i> Job Manacite</h4>
+          {{#each jobManacites}}
+          <div class="manager-skill-row job {{#if this.isEquipped}}crystal-equipped{{/if}}" data-item-id="{{this.id}}">
+            <img class="manager-skill-icon" src="{{this.img}}" alt="{{this.name}}" data-action="viewItem" title="Open sheet" />
+            <div class="manager-skill-info">
+              <span class="manager-skill-name">{{this.name}}</span>
+              <div class="manager-skill-meta">
+                <span class="manager-badge badge-job">Job</span>
+                {{#if this.isEquipped}}<span class="manager-badge badge-equipped">Equipped</span>{{/if}}
+              </div>
+            </div>
+            {{#if this.isEquipped}}
+            <button class="manager-action-btn unequip" data-action="unequipJob" title="Unequip">
+              <i class="fas fa-times"></i>
+            </button>
+            {{else}}
+            <button class="manager-action-btn equip" data-action="equipJob" title="Equip Job">
+              <i class="fas fa-hand-fist"></i>
+            </button>
+            {{/if}}
+            <button class="manager-action-btn delete" data-action="deleteItem" title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          {{/each}}
+        </div>
+        {{/if}}
+
+        {{!-- Unabsorbed Skill Crystals --}}
+        {{#if unabsorbedSkills.length}}
+        <div class="manager-subsection">
+          <h4 class="manager-subsection-label"><i class="fas fa-gem"></i> Unabsorbed Crystals</h4>
+          {{#each unabsorbedSkills}}
+          <div class="manager-skill-row crystal {{this.skillType}} {{#if this.cannotAbsorb}}cannot-absorb{{/if}}" data-item-id="{{this.id}}">
+            <img class="manager-skill-icon" src="{{this.img}}" alt="{{this.name}}" data-action="viewItem" title="Open sheet" />
+            <div class="manager-skill-info">
+              <span class="manager-skill-name">{{this.name}}</span>
+              <div class="manager-skill-meta">
+                <span class="manager-badge badge-{{this.skillType}}">{{this.skillType}}</span>
+                {{#if this.cannotAbsorb}}<span class="manager-badge badge-warn">Duplicate</span>{{/if}}
+              </div>
+            </div>
+            {{#unless this.cannotAbsorb}}
+            <button class="manager-action-btn absorb" data-action="absorbSkill" title="Absorb">
+              <i class="fas fa-sun"></i>
+            </button>
+            {{/unless}}
+            <button class="manager-action-btn delete" data-action="deleteItem" title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          {{/each}}
+        </div>
+        {{/if}}
+
+        {{#unless (or jobManacites.length unabsorbedSkills.length)}}
+        <div class="manager-empty">
+          <i class="fas fa-gem"></i>
+          <span>No manacite crystals in inventory.</span>
+        </div>
+        {{/unless}}
+
+      {{/if}}
+
+    </section>
+  </div>
+</div>

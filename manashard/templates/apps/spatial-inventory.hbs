@@ -1,0 +1,52 @@
+<div class="spatial-container">
+
+  {{!-- Category Tabs --}}
+  <nav class="spatial-tabs">
+    {{#each categories}}
+    <button class="spatial-tab {{#if this.active}}active{{/if}}"
+            data-action="switchCategory" data-category="{{this.id}}">
+      <i class="fas {{this.icon}}"></i>
+      <span>{{this.label}}</span>
+    </button>
+    {{/each}}
+    <div class="spatial-count">
+      <i class="fas fa-cube"></i>
+      <span>{{itemCount}}</span>
+    </div>
+  </nav>
+
+  {{!-- Items List --}}
+  <section class="spatial-results">
+    {{#if items.length}}
+    <div class="spatial-item-list">
+      {{#each items}}
+      <div class="spatial-item-row" data-item-id="{{this.id}}">
+        <img src="{{this.img}}" class="spatial-item-img" data-action="viewItem" title="View details" />
+        <div class="spatial-item-info">
+          <span class="spatial-item-name" data-action="viewItem">{{this.name}}</span>
+          <span class="spatial-item-meta">
+            <span class="spatial-type-badge">{{this.typeLabel}}</span>
+            {{#if this.quantity}}<span class="spatial-qty">x{{this.quantity}}</span>{{/if}}
+            {{#if this.weight}}<span class="spatial-weight"><i class="fas fa-weight-hanging"></i> {{this.weight}}</span>{{/if}}
+          </span>
+        </div>
+        <div class="spatial-item-actions">
+          <button class="spatial-action-btn retrieve" data-action="retrieveItem" title="Retrieve from storage">
+            <i class="fas fa-arrow-up-from-bracket"></i>
+          </button>
+          <button class="spatial-action-btn delete" data-action="deleteItem" title="Delete permanently">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="spatial-empty">
+      <i class="fas fa-box-open"></i>
+      <p>No items stored in pocket dimension.</p>
+    </div>
+    {{/if}}
+  </section>
+
+</div>

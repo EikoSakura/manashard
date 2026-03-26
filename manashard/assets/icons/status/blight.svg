@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#bb44bb" stroke-width="4"/>
+  <!-- Biohazard – three arcs around a center ring -->
+  <circle cx="128" cy="128" r="14" fill="none" stroke="#bb44bb" stroke-width="6"/>
+  <!-- Top lobe -->
+  <path d="M128 60 A40 40 0 0 1 160 100" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
+  <path d="M128 60 A40 40 0 0 0 96 100" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
+  <!-- Bottom-left lobe -->
+  <path d="M75 170 A40 40 0 0 1 72 125" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
+  <path d="M75 170 A40 40 0 0 0 118 148" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
+  <!-- Bottom-right lobe -->
+  <path d="M181 170 A40 40 0 0 1 138 148" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
+  <path d="M181 170 A40 40 0 0 0 184 125" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
+  <!-- Drip drops -->
+  <circle cx="128" cy="200" r="8" fill="#bb44bb"/>
+  <circle cx="108" cy="215" r="5" fill="#bb44bb"/>
+</svg>

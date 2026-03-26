@@ -1,0 +1,30 @@
+<div class="status-effect-panel-inner">
+  {{#if hasBuffs}}
+  <div class="sep-section sep-buffs">
+    {{#each buffs}}
+    <div class="sep-icon sep-buff" data-effect-id="{{effectId}}" data-tooltip-html="{{{tooltipHtml}}}" data-tooltip-direction="LEFT">
+      <img src="{{img}}" alt="{{name}}">
+      {{#if turns}}
+      <span class="sep-duration">{{turns}}</span>
+      {{else if showInfinity}}
+      <span class="sep-duration sep-infinite">&infin;</span>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+  {{#if hasDebuffs}}
+  <div class="sep-section sep-debuffs">
+    {{#each debuffs}}
+    <div class="sep-icon sep-debuff" data-status-key="{{key}}" data-tooltip-html="{{{tooltipHtml}}}" data-tooltip-direction="LEFT">
+      <img src="{{img}}" alt="{{name}}">
+      {{#if turns}}
+      <span class="sep-duration">{{turns}}</span>
+      {{else if showInfinity}}
+      <span class="sep-duration sep-infinite">&infin;</span>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+</div>

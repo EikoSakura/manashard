@@ -1,0 +1,167 @@
+<section class="tab-content {{tab.cssClass}}" data-tab="combat" data-group="primary">
+{{#unless isCharacter}}
+
+  {{!-- ═══ 1. Active Status Effects (characters only, display-only) ═══ --}}
+  {{#if activeStatusEffects.length}}
+  <div class="combat-active-status">
+    {{#each activeStatusEffects}}
+    <span class="status-badge active {{#if this.element}}element-{{this.element}}{{/if}}">
+      {{this.label}}{{#if this.duration}} ({{this.duration}}){{/if}}
+    </span>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{!-- ═══ 2. Weapon Attack ═══ --}}
+  <div class="combat-section">
+    <h3><i class="fas fa-sword"></i> Weapon Attack</h3>
+    <div class="adv-tile-grid">
+      {{#if equippedWeapon}}
+      <details class="adv-tile" data-item-id="{{equippedWeapon.id}}">
+        <summary>
+          <img src="{{equippedWeapon.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{equippedWeapon.name}}</span>
+          <a class="adv-tile-action attack-button" data-action="rollAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+        </summary>
+        <div class="adv-tile-details">
+          <div class="adv-tile-stats">
+            <span class="adv-tile-stat">Mt {{equippedWeapon.system.might}}</span>
+            <span class="adv-tile-stat">Hit {{equippedWeapon.system.hit}}</span>
+            {{#if equippedWeapon.system.element}}<span class="adv-tile-stat element-pip element-{{equippedWeapon.system.element}}">{{equippedWeapon.system.element}}</span>{{/if}}
+          </div>
+        </div>
+      </details>
+      {{else}}
+      <div class="adv-tile">
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;">
+          <i class="fas fa-sword" style="color:var(--manashard-text-muted);"></i>
+          <span class="adv-tile-name" style="color:var(--manashard-text-muted);">Unarmed</span>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ═══ 3. Natural Weapons ═══ --}}
+  {{#if naturalWeapons.length}}
+  <div class="combat-section">
+    <h3><i class="fas fa-paw"></i> Natural Weapons</h3>
+    <div class="adv-tile-grid">
+      {{#each naturalWeapons}}
+      <details class="adv-tile" data-item-id="{{this.id}}">
+        <summary>
+          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          <a class="adv-tile-action attack-button" data-action="rollNaturalAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+        </summary>
+        <div class="adv-tile-details">
+          <div class="adv-tile-stats">
+            <span class="adv-tile-stat">Mt {{this.system.might}}</span>
+            <span class="adv-tile-stat">Hit {{this.system.hit}}</span>
+            {{#if this.system.element}}<span class="adv-tile-stat element-pip element-{{this.system.element}}">{{this.system.element}}</span>{{/if}}
+          </div>
+        </div>
+      </details>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ 4. Skills ═══ --}}
+  <div class="combat-section">
+    <h3><i class="fas fa-magic-wand-sparkles"></i> Skills
+      {{#if allActiveSkills.length}}<span class="section-count-badge">{{allActiveSkills.length}}</span>{{/if}}
+    </h3>
+    <div class="skill-card-grid">
+
+      {{!-- All active skills (includes job signature for threats) --}}
+      {{#each allActiveSkills}}
+      <div class="skill-grid-card {{this.skillType}} {{#if this._isTaught}}taught{{/if}}" data-item-id="{{this.id}}">
+        <div class="skill-grid-card-summary">
+          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
+          <span class="skill-grid-card-name">{{this.name}}</span>
+          {{#if (eq this.skillType "magic")}}
+          <a class="skill-card-action cast-button" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
+          {{else}}
+          <a class="skill-card-action activate-button" data-action="useSkill" title="Activate"><i class="fas fa-dice-d20"></i></a>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+
+    </div>
+
+    {{!-- Empty state --}}
+    {{#unless allActiveSkills.length}}
+    <div class="adv-empty-state">
+      <i class="fas fa-magic-wand-sparkles"></i>
+      <span>No Skills Available</span>
+    </div>
+    {{/unless}}
+  </div>
+
+  {{!-- ═══ 5. Passives ═══ --}}
+  {{#if passiveAbilities.length}}
+  <div class="combat-section">
+    <h3><i class="fas fa-star"></i> Passives
+      <span class="section-count-badge">{{passiveAbilities.length}}</span>
+    </h3>
+    <div class="passive-card-grid">
+      {{#each passiveAbilities}}
+      <div class="passive-card" data-item-id="{{this.id}}">
+        <img src="{{this.img}}" class="passive-card-img" data-action="postItemToChat" title="Post to chat" />
+        <div class="passive-card-info">
+          <span class="passive-card-name">{{this.name}}</span>
+          {{#if this._enrichedDescription}}
+          <div class="passive-card-desc">{{{this._enrichedDescription}}}</div>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ 6. Consumables ═══ --}}
+  {{#if consumables.length}}
+  <div class="combat-section">
+    <h3><i class="fas fa-flask"></i> Items</h3>
+    <div class="adv-tile-grid">
+      {{#each consumables}}
+      <details class="adv-tile" data-item-id="{{this.id}}">
+        <summary>
+          <img src="{{this.img}}" class="adv-tile-img" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          <span class="adv-tile-badge">x{{this.system.quantity}}</span>
+          <a class="adv-tile-action consumable-button" data-action="useConsumable" title="Use"><i class="fas fa-flask"></i></a>
+        </summary>
+        <div class="adv-tile-details">
+          {{#if this._enrichedDescription}}<div>{{{this._enrichedDescription}}}</div>{{/if}}
+        </div>
+      </details>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ 7. Loot Table (NPC Only, not hostile — they have a dedicated Loot tab) ═══ --}}
+  {{#if showLootInCombat}}
+  <div class="combat-section">
+    <h3><i class="fas fa-gem"></i> Loot Table</h3>
+    {{#each system.lootTable}}
+    <div class="loot-entry" data-index="{{@index}}">
+      <input type="text" name="system.lootTable.{{@index}}.itemName" value="{{this.itemName}}" placeholder="Item name..." class="loot-name-input" />
+      <div class="loot-chance-group">
+        <input type="number" name="system.lootTable.{{@index}}.chance" value="{{this.chance}}" min="1" max="100" class="loot-chance-input" />
+        <span class="loot-pct">%</span>
+      </div>
+      {{#if this.stolen}}<span class="loot-stolen-badge">Stolen</span>{{/if}}
+      <a class="loot-remove-btn" data-action="removeLootEntry" data-index="{{@index}}" title="Remove"><i class="fas fa-trash"></i></a>
+    </div>
+    {{/each}}
+    <a class="loot-add-btn" data-action="addLootEntry"><i class="fas fa-plus"></i> Add Loot Entry</a>
+  </div>
+  {{/if}}
+
+{{/unless}}
+</section>

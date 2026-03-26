@@ -1,0 +1,652 @@
+/* ═══════════════════════════════════════════════════════════════
+   MANACITE MANAGER
+   Isekai game-UI inspired skill library & crystal management.
+   High-specificity selectors to override Foundry V13 defaults.
+   ═══════════════════════════════════════════════════════════════ */
+
+.manacite-manager {
+  --mm-bg: var(--manashard-bg-dark, #060a0d);
+  --mm-surface: var(--manashard-bg-mid, #0b1216);
+  --mm-surface-light: var(--manashard-bg-light, #0e171d);
+  --mm-input: var(--manashard-bg-input, #0a0f13);
+  --mm-border: var(--manashard-border, #1a2a32);
+  --mm-border-glow: rgba(0, 228, 160, 0.15);
+  --mm-text: var(--manashard-text, #e0f0ea);
+  --mm-text-dim: var(--manashard-text-dim, #7a9a8e);
+  --mm-text-label: var(--manashard-text-label, #4a7a6a);
+  --mm-accent: var(--manashard-accent, #00e4a0);
+  --mm-accent-glow: var(--manashard-accent-glow, rgba(0, 228, 160, 0.4));
+  --mm-gold: var(--manashard-gold, #f1c40f);
+  --mm-magic: #4ecdc4;
+  --mm-art: #f9ca24;
+  --mm-passive: #9b59b6;
+}
+
+/* ─── Window Chrome ───────────────────────────────────────── */
+
+.manacite-manager .window-content {
+  background: var(--mm-bg) !important;
+  color: var(--mm-text) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Reset buttons inside content only — preserve window header buttons */
+.manacite-manager .manager-container button {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+
+/* ─── Container ───────────────────────────────────────────── */
+
+.manacite-manager .manager-container {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+
+/* ─── Tab Bar ─────────────────────────────────────────────── */
+
+.manacite-manager .manager-tabs {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: var(--mm-surface) !important;
+  border-bottom: 1px solid var(--mm-border) !important;
+  flex-shrink: 0 !important;
+  align-items: stretch !important;
+  min-height: 40px;
+}
+
+.manacite-manager .manager-tab {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 10px 18px 8px !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  background: none !important;
+  color: var(--mm-text-dim) !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  white-space: nowrap;
+  margin-bottom: -1px;
+}
+
+.manacite-manager .manager-tab:hover {
+  color: var(--mm-text) !important;
+  background: rgba(0, 228, 160, 0.04) !important;
+}
+
+.manacite-manager .manager-tab.active {
+  color: var(--mm-accent) !important;
+  border-bottom-color: var(--mm-accent) !important;
+  text-shadow: 0 0 12px var(--mm-accent-glow);
+}
+
+.manacite-manager .manager-tab i {
+  font-size: 11px;
+}
+
+/* Loadout counter in tab bar */
+.manacite-manager .manager-loadout-info {
+  margin-left: auto !important;
+  padding: 0 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--mm-text-dim);
+}
+
+.manacite-manager .manager-loadout-info i {
+  font-size: 10px;
+}
+
+.manacite-manager .manager-loadout-info .loadout-counter {
+  font-weight: 700;
+  color: var(--mm-accent);
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.manacite-manager .manager-loadout-info .loadout-counter.full {
+  color: var(--mm-gold);
+  text-shadow: 0 0 8px rgba(241, 196, 15, 0.4);
+}
+
+.manacite-manager .manager-loadout-info .loadout-counter.over {
+  color: var(--manashard-failure, #ff4444);
+  text-shadow: 0 0 8px rgba(255, 68, 68, 0.4);
+  animation: mm-pulse 1.5s infinite;
+}
+
+@keyframes mm-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+
+/* ─── Body Layout (Sidebar + Results) ─────────────────────── */
+
+.manacite-manager .manager-body {
+  display: flex !important;
+  flex-direction: row !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+
+/* ─── Filter Sidebar ──────────────────────────────────────── */
+
+.manacite-manager .manager-filters {
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+  flex-shrink: 0 !important;
+  padding: 12px !important;
+  background: var(--mm-surface) !important;
+  border-right: 1px solid var(--mm-border) !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+/* Search box */
+.manacite-manager .manager-search-box {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 7px 10px !important;
+  background: var(--mm-input) !important;
+  border: 1px solid var(--mm-border) !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease;
+}
+
+.manacite-manager .manager-search-box:focus-within {
+  border-color: var(--mm-accent) !important;
+  box-shadow: 0 0 10px var(--mm-accent-glow), inset 0 0 6px rgba(0, 228, 160, 0.05);
+}
+
+.manacite-manager .manager-search-box i {
+  color: var(--mm-text-dim);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.manacite-manager .manager-search-input {
+  flex: 1 !important;
+  background: none !important;
+  border: none !important;
+  color: var(--mm-text) !important;
+  font-family: "Alegreya Sans", sans-serif !important;
+  font-size: 13px !important;
+  outline: none !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.manacite-manager .manager-search-input::placeholder {
+  color: var(--mm-text-dim);
+  font-style: italic;
+}
+
+
+/* ─── Filter Sections ─────────────────────────────────────── */
+
+.manacite-manager .manager-filter-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.manacite-manager .manager-filter-label {
+  font-family: "Alegreya Sans", sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  color: var(--mm-text-label) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.manacite-manager .manager-filter-group {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 4px !important;
+  flex-wrap: wrap !important;
+}
+
+.manacite-manager .manager-filter-chip {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 11px;
+  padding: 3px 9px !important;
+  border: 1px solid var(--mm-border) !important;
+  border-radius: 4px !important;
+  background: var(--mm-surface-light) !important;
+  color: var(--mm-text-dim) !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.manacite-manager .manager-filter-chip:hover {
+  border-color: var(--mm-accent) !important;
+  color: var(--mm-text) !important;
+}
+
+.manacite-manager .manager-filter-chip.active {
+  background: var(--mm-accent) !important;
+  border-color: var(--mm-accent) !important;
+  color: var(--mm-bg) !important;
+  font-weight: 700;
+  box-shadow: 0 0 8px var(--mm-accent-glow);
+}
+
+/* Skill type colored active chips */
+.manacite-manager .manager-filter-chip.filter-magic.active {
+  background: var(--mm-magic) !important;
+  border-color: var(--mm-magic) !important;
+  color: #0a0f13 !important;
+  box-shadow: 0 0 8px rgba(78, 205, 196, 0.4);
+}
+.manacite-manager .manager-filter-chip.filter-art.active {
+  background: var(--mm-art) !important;
+  border-color: var(--mm-art) !important;
+  color: #0a0f13 !important;
+  box-shadow: 0 0 8px rgba(249, 202, 36, 0.4);
+}
+.manacite-manager .manager-filter-chip.filter-passive.active {
+  background: var(--mm-passive) !important;
+  border-color: var(--mm-passive) !important;
+  color: #fff !important;
+  box-shadow: 0 0 8px rgba(155, 89, 182, 0.4);
+}
+
+/* Clear button */
+.manacite-manager .manager-clear-btn {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 11px;
+  padding: 5px 10px !important;
+  border: 1px solid var(--mm-border) !important;
+  border-radius: 4px !important;
+  background: var(--mm-surface-light) !important;
+  color: var(--mm-text-dim) !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-top: auto !important;
+  text-align: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+}
+
+.manacite-manager .manager-clear-btn:hover {
+  border-color: #ff6644 !important;
+  color: #ff6644 !important;
+}
+
+
+/* ─── Results Panel ───────────────────────────────────────── */
+
+.manacite-manager .manager-results {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  padding: 6px 8px !important;
+  min-width: 0 !important;
+  background: var(--mm-bg) !important;
+}
+
+
+/* ─── Skill Rows ──────────────────────────────────────────── */
+
+.manacite-manager .manager-skill-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 8px 10px !important;
+  border-radius: 4px !important;
+  transition: all 0.15s ease;
+  border-left: 3px solid transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+  position: relative;
+}
+
+.manacite-manager .manager-skill-row:hover {
+  background: var(--mm-surface-light) !important;
+}
+
+.manacite-manager .manager-skill-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.manacite-manager .manager-skill-row:nth-child(even):hover {
+  background: var(--mm-surface-light) !important;
+}
+
+/* Skill type left-border glow */
+.manacite-manager .manager-skill-row.magic {
+  border-left-color: var(--mm-magic) !important;
+}
+.manacite-manager .manager-skill-row.art {
+  border-left-color: var(--mm-art) !important;
+}
+.manacite-manager .manager-skill-row.passive {
+  border-left-color: var(--mm-passive) !important;
+}
+
+/* In-loadout row highlight */
+.manacite-manager .manager-skill-row.in-loadout {
+  background: rgba(0, 228, 160, 0.05) !important;
+}
+
+.manacite-manager .manager-skill-row.in-loadout:hover {
+  background: rgba(0, 228, 160, 0.09) !important;
+}
+
+/* Equipped job highlight */
+.manacite-manager .manager-skill-row.crystal-equipped {
+  background: rgba(0, 228, 160, 0.05) !important;
+  border-left-color: var(--mm-accent) !important;
+}
+
+.manacite-manager .manager-skill-row.crystal-equipped:hover {
+  background: rgba(0, 228, 160, 0.09) !important;
+}
+
+/* Cannot-absorb dimming */
+.manacite-manager .manager-skill-row.cannot-absorb {
+  opacity: 0.45;
+}
+
+
+/* ─── Skill Icon ──────────────────────────────────────────── */
+
+.manacite-manager .manager-skill-icon {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--mm-border) !important;
+  flex-shrink: 0 !important;
+  object-fit: cover !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.manacite-manager .manager-skill-icon:hover {
+  border-color: var(--mm-accent) !important;
+  box-shadow: 0 0 10px var(--mm-accent-glow);
+}
+
+
+/* ─── Skill Info ──────────────────────────────────────────── */
+
+.manacite-manager .manager-skill-info {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+.manacite-manager .manager-skill-name {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mm-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.manacite-manager .manager-skill-meta {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 5px !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+}
+
+
+/* ─── Badges ──────────────────────────────────────────────── */
+
+.manacite-manager .manager-badge {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+  display: inline-block;
+}
+
+.manacite-manager .manager-badge.badge-magic {
+  background: var(--mm-magic);
+  color: #0a0f13;
+  box-shadow: 0 0 6px rgba(78, 205, 196, 0.3);
+}
+.manacite-manager .manager-badge.badge-art {
+  background: var(--mm-art);
+  color: #0a0f13;
+  box-shadow: 0 0 6px rgba(249, 202, 36, 0.3);
+}
+.manacite-manager .manager-badge.badge-passive {
+  background: var(--mm-passive);
+  color: #fff;
+  box-shadow: 0 0 6px rgba(155, 89, 182, 0.3);
+}
+.manacite-manager .manager-badge.badge-job {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--mm-text-dim);
+}
+.manacite-manager .manager-badge.badge-equipped {
+  background: var(--mm-accent);
+  color: var(--mm-bg);
+  box-shadow: 0 0 6px var(--mm-accent-glow);
+}
+.manacite-manager .manager-badge.badge-free {
+  background: rgba(0, 228, 160, 0.15);
+  color: var(--mm-accent);
+  border: 1px solid rgba(0, 228, 160, 0.3);
+}
+.manacite-manager .manager-badge.badge-warn {
+  background: rgba(255, 68, 68, 0.15);
+  color: #ff6644;
+  border: 1px solid rgba(255, 68, 68, 0.3);
+}
+
+.manacite-manager .manager-stat {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 10px;
+  color: var(--mm-text-dim);
+  padding: 0 2px;
+}
+
+
+/* ─── Action Buttons ──────────────────────────────────────── */
+
+.manacite-manager .manager-loadout-toggle,
+.manacite-manager .manager-action-btn {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  border: 1px solid var(--mm-border) !important;
+  border-radius: 6px !important;
+  background: var(--mm-surface) !important;
+  color: var(--mm-text-dim) !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  font-size: 15px !important;
+  padding: 0 !important;
+}
+
+/* Loadout toggle hover/active */
+.manacite-manager .manager-loadout-toggle:hover {
+  border-color: var(--mm-accent) !important;
+  color: var(--mm-accent) !important;
+  box-shadow: 0 0 8px var(--mm-accent-glow);
+}
+
+.manacite-manager .manager-loadout-toggle.active {
+  color: var(--mm-accent) !important;
+  border-color: var(--mm-accent) !important;
+  background: rgba(0, 228, 160, 0.08) !important;
+  box-shadow: 0 0 8px var(--mm-accent-glow);
+}
+
+/* Absorb button */
+.manacite-manager .manager-action-btn.absorb:hover {
+  border-color: var(--mm-gold) !important;
+  color: var(--mm-gold) !important;
+  box-shadow: 0 0 8px rgba(241, 196, 15, 0.4);
+}
+
+/* Equip button */
+.manacite-manager .manager-action-btn.equip:hover {
+  border-color: var(--mm-accent) !important;
+  color: var(--mm-accent) !important;
+  box-shadow: 0 0 8px var(--mm-accent-glow);
+}
+
+/* Unequip button */
+.manacite-manager .manager-action-btn.unequip:hover {
+  border-color: #ff6644 !important;
+  color: #ff6644 !important;
+  box-shadow: 0 0 8px rgba(255, 68, 68, 0.4);
+}
+
+/* Delete button — dim by default, visible on row hover */
+.manacite-manager .manager-action-btn.delete {
+  opacity: 0;
+  transition: all 0.15s ease;
+  font-size: 12px !important;
+}
+
+.manacite-manager .manager-skill-row:hover .manager-action-btn.delete {
+  opacity: 0.5;
+}
+
+.manacite-manager .manager-action-btn.delete:hover {
+  opacity: 1 !important;
+  border-color: #ff4444 !important;
+  color: #ff4444 !important;
+  box-shadow: 0 0 8px rgba(255, 68, 68, 0.4);
+}
+
+
+/* ─── Subsection Headers ──────────────────────────────────── */
+
+.manacite-manager .manager-subsection {
+  margin-bottom: 8px !important;
+}
+
+.manacite-manager .manager-subsection-label {
+  font-family: "Alegreya Sans", sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  color: var(--mm-text-label) !important;
+  margin: 10px 10px 6px !important;
+  padding: 0 0 4px !important;
+  border: none !important;
+  border-bottom: 1px solid var(--mm-border) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.manacite-manager .manager-subsection-label i {
+  font-size: 10px;
+  color: var(--mm-text-label);
+}
+
+
+/* ─── Empty State ─────────────────────────────────────────── */
+
+.manacite-manager .manager-empty {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 60px 20px !important;
+  gap: 12px !important;
+  color: var(--mm-text-dim) !important;
+}
+
+.manacite-manager .manager-empty i {
+  font-size: 36px;
+  opacity: 0.2;
+}
+
+.manacite-manager .manager-empty span {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 13px;
+}
+
+
+/* ─── Scrollbar ───────────────────────────────────────────── */
+
+.manacite-manager .manager-results::-webkit-scrollbar,
+.manacite-manager .manager-filters::-webkit-scrollbar {
+  width: 6px;
+}
+
+.manacite-manager .manager-results::-webkit-scrollbar-track,
+.manacite-manager .manager-filters::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.manacite-manager .manager-results::-webkit-scrollbar-thumb,
+.manacite-manager .manager-filters::-webkit-scrollbar-thumb {
+  background: var(--mm-border);
+  border-radius: 3px;
+}
+
+.manacite-manager .manager-results::-webkit-scrollbar-thumb:hover,
+.manacite-manager .manager-filters::-webkit-scrollbar-thumb:hover {
+  background: var(--mm-text-dim);
+}

@@ -1,0 +1,242 @@
+<div class="manashard combat-forecast {{#if healMode}}cf-heal-mode{{/if}} {{#if retaliationMode}}cf-buff-mode{{/if}}">
+
+  {{!-- ═══ ATTACKER PANEL (Left / Blue) ═══ --}}
+  <div class="cf-panel cf-attacker">
+    <div class="cf-portrait-frame">
+      <img src="{{attacker.img}}" class="cf-portrait"
+           style="object-position: {{attacker.portraitOffsetX}}% {{attacker.portraitOffsetY}}%;{{#if attacker.portraitMirrored}} transform: scaleX(-1);{{/if}}" />
+    </div>
+    <div class="cf-name-banner">
+      <span class="cf-name">{{attacker.name}}</span>
+    </div>
+    <div class="cf-weapon-row">
+      <i class="fas {{#if retaliationMode}}fa-shield-halved{{else if healMode}}fa-hand-holding-heart{{else if isSpell}}fa-magic{{else if isNatural}}fa-paw{{else}}fa-sword{{/if}}"></i>
+      <span class="cf-weapon-name">{{attacker.weaponName}}</span>
+      {{#unless healMode}}
+        {{#if attacker.elementPip}}
+          <span class="cf-element-pip element-{{attacker.element}}">{{attacker.element}}</span>
+        {{/if}}
+      {{/unless}}
+    </div>
+
+    {{#if showMpCost}}
+      <div class="cf-mp-cost">MP Cost: <span class="cf-mp-val">{{chantMpCost}}</span></div>
+    {{/if}}
+
+    <div class="cf-hp-row">
+      <span class="cf-hp-label">HP</span>
+      <span class="cf-hp-value">{{attacker.hp}}</span>
+      <div class="cf-hp-bar-track">
+        <div class="cf-hp-bar-projected cf-hp-counter-projected" style="width: {{attacker.hpPct}}%"></div>
+        <div class="cf-hp-bar-fill cf-hp-ally" style="width: {{attacker.hpPct}}%"></div>
+      </div>
+    </div>
+
+    <div class="cf-stat-rows">
+      {{#if retaliationMode}}
+        <div class="cf-stat-row">
+          <span class="cf-stat-label">Retaliates</span>
+          <span class="cf-stat-value cf-skill-dmg-val">{{attacker.damage}}</span>
+        </div>
+      {{else}}
+        <div class="cf-stat-row">
+          <span class="cf-stat-label">{{#if healMode}}Heal{{else}}Dmg{{/if}}</span>
+          <span class="cf-stat-value cf-skill-dmg-val">{{attacker.damage}}</span>
+        </div>
+        {{#unless healMode}}
+          <div class="cf-stat-row">
+            <span class="cf-stat-label">Hit</span>
+            <span class="cf-stat-value">{{attacker.accuracy}}<small>%</small></span>
+          </div>
+        {{/unless}}
+        <div class="cf-stat-row">
+          <span class="cf-stat-label">Crit</span>
+          <span class="cf-stat-value">{{attacker.critical}}<small>%</small></span>
+        </div>
+      {{/if}}
+    </div>
+
+    <div class="cf-damage-type">{{attacker.damageTypeLabel}}</div>
+
+    {{!-- Chant Mode Selector (magic only) --}}
+    {{#if showChantSelector}}
+      <div class="cf-chant-selector">
+        <button type="button" class="cf-chant-btn chant-swift {{#if (eq chantMode 'swift')}}active{{/if}}" data-chant="swift">Swift</button>
+        <button type="button" class="cf-chant-btn {{#if (eq chantMode 'normal')}}active{{/if}}" data-chant="normal">Normal</button>
+        <button type="button" class="cf-chant-btn chant-full {{#if (eq chantMode 'full')}}active{{/if}}" data-chant="full">Full</button>
+      </div>
+    {{/if}}
+
+    {{!-- Casting Modifier (e.g. Quicken) --}}
+    {{#if showCastingMod}}
+      <div class="cf-casting-mod-row" style="display: {{#if castingMod}}flex{{else}}none{{/if}}">
+        <label class="cf-casting-mod-toggle">
+          <input type="checkbox" class="cf-casting-mod-cb" />
+          <span class="cf-casting-mod-label">{{castingMod.label}}</span>
+          <span class="cf-casting-mod-cost">({{castingMod.mpMultiplier}}x MP)</span>
+        </label>
+      </div>
+    {{/if}}
+
+  </div>
+
+  {{!-- ═══ CENTER: Forecast Results ═══ --}}
+  <div class="cf-center">
+    {{#if retaliationMode}}
+      <div class="cf-versus cf-buff-icon"><i class="fas fa-shield-halved"></i></div>
+    {{else if healMode}}
+      <div class="cf-versus cf-heal-icon"><i class="fas fa-heart"></i></div>
+    {{else}}
+      <div class="cf-versus">VS</div>
+    {{/if}}
+
+    {{!-- Element Effectiveness Badge --}}
+    {{#if elementBadge}}
+      <div class="cf-element-badge {{elementBadge.cssClass}}">{{{elementBadge.html}}}</div>
+    {{/if}}
+
+    {{!-- Out of Range Warning --}}
+    {{#if outOfRange}}
+      <div class="cf-out-of-range">
+        <i class="fas fa-ban"></i>
+        <span>OUT OF RANGE</span>
+        <small>{{rangeWarning}}</small>
+      </div>
+    {{/if}}
+
+    {{!-- Out of MP Warning --}}
+    {{#if outOfMp}}
+      <div class="cf-out-of-range cf-out-of-mp">
+        <i class="fas fa-ban"></i>
+        <span>NOT ENOUGH MP</span>
+        <small>{{mpWarning}}</small>
+      </div>
+    {{/if}}
+
+    {{!-- Forecast Values --}}
+    <div class="cf-forecast-rows {{#if outOfRange}}cf-forecast-disabled{{/if}} {{#if outOfMp}}cf-forecast-disabled{{/if}}">
+      {{#if retaliationMode}}
+        <div class="cf-forecast-row cf-forecast-autohit">
+          <span class="cf-forecast-label"><i class="fas fa-shield-halved"></i> Applies Buff</span>
+        </div>
+        <div class="cf-forecast-row">
+          <span class="cf-forecast-label">Duration</span>
+          <span class="cf-forecast-value">{{buffDuration}} turns</span>
+        </div>
+      {{else}}
+        {{#if healMode}}
+          <div class="cf-forecast-row cf-forecast-autohit">
+            <span class="cf-forecast-label"><i class="fas fa-check"></i> Auto-Hit</span>
+          </div>
+        {{else}}
+          <div class="cf-forecast-row">
+            <span class="cf-forecast-label">Hit%</span>
+            <span class="cf-forecast-value cf-hit-val">{{forecast.hit}}</span>
+          </div>
+        {{/if}}
+        <div class="cf-forecast-row">
+          <span class="cf-forecast-label">Crit%</span>
+          <span class="cf-forecast-value cf-crit-val">{{forecast.crit}}</span>
+        </div>
+        <div class="cf-forecast-row cf-forecast-dmg {{#if healMode}}cf-forecast-heal{{/if}}">
+          <span class="cf-forecast-label">{{#if healMode}}Heal{{else}}Dmg{{/if}}</span>
+          <span class="cf-forecast-value cf-dmg-val">{{forecast.damage}}</span>
+        </div>
+        {{#if forecast.showBlock}}
+          <div class="cf-forecast-row">
+            <span class="cf-forecast-label">Block%</span>
+            <span class="cf-forecast-value cf-block-val">{{forecast.block}}</span>
+          </div>
+        {{/if}}
+      {{/if}}
+    </div>
+
+    <div class="cf-arrow-row">
+      <i class="fas fa-arrow-right {{#if retaliationMode}}cf-arrow-heal{{else if healMode}}cf-arrow-heal{{else}}cf-arrow-atk{{/if}}"></i>
+    </div>
+
+    {{!-- Status Infliction Preview --}}
+    {{#if statusInflictions.length}}
+      <div class="cf-status-preview">
+        {{#each statusInflictions}}
+          <span class="cf-status-chip {{#if this.immune}}cf-status-immune{{/if}}" title="{{this.statusLabel}}">
+            <span class="cf-status-name">{{this.statusLabel}}</span>
+            {{#if this.immune}}
+              <span class="cf-status-chance">Immune</span>
+            {{else}}
+              <span class="cf-status-chance">{{this.chance}}%</span>
+            {{/if}}
+          </span>
+        {{/each}}
+      </div>
+    {{/if}}
+
+    {{!-- Combat Notes --}}
+    {{#if combatNotes.length}}
+      <div class="cf-combat-notes">
+        {{#each combatNotes}}
+          <div class="cf-combat-note"><i class="fas fa-scroll"></i> {{this.text}}</div>
+        {{/each}}
+      </div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ DEFENDER PANEL (Right / Red) ═══ --}}
+  <div class="cf-panel cf-defender {{#if healMode}}cf-ally-target{{/if}} {{#if retaliationMode}}cf-ally-target{{/if}}">
+    <div class="cf-portrait-frame">
+      <img src="{{defender.img}}" class="cf-portrait"
+           style="object-position: {{defender.portraitOffsetX}}% {{defender.portraitOffsetY}}%;{{#if defender.portraitMirrored}} transform: scaleX(-1);{{/if}}" />
+    </div>
+    <div class="cf-name-banner">
+      <span class="cf-name">{{defender.name}}</span>
+    </div>
+    <div class="cf-weapon-row cf-weapon-row-empty">
+      {{#unless hasTarget}}<em>No target selected</em>{{/unless}}
+    </div>
+
+    <div class="cf-hp-row">
+      <span class="cf-hp-label">HP</span>
+      <span class="cf-hp-value">{{defender.hp}}</span>
+      <div class="cf-hp-bar-track">
+        {{!-- Projected HP ghost bar (shows predicted damage) --}}
+        {{#if retaliationMode}}
+          <div class="cf-hp-bar-fill cf-hp-ally" style="width: {{defender.hpPct}}%"></div>
+        {{else}}
+          <div class="cf-hp-bar-projected {{#if healMode}}cf-hp-bar-projected-heal{{else}}cf-hp-bar-projected-dmg{{/if}}" style="width: {{defender.hpPct}}%"></div>
+          <div class="cf-hp-bar-fill {{#if healMode}}cf-hp-ally{{else}}cf-hp-enemy{{/if}} cf-hp-bar-current" style="width: {{defender.projectedHpPct}}%"></div>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- Defender stat inputs (hidden in heal/retaliatory mode) --}}
+    {{#unless healMode}}
+    {{#unless retaliationMode}}
+      <div class="cf-stat-rows cf-defender-inputs">
+        <div class="cf-stat-row">
+          <span class="cf-stat-label">{{defender.evaLabel}}</span>
+          <input type="number" class="cf-eva cf-input-field" value="{{defender.eva}}" min="0" tabindex="1" />
+        </div>
+        <div class="cf-stat-row">
+          <span class="cf-stat-label">{{defender.defLabel}}</span>
+          <input type="number" class="cf-def cf-input-field" value="{{defender.def}}" min="0" tabindex="2" />
+        </div>
+        <div class="cf-stat-row">
+          <span class="cf-stat-label">Crit Avoid</span>
+          <input type="number" class="cf-critavoid cf-input-field" value="{{defender.critAvoid}}" min="0" tabindex="3" />
+        </div>
+      </div>
+    {{/unless}}
+    {{/unless}}
+
+  </div>
+
+  {{!-- ═══ OFF-HAND STRIKE OPTION ═══ --}}
+  {{#if showOffhand}}
+    <label class="cf-offhand-toggle">
+      <input type="checkbox" class="cf-offhand-cb" checked />
+      <i class="fas fa-hand-back-fist"></i>
+      <span><strong>Off-Hand:</strong> {{offhandName}} (½ damage)</span>
+    </label>
+  {{/if}}
+
+</div>

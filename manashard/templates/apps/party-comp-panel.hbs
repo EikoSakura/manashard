@@ -1,0 +1,77 @@
+<div class="pcp-inner {{#if collapsed}}pcp-collapsed{{/if}}">
+  {{!-- Header --}}
+  <div class="pcp-header">
+    <i class="fas fa-users pcp-header-icon"></i>
+    <span class="pcp-title">Party</span>
+    <span class="pcp-round">R{{round}}</span>
+    <button type="button" class="pcp-btn" data-action="pcp-collapse" title="{{#if collapsed}}Expand{{else}}Collapse{{/if}}">
+      <i class="fas {{#if collapsed}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i>
+    </button>
+    <button type="button" class="pcp-btn" data-action="pcp-close" title="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  {{!-- Member List --}}
+  {{#unless collapsed}}
+  {{#if empty}}
+  <div class="pcp-empty">No active combat.</div>
+  {{else}}
+  <div class="pcp-members">
+    {{#each members}}
+    <div class="pcp-member {{#if isActive}}pcp-member--active{{/if}} {{#if isDefeated}}pcp-member--defeated{{/if}} {{#if hpCritical}}pcp-member--critical{{/if}}" data-combatant-id="{{id}}">
+      {{!-- Portrait --}}
+      <div class="pcp-portrait">
+        <img src="{{img}}" alt="{{name}}" />
+        {{#if isDefeated}}<i class="fas fa-skull pcp-defeated-icon"></i>{{/if}}
+      </div>
+
+      {{!-- Info --}}
+      <div class="pcp-info">
+        <div class="pcp-name-row">
+          <span class="pcp-name">{{name}}</span>
+        </div>
+
+        {{!-- HP Bar --}}
+        <div class="pcp-bar-row">
+          <span class="pcp-bar-label pcp-hp-label">HP</span>
+          <div class="pcp-bar-track">
+            <div class="pcp-bar-fill pcp-hp-fill {{#if hpCritical}}pcp-hp-critical{{/if}}" style="width: {{hpPercent}}%"></div>
+            {{#if hpBarrier}}
+            <div class="pcp-bar-fill pcp-barrier-fill" style="right: {{hpBarrierRight}}%; width: {{hpBarrierPercent}}%"></div>
+            {{/if}}
+          </div>
+          <span class="pcp-bar-value">{{hpValue}}{{#if hpBarrier}}<span class="pcp-barrier-text">+{{hpBarrier}}</span>{{/if}}<span class="pcp-bar-max">/{{hpMax}}</span></span>
+        </div>
+
+        {{!-- MP Bar --}}
+        <div class="pcp-bar-row">
+          <span class="pcp-bar-label pcp-mp-label">MP</span>
+          <div class="pcp-bar-track">
+            <div class="pcp-bar-fill pcp-mp-fill" style="width: {{mpPercent}}%"></div>
+          </div>
+          <span class="pcp-bar-value">{{mpValue}}<span class="pcp-bar-max">/{{mpMax}}</span></span>
+        </div>
+
+        {{!-- Status Effects --}}
+        {{#if hasStatuses}}
+        <div class="pcp-statuses">
+          {{#each statuses}}
+            <i class="{{icon}} pcp-status-icon pcp-status-{{key}}" title="{{label}}"></i>
+          {{/each}}
+        </div>
+        {{/if}}
+
+        {{!-- Charging indicator --}}
+        {{#if isCharging}}
+        <div class="pcp-charging">
+          <i class="fas fa-hourglass-half"></i> {{chargingSkillName}}
+        </div>
+        {{/if}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+  {{/unless}}
+</div>

@@ -1,0 +1,26 @@
+<div class="wizard-step step-name">
+  <h2 class="wizard-step-title">Name & Portrait</h2>
+  <p class="wizard-step-desc">Choose your character's name and portrait to begin their journey.</p>
+
+  <div class="name-portrait-layout">
+    {{!-- Portrait --}}
+    <div class="wizard-portrait-col">
+      <div class="wizard-portrait-frame" data-action="editPortrait" title="Click to change portrait">
+        <div class="wizard-portrait-diamond">
+          <img src="{{img}}" alt="Portrait" style="object-position: {{portraitOffsetX}}% {{portraitOffsetY}}%;{{#if portraitMirrored}} transform: scaleX(-1);{{/if}}" />
+        </div>
+        <div class="wizard-portrait-overlay">
+          <i class="fas fa-camera"></i>
+        </div>
+      </div>
+      <span class="wizard-portrait-hint">Click to change</span>
+    </div>
+
+    {{!-- Name Input --}}
+    <div class="wizard-name-col">
+      <label class="wizard-field-label" for="wizard-name">Character Name</label>
+      <input type="text" name="wizard-name" id="wizard-name" class="wizard-name-input"
+             value="{{name}}" placeholder="Enter character name..." autofocus />
+    </div>
+  </div>
+</div>

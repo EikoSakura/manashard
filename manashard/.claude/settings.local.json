@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find C:UsersswordAppDataLocalFoundryVTTDatasystemsmanashard -type f -name *.css)",
+      "WebSearch",
+      "WebFetch(domain:fireemblemwiki.org)",
+      "WebFetch(domain:fe17.triangleattack.com)",
+      "Bash(find /c/Users/sword/AppData/Local/FoundryVTT/Data/systems/manashard -name *.docx -o -name Manacite*)",
+      "Bash(ls -la \"C:\\\\Users\\\\sword\\\\.claude\\\\projects\\\\C--Users-sword-AppData-Local-FoundryVTT-Data-systems-manashard\\\\memory\"\" 2>/dev/null || echo \"Memory directory not found \")"
+    ]
+  }
+}

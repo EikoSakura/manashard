@@ -1,0 +1,22 @@
+{{!-- Species Availability Configuration --}}
+<div class="creation-availability-body">
+  <p class="hint">Uncheck species to exclude them from character creation. All are allowed by default.</p>
+
+  {{#if hasSpecies}}
+  <div class="creation-config-checklist">
+    {{#each species}}
+    <label class="creation-config-check-item">
+      <input type="checkbox" name="species-{{this.uuid}}" {{checked this.allowed}} />
+      <img src="{{this.img}}" width="28" height="28" />
+      <span>{{this.name}}</span>
+    </label>
+    {{/each}}
+  </div>
+  {{else}}
+  <p class="notes">No species found in compendium.</p>
+  {{/if}}
+
+  <footer class="sheet-footer flexrow">
+    <button type="submit"><i class="fa-solid fa-save"></i> Save Changes</button>
+  </footer>
+</div>

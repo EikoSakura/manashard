@@ -1,0 +1,30 @@
+<div class="wizard-step step-growth">
+  <h2 class="wizard-step-title">Distribute Growth Rates</h2>
+  <p class="wizard-step-desc">Set how quickly each stat grows when leveling up. Higher rates mean faster growth. You must allocate all points.</p>
+
+  <div class="wizard-pool-counter {{#if isComplete}}complete{{/if}}">
+    <span class="pool-label">Remaining Points</span>
+    <span class="pool-value">{{remaining}} / {{pool}}</span>
+  </div>
+
+  <div class="wizard-stat-table">
+    {{#each rows}}
+    <div class="wizard-stat-row">
+      <span class="stat-label" data-stat-key="{{this.key}}">{{this.abbr}}</span>
+      <button type="button" class="stat-btn stat-decrease" data-action="adjustGrowth" data-stat="{{this.key}}" data-delta="-5"
+              {{#unless this.canDecrease}}disabled{{/unless}}>
+        <i class="fas fa-minus"></i>
+      </button>
+      <span class="stat-value">{{this.value}}%</span>
+      <button type="button" class="stat-btn stat-increase" data-action="adjustGrowth" data-stat="{{this.key}}" data-delta="5"
+              {{#unless this.canIncrease}}disabled{{/unless}}>
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="stat-bar-container">
+        <div class="stat-bar-fill growth-bar" style="width: {{this.barWidth}}%"></div>
+      </div>
+      <span class="stat-range">{{this.min}}-{{this.max}}%</span>
+    </div>
+    {{/each}}
+  </div>
+</div>

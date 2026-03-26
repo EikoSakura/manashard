@@ -1,0 +1,75 @@
+<div class="wizard-step step-summary">
+  <h2 class="wizard-step-title">Review & Confirm</h2>
+  <p class="wizard-step-desc">Review your choices below. Click "Create Character" to finalize.</p>
+
+  <div class="summary-layout">
+    {{!-- Identity Section --}}
+    <div class="summary-identity">
+      <div class="summary-portrait">
+        <div class="wizard-portrait-diamond small">
+          <img src="{{img}}" alt="{{name}}" style="object-position: {{portraitOffsetX}}% {{portraitOffsetY}}%;{{#if portraitMirrored}} transform: scaleX(-1);{{/if}}" />
+        </div>
+      </div>
+      <div class="summary-name-block">
+        <h3 class="summary-character-name">{{name}}</h3>
+        <div class="summary-badges">
+          <span class="summary-badge species">{{speciesName}}</span>
+          <span class="summary-badge job">{{jobName}}</span>
+          <span class="summary-badge skill">{{skillName}}</span>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Stats & Growth --}}
+    <div class="summary-stats-grid">
+      <div class="summary-section">
+        <h4 class="summary-section-title">Stats</h4>
+        <div class="summary-stat-list">
+          {{#each statRows}}
+          <div class="summary-stat"><span class="summary-stat-label">{{this.abbr}}</span><span class="summary-stat-value">{{this.value}}</span></div>
+          {{/each}}
+        </div>
+      </div>
+      <div class="summary-section">
+        <h4 class="summary-section-title">Growth Rates</h4>
+        <div class="summary-stat-list">
+          {{#each growthRows}}
+          <div class="summary-stat"><span class="summary-stat-label">{{this.abbr}}</span><span class="summary-stat-value">{{this.value}}</span></div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+    {{!-- Equipment --}}
+    {{#if cart.length}}
+    <div class="summary-section">
+      <h4 class="summary-section-title"><i class="fas fa-shield-halved"></i> Equipment</h4>
+      <div class="summary-equipment-list">
+        {{#each cart}}
+        <div class="summary-equip-item">
+          <img src="{{this.img}}" alt="{{this.name}}" />
+          <span>{{this.name}}</span>
+          <span class="equip-price">{{this.price}}e</span>
+        </div>
+        {{/each}}
+      </div>
+      <div class="summary-eiress">
+        <span>Eiress remaining: <strong>{{eiressRemaining}}</strong></span>
+      </div>
+    </div>
+    {{else}}
+    <div class="summary-section">
+      <h4 class="summary-section-title"><i class="fas fa-coins"></i> Eiress</h4>
+      <div class="summary-eiress"><span>Starting eiress: <strong>{{eiressRemaining}}</strong></span></div>
+    </div>
+    {{/if}}
+
+    {{!-- Biography --}}
+    {{#if hasBiography}}
+    <div class="summary-section">
+      <h4 class="summary-section-title"><i class="fas fa-book-open"></i> Biography</h4>
+      <div class="summary-biography">{{{biography}}}</div>
+    </div>
+    {{/if}}
+  </div>
+</div>

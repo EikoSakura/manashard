@@ -1,0 +1,175 @@
+<div class="wizard-step step-equipment">
+  <h2 class="wizard-step-title">Starting Equipment</h2>
+  <p class="wizard-step-desc">Spend your starting eiress on weapons, armor, and accessories. {{#if hasJob}}Items are filtered by your chosen job.{{/if}}</p>
+
+  <div class="wizard-resource-counters">
+    <div class="wizard-eiress-counter">
+      <i class="fas fa-coins"></i>
+      <span class="eiress-value">{{eiressRemaining}}</span>
+      <span class="eiress-label">/ {{eiressTotal}} Eiress</span>
+    </div>
+    <div class="wizard-weight-monitor {{#if overencumbered}}overencumbered{{/if}}">
+      <i class="fas fa-weight-hanging"></i>
+      <span class="weight-monitor-value">{{cartWeight}}</span>
+      <span class="weight-monitor-label">/ {{carryingCapacity}} Weight</span>
+    </div>
+  </div>
+
+  {{#if isEmpty}}
+  <div class="wizard-empty-notice">
+    <i class="fas fa-info-circle"></i>
+    <span>No equipment available in the compendium. You may skip this step.</span>
+  </div>
+  {{else}}
+
+  {{!-- Search & Filters --}}
+  <div class="shop-controls">
+    <div class="shop-search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" name="shop-search" class="shop-search-input" placeholder="Search equipment..." value="{{searchQuery}}" />
+    </div>
+
+    <div class="shop-filter-row">
+      {{!-- Category Tabs --}}
+      <div class="shop-filters">
+        <button type="button" class="shop-filter-btn {{#if (eq activeCategoryFilter 'all')}}active{{/if}}" data-action="filterShop" data-filter="all">
+          All <span class="filter-count">({{allCount}})</span>
+        </button>
+        {{#if weaponCount}}
+        <button type="button" class="shop-filter-btn {{#if (eq activeCategoryFilter 'weapon')}}active{{/if}}" data-action="filterShop" data-filter="weapon">
+          <i class="fas fa-sword"></i> Weapons <span class="filter-count">({{weaponCount}})</span>
+        </button>
+        {{/if}}
+        {{#if armorCount}}
+        <button type="button" class="shop-filter-btn {{#if (eq activeCategoryFilter 'armor')}}active{{/if}}" data-action="filterShop" data-filter="armor">
+          <i class="fas fa-shield"></i> Armor <span class="filter-count">({{armorCount}})</span>
+        </button>
+        {{/if}}
+        {{#if accessoryCount}}
+        <button type="button" class="shop-filter-btn {{#if (eq activeCategoryFilter 'accessory')}}active{{/if}}" data-action="filterShop" data-filter="accessory">
+          <i class="fas fa-ring"></i> Accessories <span class="filter-count">({{accessoryCount}})</span>
+        </button>
+        {{/if}}
+      </div>
+
+      {{!-- Sort --}}
+      <div class="shop-sort-group">
+        <i class="fas fa-arrow-down-short-wide shop-sort-icon"></i>
+        {{#each sortOptions}}
+        <button type="button" class="shop-sort-btn {{#if this.active}}active{{/if}}" data-action="sortShop" data-sort-key="{{this.key}}">{{this.label}}</button>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- Sub-filters (weapon/armor categories) --}}
+    {{#if hasSubFilters}}
+    <div class="shop-sub-filters">
+      <button type="button" class="shop-sub-btn {{#if (eq activeSubFilter 'all')}}active{{/if}}" data-action="filterShopSub" data-sub-filter="all">All</button>
+      {{#each subFilters}}
+      <button type="button" class="shop-sub-btn {{#if this.active}}active{{/if}}" data-action="filterShopSub" data-sub-filter="{{this.key}}">{{this.label}}</button>
+      {{/each}}
+    </div>
+    {{/if}}
+  </div>
+
+  <div class="wizard-shop-layout">
+    {{!-- Shop Items --}}
+    <div class="wizard-shop-items">
+      {{#if weapons.length}}
+      <div class="shop-section" data-section="weapon">
+        <h3 class="shop-section-title"><i class="fas fa-sword"></i> Weapons</h3>
+        <div class="shop-item-list">
+          {{#each weapons}}
+          <div class="shop-item {{#if this.inCart}}in-cart{{/if}} {{#unless this.canAfford}}unaffordable{{/unless}}"
+               data-uuid="{{this.uuid}}" data-action="addToCart"
+               data-tooltip="{{this.description}}">
+            <img class="shop-item-img" src="{{this.img}}" alt="{{this.name}}" />
+            <span class="shop-item-name">{{this.name}}</span>
+            {{#if this.might}}<span class="shop-item-stat" title="Might"><i class="fas fa-hand-fist"></i> {{this.might}}</span>{{/if}}
+            <span class="shop-item-price"><i class="fas fa-coins"></i> {{this.price}}</span>
+            <button type="button" class="shop-item-info" data-action="viewItem" data-uuid="{{this.uuid}}" title="View Details">
+              <i class="fas fa-circle-info"></i>
+            </button>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+
+      {{#if armors.length}}
+      <div class="shop-section" data-section="armor">
+        <h3 class="shop-section-title"><i class="fas fa-shield"></i> Armor</h3>
+        <div class="shop-item-list">
+          {{#each armors}}
+          <div class="shop-item {{#if this.inCart}}in-cart{{/if}} {{#unless this.canAfford}}unaffordable{{/unless}}"
+               data-uuid="{{this.uuid}}" data-action="addToCart"
+               data-tooltip="{{this.description}}">
+            <img class="shop-item-img" src="{{this.img}}" alt="{{this.name}}" />
+            <span class="shop-item-name">{{this.name}}</span>
+            {{#if this.pdef}}<span class="shop-item-stat" title="P.DEF"><i class="fas fa-shield-halved"></i> {{this.pdef}}</span>{{/if}}
+            {{#if this.mdef}}<span class="shop-item-stat" title="M.DEF"><i class="fas fa-hat-wizard"></i> {{this.mdef}}</span>{{/if}}
+            <span class="shop-item-price"><i class="fas fa-coins"></i> {{this.price}}</span>
+            <button type="button" class="shop-item-info" data-action="viewItem" data-uuid="{{this.uuid}}" title="View Details">
+              <i class="fas fa-circle-info"></i>
+            </button>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+
+      {{#if accessories.length}}
+      <div class="shop-section" data-section="accessory">
+        <h3 class="shop-section-title"><i class="fas fa-ring"></i> Accessories</h3>
+        <div class="shop-item-list">
+          {{#each accessories}}
+          <div class="shop-item {{#if this.inCart}}in-cart{{/if}} {{#unless this.canAfford}}unaffordable{{/unless}}"
+               data-uuid="{{this.uuid}}" data-action="addToCart"
+               data-tooltip="{{this.description}}">
+            <img class="shop-item-img" src="{{this.img}}" alt="{{this.name}}" />
+            <span class="shop-item-name">{{this.name}}</span>
+            <span class="shop-item-price"><i class="fas fa-coins"></i> {{this.price}}</span>
+            <button type="button" class="shop-item-info" data-action="viewItem" data-uuid="{{this.uuid}}" title="View Details">
+              <i class="fas fa-circle-info"></i>
+            </button>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+
+      {{#unless weapons.length}}{{#unless armors.length}}{{#unless accessories.length}}
+      <div class="shop-no-results">
+        <i class="fas fa-filter-circle-xmark"></i>
+        <span>No equipment matches your filters.</span>
+      </div>
+      {{/unless}}{{/unless}}{{/unless}}
+    </div>
+
+    {{!-- Shopping Cart --}}
+    <div class="wizard-cart">
+      <h3 class="cart-title"><i class="fas fa-shopping-cart"></i> Cart</h3>
+      {{#if cart.length}}
+      <div class="cart-items">
+        {{#each cart}}
+        <div class="cart-item">
+          <img class="cart-item-img" src="{{this.img}}" alt="{{this.name}}" />
+          <span class="cart-item-name">{{this.name}}</span>
+          <span class="cart-item-price">{{this.price}}e</span>
+          <button type="button" class="cart-remove-btn" data-action="removeFromCart" data-cart-index="{{@index}}" title="Remove">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+        {{/each}}
+      </div>
+      <div class="cart-total">
+        <span>Total:</span>
+        <span class="cart-total-value">{{eiressSpent}}e</span>
+      </div>
+      {{else}}
+      <div class="cart-empty">No items in cart</div>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+</div>

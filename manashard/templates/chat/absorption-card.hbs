@@ -1,0 +1,46 @@
+<div class="manashard absorption-chat-card">
+
+  {{!-- ═══ HEADER: Portrait + Skill Info ═══ --}}
+  <div class="abc-header">
+    <div class="abc-portrait-frame">
+      <img src="{{actorImg}}" class="abc-portrait" />
+    </div>
+    <div class="abc-header-text">
+      <span class="abc-actor-name">{{actorName}}</span>
+      <span class="abc-action">absorbed</span>
+    </div>
+  </div>
+
+  {{!-- ═══ SKILL DISPLAY ═══ --}}
+  <div class="abc-skill-row">
+    <div class="abc-skill-icon-frame">
+      <img src="{{itemImg}}" class="abc-skill-icon" alt="{{itemName}}" />
+    </div>
+    <div class="abc-skill-info">
+      <div class="abc-skill-name">{{itemName}}</div>
+      <div class="abc-badges">
+        {{#each typeBadges}}
+          <span class="abc-badge">{{this}}</span>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ STAT PIPS (if any) ═══ --}}
+  {{#if stats.length}}
+  <div class="abc-stats">
+    {{#each stats}}
+    <div class="abc-stat-cell">
+      <span class="abc-stat-label">{{this.label}}</span>
+      <span class="abc-stat-value">{{this.value}}</span>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{!-- ═══ CONFIRMATION ═══ --}}
+  <div class="abc-confirm">
+    <i class="fas fa-sun"></i> Skill permanently learned
+  </div>
+
+</div>

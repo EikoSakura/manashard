@@ -1,0 +1,33 @@
+<section class="tab-content {{tab.cssClass}}" data-tab="rules">
+<div class="rules-editor">
+  <h3>
+    <i class="fas fa-bolt"></i> Active Effects
+    <button type="button" class="add-rule-btn" data-action="addRule">
+      <i class="fas fa-plus"></i> Add Effect
+    </button>
+  </h3>
+
+  {{#if rules.length}}
+  <div class="rules-list">
+    {{#each rules}}
+    <div class="rule-entry" data-rule-index="{{_index}}">
+      <div class="rule-header">
+        <span class="rule-type-badge" data-category="{{_category}}">
+          <i class="fas {{_icon}}"></i> {{_badgeLabel}}
+        </span>
+        <span class="rule-label">{{_summary}}</span>
+        <div class="rule-actions">
+          <button type="button" data-action="editRule" data-rule-index="{{_index}}"
+                  title="Edit"><i class="fas fa-edit"></i></button>
+          <button type="button" data-action="deleteRule" data-rule-index="{{_index}}"
+                  title="Delete"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{else}}
+  <p class="rules-empty">No active effects. Click "Add Effect" to give this item mechanical effects.</p>
+  {{/if}}
+</div>
+</section>

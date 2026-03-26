@@ -1,0 +1,312 @@
+/* ═══════════════════════════════════════════════════════════════
+   SPATIAL INVENTORY
+   Pocket-dimension storage dialog for the Spatial Inventory skill.
+   ═══════════════════════════════════════════════════════════════ */
+
+.spatial-inventory {
+  --si-bg: var(--manashard-bg-dark, #060a0d);
+  --si-surface: var(--manashard-bg-mid, #0b1216);
+  --si-surface-light: var(--manashard-bg-light, #0e171d);
+  --si-border: var(--manashard-border, #1a2a32);
+  --si-text: var(--manashard-text, #e0f0ea);
+  --si-text-dim: var(--manashard-text-dim, #7a9a8e);
+  --si-text-label: var(--manashard-text-label, #4a7a6a);
+  --si-accent: var(--manashard-accent, #00e4a0);
+  --si-accent-glow: var(--manashard-accent-glow, rgba(0, 228, 160, 0.4));
+}
+
+/* ─── Window Chrome ───────────────────────────────────────── */
+
+.spatial-inventory .window-content {
+  background: var(--si-bg) !important;
+  color: var(--si-text) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Reset buttons inside content only */
+.spatial-inventory .spatial-container button {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+
+/* ─── Container ───────────────────────────────────────────── */
+
+.spatial-inventory .spatial-container {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+
+/* ─── Tab Bar ─────────────────────────────────────────────── */
+
+.spatial-inventory .spatial-tabs {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: var(--si-surface) !important;
+  border-bottom: 1px solid var(--si-border) !important;
+  flex-shrink: 0 !important;
+  align-items: stretch !important;
+  min-height: 40px;
+  overflow-x: auto !important;
+}
+
+.spatial-inventory .spatial-tab {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 10px 14px 8px !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  background: none !important;
+  color: var(--si-text-dim) !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  white-space: nowrap;
+  margin-bottom: -1px;
+}
+
+.spatial-inventory .spatial-tab:hover {
+  color: var(--si-text) !important;
+  background: rgba(0, 228, 160, 0.04) !important;
+}
+
+.spatial-inventory .spatial-tab.active {
+  color: var(--si-accent) !important;
+  border-bottom-color: var(--si-accent) !important;
+  text-shadow: 0 0 12px var(--si-accent-glow);
+}
+
+/* Item count badge (right side of tab bar) */
+.spatial-inventory .spatial-count {
+  margin-left: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0 14px !important;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 12px;
+  color: var(--si-text-dim) !important;
+  letter-spacing: 1px;
+}
+
+
+/* ─── Results Panel ───────────────────────────────────────── */
+
+.spatial-inventory .spatial-results {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  padding: 6px 8px !important;
+  min-width: 0 !important;
+  background: var(--si-bg) !important;
+}
+
+
+/* ─── Item Rows ───────────────────────────────────────────── */
+
+.spatial-inventory .spatial-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spatial-inventory .spatial-item-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 8px 10px !important;
+  border-radius: 4px !important;
+  transition: all 0.15s ease;
+  border-left: 3px solid transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+}
+
+.spatial-inventory .spatial-item-row:hover {
+  background: var(--si-surface-light) !important;
+  border-left-color: var(--si-accent) !important;
+}
+
+/* Item image */
+.spatial-inventory .spatial-item-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  border: 1px solid var(--si-border);
+  object-fit: cover;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+
+.spatial-inventory .spatial-item-img:hover {
+  border-color: var(--si-accent);
+}
+
+/* Item info */
+.spatial-inventory .spatial-item-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spatial-inventory .spatial-item-name {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--si-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.spatial-inventory .spatial-item-name:hover {
+  color: var(--si-accent);
+}
+
+.spatial-inventory .spatial-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--si-text-dim);
+}
+
+.spatial-inventory .spatial-type-badge {
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--si-surface-light);
+  border: 1px solid var(--si-border);
+  color: var(--si-text-dim);
+}
+
+.spatial-inventory .spatial-qty {
+  font-family: "Share Tech Mono", monospace;
+  color: var(--si-accent);
+}
+
+.spatial-inventory .spatial-weight {
+  font-family: "Share Tech Mono", monospace;
+  color: var(--si-text-dim);
+}
+
+.spatial-inventory .spatial-weight i {
+  font-size: 9px;
+  margin-right: 2px;
+}
+
+/* Action buttons */
+.spatial-inventory .spatial-item-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.spatial-inventory .spatial-action-btn {
+  width: 28px;
+  height: 28px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 4px !important;
+  border: 1px solid var(--si-border) !important;
+  background: var(--si-surface) !important;
+  color: var(--si-text-dim) !important;
+  font-size: 12px;
+  transition: all 0.15s ease;
+}
+
+.spatial-inventory .spatial-action-btn:hover {
+  border-color: var(--si-accent) !important;
+  color: var(--si-accent) !important;
+  box-shadow: 0 0 6px var(--si-accent-glow);
+}
+
+.spatial-inventory .spatial-action-btn.delete:hover {
+  border-color: #ff6644 !important;
+  color: #ff6644 !important;
+  box-shadow: 0 0 6px rgba(255, 102, 68, 0.3);
+}
+
+.spatial-inventory .spatial-action-btn.retrieve:hover {
+  background: rgba(0, 228, 160, 0.08) !important;
+}
+
+
+/* ─── Empty State ─────────────────────────────────────────── */
+
+.spatial-inventory .spatial-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 24px;
+  color: var(--si-text-dim);
+  text-align: center;
+}
+
+.spatial-inventory .spatial-empty i {
+  font-size: 36px;
+  opacity: 0.3;
+}
+
+.spatial-inventory .spatial-empty p {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 13px;
+  font-style: italic;
+  margin: 0;
+}
+
+
+/* ─── Stow Button (on equipment tab inventory tiles) ──────── */
+
+.stow-spatial {
+  font-size: 11px;
+  color: var(--manashard-text-dim, #7a9a8e);
+  opacity: 0.5;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.stow-spatial:hover {
+  color: var(--manashard-accent, #00e4a0);
+  opacity: 1;
+  text-shadow: 0 0 6px var(--manashard-accent-glow, rgba(0, 228, 160, 0.4));
+}
+
+/* Spatial inventory open button in inventory header */
+.spatial-inv-btn {
+  color: var(--manashard-accent, #00e4a0) !important;
+  opacity: 0.7;
+  transition: all 0.15s ease;
+  margin-left: 4px;
+}
+
+.spatial-inv-btn:hover {
+  opacity: 1;
+  text-shadow: 0 0 8px var(--manashard-accent-glow, rgba(0, 228, 160, 0.4));
+}

@@ -1,0 +1,914 @@
+/* ═══════════════════════════════════════════════════════════
+   PARTY SHEET — MAIN
+   Fire Emblem unit roster + Log Horizon guild hall aesthetic
+   ═══════════════════════════════════════════════════════════ */
+
+.party-sheet {
+  background: var(--manashard-bg-dark);
+  color: var(--manashard-text);
+}
+
+.party-sheet-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* ─── Guild Banner Header ─── */
+
+.party-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: linear-gradient(180deg, rgba(108, 92, 231, 0.15) 0%, transparent 100%);
+  border-bottom: 1px solid var(--manashard-border);
+  position: relative;
+}
+
+.party-banner::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--manashard-accent), transparent);
+}
+
+.party-banner-ornament {
+  color: var(--manashard-accent);
+  font-size: 0.5rem;
+  opacity: 0.5;
+}
+
+.party-banner-content {
+  text-align: center;
+}
+
+.party-banner-title {
+  font-family: var(--manashard-font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--manashard-accent-light);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.party-name-edit {
+  font-size: 0.65rem;
+  color: var(--manashard-text-dim);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.party-banner:hover .party-name-edit {
+  opacity: 0.6;
+}
+
+.party-name-edit:hover {
+  opacity: 1 !important;
+  color: var(--manashard-accent-light);
+}
+
+.party-banner-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.party-stat {
+  font-size: 0.7rem;
+  color: var(--manashard-text-dim);
+  letter-spacing: 0.5px;
+}
+
+.party-stat i {
+  margin-right: 3px;
+  color: var(--manashard-accent);
+  font-size: 0.6rem;
+}
+
+.party-stat-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--manashard-border);
+}
+
+/* ─── Roster Section ─── */
+
+.party-roster-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.party-roster {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+/* ─── Unit Card (FE-style horizontal unit row) ─── */
+
+.party-unit-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 10px 10px;
+  background: var(--manashard-bg-mid);
+  border: 1px solid var(--manashard-border);
+  border-top: 2px solid var(--manashard-accent);
+  border-radius: 4px;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.party-unit-card:hover {
+  border-color: var(--manashard-accent);
+  background: var(--manashard-bg-light);
+  box-shadow: 0 2px 12px rgba(108, 92, 231, 0.15);
+}
+
+/* ─── Portrait ─── */
+
+.unit-portrait-col {
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.unit-portrait-frame {
+  width: 64px;
+  height: 64px;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  background: linear-gradient(135deg, var(--manashard-accent), var(--manashard-accent-light));
+  padding: 2px;
+  overflow: hidden;
+}
+
+.unit-portrait-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.unit-level-pip {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--manashard-bg-dark);
+  border: 1px solid var(--manashard-accent);
+  color: #fff;
+  font-family: var(--manashard-font-heading);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0 6px;
+  border-radius: 2px;
+  line-height: 1.5;
+  box-shadow: 0 0 4px var(--manashard-accent-glow);
+}
+
+/* ─── Info Column ─── */
+
+.unit-info-col {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  margin-top: 6px;
+}
+
+.unit-identity {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+
+.unit-name {
+  font-family: var(--manashard-font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s;
+  text-align: center;
+}
+
+.unit-name:hover {
+  color: var(--manashard-accent-light);
+}
+
+.unit-rank {
+  font-family: var(--manashard-font-heading);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 5px;
+  border-radius: 2px;
+  border: 1px solid var(--manashard-border);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--manashard-text-dim);
+  white-space: nowrap;
+}
+
+.unit-rank.rank-s { color: var(--manashard-legendary); border-color: rgba(243, 156, 18, 0.5); }
+.unit-rank.rank-a { color: var(--manashard-rare); border-color: rgba(52, 152, 219, 0.4); }
+.unit-rank.rank-b { color: var(--manashard-uncommon); border-color: rgba(46, 204, 113, 0.4); }
+
+.unit-class-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--manashard-text-dim);
+}
+
+.unit-job-icon {
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.unit-job {
+  font-style: italic;
+}
+
+.unit-species {
+  opacity: 0.6;
+  font-size: 0.7rem;
+}
+
+.unit-species::before {
+  content: "\2022";
+  margin: 0 3px;
+}
+
+/* ─── Resource Bars ─── */
+
+.unit-bars {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.unit-bar {
+  flex: 1;
+  height: 16px;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.unit-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.unit-bar.hp .unit-bar-fill {
+  background: linear-gradient(90deg, #c0392b, var(--manashard-hp));
+}
+
+.unit-bar.mp .unit-bar-fill {
+  background: linear-gradient(90deg, #2471a3, var(--manashard-mp));
+}
+
+.unit-bar-label {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  z-index: 1;
+}
+
+.unit-bar-value {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  z-index: 1;
+}
+
+.unit-bar-value small {
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+/* ─── Stat Strip ─── */
+
+.unit-stat-strip {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1px;
+}
+
+.unit-mini-stat {
+  font-size: 0.65rem;
+  color: var(--manashard-text-dim);
+}
+
+.unit-mini-stat b {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--manashard-accent-light);
+  margin-right: 2px;
+}
+
+/* ─── Taught Skill Tag ─── */
+
+.unit-taught-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  color: var(--manashard-accent-light);
+  background: var(--manashard-accent-glow);
+  padding: 1px 8px;
+  border-radius: 3px;
+  margin-top: 2px;
+  align-self: center;
+}
+
+.unit-taught-tag i {
+  font-size: 0.6rem;
+}
+
+/* ─── Remove Button ─── */
+
+.unit-remove-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--manashard-text-dim);
+  font-size: 0.6rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.party-unit-card:hover .unit-remove-btn {
+  opacity: 0.6;
+}
+
+.unit-remove-btn:hover {
+  opacity: 1 !important;
+  background: rgba(231, 76, 60, 0.3);
+  color: var(--manashard-failure);
+}
+
+/* ─── Add Member Button ─── */
+
+.party-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px dashed var(--manashard-border);
+  border-radius: 4px;
+  color: var(--manashard-text-dim);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.party-add-btn:hover {
+  border-color: var(--manashard-accent);
+  color: var(--manashard-accent-light);
+  background: rgba(108, 92, 231, 0.05);
+}
+
+.party-add-btn i {
+  font-size: 0.75rem;
+}
+
+/* ─── Empty State ─── */
+
+.party-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.party-empty-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(108, 92, 231, 0.1);
+  border: 1px solid var(--manashard-border);
+}
+
+.party-empty-icon i {
+  font-size: 1.4rem;
+  color: var(--manashard-accent);
+  opacity: 0.5;
+}
+
+.party-empty-title {
+  font-family: var(--manashard-font-heading);
+  font-size: 0.9rem;
+  color: var(--manashard-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.party-empty-hint {
+  font-size: 0.75rem;
+  color: var(--manashard-text-dim);
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION DIVIDER
+   ═══════════════════════════════════════════════════════════ */
+
+.party-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 20px;
+}
+
+.party-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--manashard-border), transparent);
+}
+
+.party-divider-icon {
+  color: var(--manashard-accent);
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DOWNTIME ACTIONS
+   ═══════════════════════════════════════════════════════════ */
+
+.downtime-section {
+  padding: 8px 14px 16px;
+}
+
+.downtime-heading {
+  font-family: var(--manashard-font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--manashard-text-dim);
+  margin: 0 0 10px;
+}
+
+.downtime-actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.downtime-action-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--manashard-bg-mid);
+  border: 1px solid var(--manashard-border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: var(--manashard-text);
+}
+
+.downtime-action-card:hover {
+  border-color: var(--manashard-accent);
+  background: var(--manashard-bg-light);
+  color: var(--manashard-text);
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+}
+
+.downtime-action-card.danger:hover {
+  border-color: rgba(231, 76, 60, 0.5);
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.1);
+}
+
+.downtime-action-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+}
+
+.downtime-action-icon.teach {
+  background: rgba(108, 92, 231, 0.15);
+  color: var(--manashard-accent-light);
+  border: 1px solid rgba(108, 92, 231, 0.3);
+}
+
+.downtime-action-icon.danger {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--manashard-failure);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+.downtime-action-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.downtime-action-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.downtime-action-desc {
+  font-size: 0.7rem;
+  color: var(--manashard-text-dim);
+}
+
+.downtime-action-arrow {
+  color: var(--manashard-text-dim);
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.downtime-action-card:hover .downtime-action-arrow {
+  opacity: 0.8;
+  transform: translateX(2px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TAB NAVIGATION
+   ═══════════════════════════════════════════════════════════ */
+
+.party-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--manashard-border);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.party-tabs .tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--manashard-text-dim);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+  position: relative;
+}
+
+.party-tabs .tab:hover {
+  color: var(--manashard-text);
+  background: rgba(108, 92, 231, 0.05);
+}
+
+.party-tabs .tab.active {
+  color: var(--manashard-accent-light);
+  border-bottom-color: var(--manashard-accent);
+}
+
+.party-tabs .tab i {
+  font-size: 0.7rem;
+}
+
+.tab-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  background: var(--manashard-accent);
+  color: #fff;
+  padding: 0 5px;
+  border-radius: 8px;
+  line-height: 1.5;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PARTY STASH
+   ═══════════════════════════════════════════════════════════ */
+
+.party-stash-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+/* ─── Eiress Bar ─── */
+
+.stash-eiress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--manashard-bg-mid);
+  border: 1px solid var(--manashard-border);
+  border-radius: 4px;
+  border-left: 3px solid var(--manashard-accent);
+}
+
+.stash-eiress-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--manashard-text);
+}
+
+.stash-eiress-label i {
+  color: var(--manashard-accent-light);
+  font-size: 0.9rem;
+}
+
+.stash-eiress-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.eiress-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--manashard-border);
+  color: var(--manashard-text-dim);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.eiress-btn.add:hover {
+  border-color: var(--manashard-accent);
+  color: var(--manashard-accent-light);
+  background: rgba(108, 92, 231, 0.15);
+}
+
+.eiress-btn.subtract:hover {
+  border-color: rgba(231, 76, 60, 0.5);
+  color: var(--manashard-failure);
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.stash-eiress-value {
+  font-family: var(--manashard-font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  min-width: 80px;
+  text-align: center;
+  padding: 0 8px;
+}
+
+.stash-eiress-value small {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--manashard-accent-light);
+  opacity: 0.8;
+}
+
+/* ─── Drop Zone Hint ─── */
+
+.stash-drop-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px;
+  border: 1px dashed var(--manashard-border);
+  border-radius: 4px;
+  color: var(--manashard-text-dim);
+  font-size: 0.7rem;
+  opacity: 0.5;
+  transition: all 0.2s;
+}
+
+.party-stash-section.drag-over .stash-drop-hint {
+  border-color: var(--manashard-accent);
+  color: var(--manashard-accent-light);
+  background: rgba(108, 92, 231, 0.08);
+  opacity: 1;
+}
+
+
+.stash-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stash-item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--manashard-bg-mid);
+  border: 1px solid var(--manashard-border);
+  border-radius: 4px;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: grab;
+}
+
+.stash-item-row:active {
+  cursor: grabbing;
+}
+
+.stash-item-row:hover {
+  border-color: var(--manashard-accent);
+  background: var(--manashard-bg-light);
+}
+
+.stash-item-img {
+  border-radius: 3px;
+  border: 1px solid var(--manashard-border);
+  flex-shrink: 0;
+}
+
+.stash-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.stash-item-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stash-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: var(--manashard-text-dim);
+}
+
+.stash-item-type {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 5px;
+  border-radius: 2px;
+  background: rgba(108, 92, 231, 0.15);
+  color: var(--manashard-accent-light);
+}
+
+.stash-item-qty {
+  font-weight: 700;
+  color: var(--manashard-text);
+}
+
+.stash-item-from {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.stash-item-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.stash-action-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: var(--manashard-text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.75rem;
+}
+
+.stash-action-btn:hover {
+  background: rgba(108, 92, 231, 0.15);
+  color: var(--manashard-accent-light);
+}
+
+.stash-action-btn.danger:hover {
+  background: rgba(231, 76, 60, 0.15);
+  color: var(--manashard-failure);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TEACHING CHAT CARD
+   ═══════════════════════════════════════════════════════════ */
+
+.teaching-body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.teaching-skill-name {
+  font-weight: bold;
+  color: var(--manashard-accent-light);
+}
+
+.teaching-skill-name i {
+  margin-right: 4px;
+}
+
+.teaching-arrow {
+  color: var(--manashard-text-dim);
+}
+
+.teaching-student {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: bold;
+}
+
+.teaching-student img {
+  border-radius: 50%;
+  border: 1px solid var(--manashard-border);
+}

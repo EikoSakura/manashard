@@ -1,0 +1,888 @@
+<section class="tab-content {{tab.cssClass}}" data-tab="details">
+<div class="item-body">
+
+  {{!-- WEAPON --}}
+  {{#if (eq itemType "weapon")}}
+  <div class="equip-details-body acc-details-body">
+
+    {{!-- Item Identity --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-id-badge"></i> Item Identity</div>
+      <div class="equip-stats-grid">
+        <div class="equip-stat">
+          <span class="equip-stat-label">Price</span>
+          <input type="number" name="system.price" value="{{system.price}}" data-dtype="Number" class="equip-stat-input eiress" />
+        </div>
+        <div class="equip-stat">
+          <span class="equip-stat-label">Rank</span>
+          <select name="system.rank" class="equip-stat-input">
+            {{#each @root.config.ranks as |r key|}}
+            <option value="{{key}}" {{#if (eq key ../system.rank)}}selected{{/if}}>{{upper key}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Classification --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-tags"></i> Classification</div>
+      <div class="equip-detail-row">
+        <div class="form-group slim">
+          <label>Category</label>
+          <select name="system.category" class="wpn-category-select cat-{{system.category}}">
+            {{#each config.weaponCategories as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.category)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="form-group slim">
+          <label>Damage Type</label>
+          <select name="system.damageType" class="wpn-dmg-select dmg-{{system.damageType}}">
+            {{#each config.damageTypes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.damageType)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        {{#if (eq system.damageType "retaliatory")}}
+        <div class="form-group slim">
+          <label>Retaliation Mode</label>
+          <select name="system.retaliationMode" class="wpn-dmg-select dmg-retaliatory">
+            {{#each config.retaliationModes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.retaliationMode)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        {{/if}}
+      </div>
+      <div class="equip-detail-row">
+        <div class="form-group slim">
+          <label>Range</label>
+          <select name="system.rangeType" class="wpn-range-select rng-{{system.rangeType}}">
+            {{#each config.rangeTypes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.rangeType)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="form-group slim">
+          <label>Handedness</label>
+          <select name="system.handedness" class="wpn-hand-select">
+            {{#each config.handedness as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.handedness)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      {{!-- Element (grimoires always, or any elemental weapon) --}}
+      {{#if (or (eq system.category "grimoires") (eq system.damageType "elemental"))}}
+      <div class="equip-detail-row">
+        <div class="form-group slim">
+          <label>Element</label>
+          <select name="system.element">
+            <option value="" {{#if (eq system.element "")}}selected{{/if}}>None</option>
+            {{#each config.elements as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.element)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- Weapon Stats — Large Editor Cells (3+3 grid) --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-chart-bar"></i> Weapon Stats</div>
+      <div class="armor-stat-editor-grid wpn-stat-grid-3">
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.might" value="{{system.might}}" data-dtype="Number" min="0" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">MIGHT</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.hit" value="{{system.hit}}" data-dtype="Number" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">HIT</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.crit" value="{{system.crit}}" data-dtype="Number" min="0" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">CRIT</div>
+        </div>
+      </div>
+      {{#if (eq system.rangeType "melee")}}
+      <div class="armor-stat-editor-grid wpn-stat-grid-2" style="margin-top: 4px;">
+        <input type="hidden" name="system.minRange" value="1" />
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.maxRange" value="{{system.maxRange}}" data-dtype="Number" min="1" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">REACH</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number" min="0" step="1" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">WEIGHT</div>
+        </div>
+      </div>
+      {{else if (eq system.rangeType "thrown")}}
+      <div class="armor-stat-editor-grid wpn-stat-grid-4" style="margin-top: 4px;">
+        <div class="armor-stat-editor-cell">
+          <input type="number" value="1" data-dtype="Number" class="armor-stat-editor-val" disabled />
+          <div class="armor-stat-editor-label">REACH</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.minRange" value="{{system.minRange}}" data-dtype="Number" min="1" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">MIN RNG</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.maxRange" value="{{system.maxRange}}" data-dtype="Number" min="1" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">MAX RNG</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number" min="0" step="1" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">WEIGHT</div>
+        </div>
+      </div>
+      {{else}}
+      <div class="armor-stat-editor-grid wpn-stat-grid-3" style="margin-top: 4px;">
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.minRange" value="{{system.minRange}}" data-dtype="Number" min="0" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">MIN RNG</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.maxRange" value="{{system.maxRange}}" data-dtype="Number" min="0" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">MAX RNG</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number" min="0" step="1" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">WEIGHT</div>
+        </div>
+      </div>
+      {{/if}}
+      {{!-- Category-specific stats --}}
+      {{#if (eq system.category "shields")}}
+      <div class="armor-stat-editor-grid" style="margin-top: 4px;">
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.block" value="{{system.block}}" data-dtype="Number" min="0" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">BLOCK</div>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- Tags --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-tags"></i> Tags</div>
+      <div class="acc-tag-editor">
+        {{#each weaponTags}}
+        <span class="acc-tag">{{this}}<i class="fas fa-xmark acc-tag-remove" data-action="removeTag" data-field="tags" data-value="{{this}}"></i></span>
+        {{/each}}
+        <input type="text" name="system.tags" value="{{system.tags}}" placeholder="tag1, tag2, ..." class="acc-tag-input" />
+      </div>
+    </div>
+
+    {{!-- Flavor Text --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-feather-pointed"></i> Flavor Text</div>
+      {{#if editable}}
+      <prose-mirror name="system.description" toggled data-document-uuid="{{item.uuid}}" value="{{system.description}}">
+        {{{enrichedDescription}}}
+      </prose-mirror>
+      {{else}}
+      <div class="editor-content">{{{enrichedDescription}}}</div>
+      {{/if}}
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- ARMOR --}}
+  {{#if (eq itemType "armor")}}
+  <div class="equip-details-body acc-details-body">
+
+    {{!-- Item Identity --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-id-badge"></i> Item Identity</div>
+      <div class="equip-stats-grid">
+        <div class="equip-stat">
+          <span class="equip-stat-label">Weight</span>
+          <input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number" min="0" step="1" class="equip-stat-input" />
+        </div>
+        <div class="equip-stat">
+          <span class="equip-stat-label">Price</span>
+          <input type="number" name="system.price" value="{{system.price}}" data-dtype="Number" class="equip-stat-input eiress" />
+        </div>
+        <div class="equip-stat">
+          <span class="equip-stat-label">Rank</span>
+          <select name="system.rank" class="equip-stat-input">
+            {{#each @root.config.ranks as |r key|}}
+            <option value="{{key}}" {{#if (eq key ../system.rank)}}selected{{/if}}>{{upper key}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Classification --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-shield-halved"></i> Classification</div>
+      <div class="equip-detail-row">
+        <div class="form-group slim" style="flex: 0 1 200px;">
+          <label>Category</label>
+          <select name="system.category" class="armor-category-select cat-{{system.category}}">
+            {{#each config.armorCategories as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.category)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Base Stats — Large Editor Cells --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-chart-bar"></i> Base Stats</div>
+      <div class="armor-stat-editor-grid">
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.pdef" value="{{system.pdef}}" data-dtype="Number" min="0" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">P.DEF</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.mdef" value="{{system.mdef}}" data-dtype="Number" min="0" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">M.DEF</div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Tags --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-tags"></i> Tags</div>
+      <div class="acc-tag-editor">
+        {{#each armorTags}}
+        <span class="acc-tag">{{this}}<i class="fas fa-xmark acc-tag-remove" data-action="removeTag" data-field="tags" data-value="{{this}}"></i></span>
+        {{/each}}
+        <input type="text" name="system.tags" value="{{system.tags}}" placeholder="tag1, tag2, ..." class="acc-tag-input" />
+      </div>
+    </div>
+
+    {{!-- Flavor Text --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-feather-pointed"></i> Flavor Text</div>
+      {{#if editable}}
+      <prose-mirror name="system.description" toggled data-document-uuid="{{item.uuid}}" value="{{system.description}}">
+        {{{enrichedDescription}}}
+      </prose-mirror>
+      {{else}}
+      <div class="editor-content">{{{enrichedDescription}}}</div>
+      {{/if}}
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- ACCESSORY --}}
+  {{#if (eq itemType "accessory")}}
+  <div class="equip-details-body acc-details-body">
+
+    {{!-- Item Identity --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-id-badge"></i> Item Identity</div>
+      <div class="equip-stats-grid">
+        <div class="equip-stat">
+          <span class="equip-stat-label">Weight</span>
+          <input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number" min="0" step="1" class="equip-stat-input" />
+        </div>
+        <div class="equip-stat">
+          <span class="equip-stat-label">Price</span>
+          <input type="number" name="system.price" value="{{system.price}}" data-dtype="Number" class="equip-stat-input eiress" />
+        </div>
+        <div class="equip-stat">
+          <span class="equip-stat-label">Rank</span>
+          <select name="system.rank" class="equip-stat-input">
+            {{#each @root.config.ranks as |r key|}}
+            <option value="{{key}}" {{#if (eq key ../system.rank)}}selected{{/if}}>{{upper key}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Tags --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-tags"></i> Tags</div>
+      <div class="acc-tag-editor">
+        {{#each accessoryTags}}
+        <span class="acc-tag">{{this}}<i class="fas fa-xmark acc-tag-remove" data-action="removeTag" data-field="tags" data-value="{{this}}"></i></span>
+        {{/each}}
+        <input type="text" name="system.tags" value="{{system.tags}}" placeholder="tag1, tag2, ..." class="acc-tag-input" />
+      </div>
+    </div>
+
+    {{!-- Flavor Text --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-feather-pointed"></i> Flavor Text</div>
+      {{#if editable}}
+      <prose-mirror name="system.description" toggled data-document-uuid="{{item.uuid}}" value="{{system.description}}">
+        {{{enrichedDescription}}}
+      </prose-mirror>
+      {{else}}
+      <div class="editor-content">{{{enrichedDescription}}}</div>
+      {{/if}}
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- ITEM (generic) --}}
+  {{#if (eq itemType "item")}}
+  <div class="equip-details-body">
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-box"></i> Properties</div>
+      <div class="equip-stats-grid">
+        <div class="equip-stat"><span class="equip-stat-label">Quantity</span><input type="number" name="system.quantity" value="{{system.quantity}}" min="0" data-dtype="Number" class="equip-stat-input" /></div>
+        <div class="equip-stat"><span class="equip-stat-label">Price</span><input type="number" name="system.price" value="{{system.price}}" data-dtype="Number" class="equip-stat-input eiress" /></div>
+        <div class="equip-stat"><span class="equip-stat-label">Weight</span><input type="number" name="system.weight" value="{{system.weight}}" min="0" step="1" data-dtype="Number" class="equip-stat-input" /></div>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- MANACITE --}}
+  {{#if (eq itemType "manacite")}}
+
+  {{!-- Manacite Type Selector --}}
+  {{#if (eq system.manaciteType "job")}}
+  <div class="equip-details-body acc-details-body mana-details-body">
+
+    {{!-- Item Identity --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-id-badge"></i> Item Identity</div>
+      <div class="mana-identity-grid">
+        <div class="equip-stat">
+          <span class="equip-stat-label">Type</span>
+          <select name="system.manaciteType" class="equip-stat-input">
+            <option value="job" selected>Job</option>
+            <option value="skill">Skill</option>
+          </select>
+        </div>
+        <div class="equip-stat">
+          <span class="equip-stat-label">Price</span>
+          <input type="number" name="system.price" value="{{system.price}}" min="0" data-dtype="Number" class="equip-stat-input eiress" />
+        </div>
+      </div>
+    </div>
+
+    {{!-- Prerequisites (drag-and-drop zone) --}}
+    <div class="equip-detail-section prereq-drop-zone">
+      <div class="equip-detail-header"><i class="fas fa-lock"></i> Prerequisites <span class="job-drop-hint"><i class="fas fa-arrow-down"></i> Drop</span></div>
+      {{#if prerequisites.length}}
+      {{#each prerequisites}}
+      <div class="prereq-entry">
+        <img src="{{this.img}}" class="skill-slot-img" width="24" height="24" alt="" />
+        <span class="skill-type-badge {{this.type}}">{{this.type}}</span>
+        <span class="skill-slot-name">{{this.name}}</span>
+        {{#if (eq this.type "skill")}}
+        <span class="prereq-lv-label">Lv</span>
+        <input type="number" name="system.prerequisites.{{@index}}.level" value="{{this.level}}" min="1" max="10" class="prereq-level-input" />
+        {{/if}}
+        <button type="button" class="species-skill-delete" data-action="removePrerequisite" data-prereq-index="{{@index}}" title="Remove"><i class="fas fa-trash"></i></button>
+      </div>
+      {{/each}}
+      {{else}}
+      <div class="job-skill-slot empty">
+        <i class="fas fa-plus-circle skill-slot-empty-icon"></i>
+        <span class="skill-slot-empty-text">Drag a Job or Skill Manacite here</span>
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- Flavor Text --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-feather-pointed"></i> Flavor Text</div>
+      {{#if editable}}
+      <prose-mirror name="system.description" toggled data-document-uuid="{{item.uuid}}" value="{{system.description}}">
+        {{{enrichedDescription}}}
+      </prose-mirror>
+      {{else}}
+      <div class="editor-content">{{{enrichedDescription}}}</div>
+      {{/if}}
+    </div>
+
+  </div>
+  {{else}}
+  {{!-- SKILL MANACITE (manaciteType === "skill") — MMO Style Editor --}}
+  <div class="equip-details-body acc-details-body mana-details-body">
+
+    {{!-- ─── Classification ─── --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-gem"></i> Classification</div>
+      <div class="mana-class-grid-3">
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">MANACITE</div>
+          <select name="system.manaciteType" class="mana-class-field-select">
+            <option value="job">Job</option>
+            <option value="skill" selected>Skill</option>
+          </select>
+        </div>
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">SKILL TYPE</div>
+          <select name="system.skillType" class="mana-class-field-select mana-badge-{{system.skillType}}">
+            <option value="magic" {{#if (eq system.skillType "magic")}}selected{{/if}}>Magic</option>
+            <option value="art" {{#if (eq system.skillType "art")}}selected{{/if}}>Art</option>
+            <option value="passive" {{#if (eq system.skillType "passive")}}selected{{/if}}>Passive</option>
+          </select>
+        </div>
+        {{#if (or (eq system.skillType "magic") (eq system.skillType "art"))}}
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">ELEMENT</div>
+          <select name="system.element" class="mana-class-field-select">
+            <option value="">None</option>
+            {{#each config.elements as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.element)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">DMG TYPE</div>
+          <select name="system.damageType" class="mana-class-field-select">
+            <option value="" {{#if (eq system.damageType "")}}selected{{/if}}>Auto</option>
+            {{#each config.damageTypes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.damageType)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">RATE MODE</div>
+          <select name="system.baseRateMode" class="mana-class-field-select">
+            <option value="fixed" {{#if (eq system.baseRateMode "fixed")}}selected{{/if}}>Fixed</option>
+            <option value="weapon" {{#if (eq system.baseRateMode "weapon")}}selected{{/if}}>Weapon</option>
+          </select>
+        </div>
+        {{#if (eq system.damageType "retaliatory")}}
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">RETALIATION</div>
+          <select name="system.retaliationMode" class="mana-class-field-select">
+            {{#each config.retaliationModes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.retaliationMode)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        {{/if}}
+        {{else}}
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">PASSIVE MODE</div>
+          <select name="system.passiveMode" class="mana-class-field-select">
+            {{#each config.passiveModes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.passiveMode)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        {{/if}}
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">PRICE</div>
+          <input type="number" name="system.price" value="{{system.price}}" min="0" data-dtype="Number" class="mana-class-field-input" />
+        </div>
+      </div>
+    </div>
+
+    {{!-- ─── Targeting (Magic / Art only) ─── --}}
+    {{#if (or (eq system.skillType "magic") (eq system.skillType "art"))}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-crosshairs"></i> Targeting</div>
+      <div class="mana-class-grid-3">
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">RANGE TYPE</div>
+          <select name="system.rangeType" class="mana-class-field-select">
+            {{#each config.skillRangeTypes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.rangeType)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">TARGET</div>
+          <select name="system.targetType" class="mana-class-field-select">
+            {{#each config.targetTypes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.targetType)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        {{#if (eq system.rangeType "ranged")}}
+        <div class="mana-class-field mana-class-field-pair">
+          <div class="mana-class-field-label">RANGE</div>
+          <div class="mana-range-pair">
+            <input type="number" name="system.minRange" value="{{system.minRange}}" data-dtype="Number" min="0" class="mana-class-field-input mana-range-input" />
+            <span class="mana-range-sep">&ndash;</span>
+            <input type="number" name="system.maxRange" value="{{system.maxRange}}" data-dtype="Number" min="0" class="mana-class-field-input mana-range-input" />
+          </div>
+        </div>
+        {{/if}}
+      </div>
+      {{#if (eq system.targetType "aoe")}}
+      <div class="mana-class-grid-3 mana-class-grid-mt">
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">AOE SHAPE</div>
+          <select name="system.aoeShape" class="mana-class-field-select">
+            {{#each config.aoeShapes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.aoeShape)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">AOE SIZE</div>
+          <input type="number" name="system.aoeSize" value="{{system.aoeSize}}" min="1" class="mana-class-field-input" />
+        </div>
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">AOE FILTER</div>
+          <select name="system.aoeTargetFilter" class="mana-class-field-select">
+            {{#each config.aoeTargetFilters as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.aoeTargetFilter)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- ─── Power & Cost ─── --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-bolt"></i> Power & Cost</div>
+      <div class="armor-stat-editor-grid wpn-stat-grid-3">
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.mpCost" value="{{system.mpCost}}" min="0" data-dtype="Number" class="armor-stat-editor-val mana-mp-color" />
+          <div class="armor-stat-editor-label">MP COST</div>
+        </div>
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.baseRate" value="{{system.baseRate}}" min="0" data-dtype="Number" class="armor-stat-editor-val" />
+          <div class="armor-stat-editor-label">{{#if isWeaponMode}}BONUS DMG{{else}}DAMAGE{{/if}}</div>
+        </div>
+        {{#if (eq system.baseRateMode "fixed")}}
+        <div class="armor-stat-editor-cell">
+          <input type="number" name="system.skillHit" value="{{system.skillHit}}" min="0" max="100" data-dtype="Number" class="armor-stat-editor-val" placeholder="0" />
+          <div class="armor-stat-editor-label">HIT RATE</div>
+        </div>
+        {{/if}}
+      </div>
+      {{#if (or isWeaponMode system.baseRate)}}
+      <div class="skill-formula-row">
+        <div class="skill-formula-preview">
+          {{#if isWeaponMode}}
+          <span class="formula-tag weapon"><i class="fas fa-sword"></i> Weapon</span>
+          {{#if scalingStatLabel}}
+          <span class="formula-op">+</span>
+          <span class="formula-tag stat">{{scalingStatLabel}}</span>
+          {{/if}}
+          {{#if system.baseRate}}
+          <span class="formula-op">+</span>
+          <span class="formula-tag bonus">+{{system.baseRate}}</span>
+          {{/if}}
+          {{else}}
+          <span class="formula-tag fixed">{{system.baseRate}}</span>
+          {{#if scalingStatLabel}}
+          <span class="formula-op">+</span>
+          <span class="formula-tag stat">{{scalingStatLabel}}</span>
+          {{/if}}
+          {{/if}}
+        </div>
+      </div>
+      {{/if}}
+      {{!-- Accuracy formula for fixed-mode skills with a hit rate --}}
+      {{#if (and (eq system.baseRateMode "fixed") system.skillHit)}}
+      <div class="skill-formula-row">
+        <div class="skill-formula-preview">
+          <span class="formula-tag accuracy"><i class="fas fa-crosshairs"></i> Accuracy</span>
+          {{#if scalingStatLabel}}
+          <span class="formula-op">=</span>
+          <span class="formula-tag stat">{{scalingStatLabel}} ×2</span>
+          <span class="formula-op">+</span>
+          {{else}}
+          <span class="formula-op">=</span>
+          {{/if}}
+          <span class="formula-tag fixed">{{system.skillHit}}</span>
+        </div>
+      </div>
+      {{/if}}
+      {{!-- Scale dropdown — always visible for magic/art skills --}}
+      <div class="skill-formula-row">
+        <div class="skill-scaling-select">
+          <label>Scale</label>
+          <select name="system.scalingStat">
+            <option value="auto" {{#if (eq system.scalingStat "auto")}}selected{{/if}}>Auto</option>
+            <option value="str" {{#if (eq system.scalingStat "str")}}selected{{/if}}>STR</option>
+            <option value="agi" {{#if (eq system.scalingStat "agi")}}selected{{/if}}>AGI</option>
+            <option value="mag" {{#if (eq system.scalingStat "mag")}}selected{{/if}}>MAG</option>
+            <option value="end" {{#if (eq system.scalingStat "end")}}selected{{/if}}>END</option>
+            <option value="spi" {{#if (eq system.scalingStat "spi")}}selected{{/if}}>SPI</option>
+            <option value="int" {{#if (eq system.scalingStat "int")}}selected{{/if}}>INT</option>
+            <option value="chm" {{#if (eq system.scalingStat "chm")}}selected{{/if}}>CHM</option>
+            <option value="luk" {{#if (eq system.scalingStat "luk")}}selected{{/if}}>LUK</option>
+            <option value="none" {{#if (eq system.scalingStat "none")}}selected{{/if}}>None</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    {{!-- ─── Effects ─── --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-sparkles"></i> Effects</div>
+      <div class="mana-class-grid-3">
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">BUFF DUR</div>
+          <input type="number" name="system.buffDuration" value="{{system.buffDuration}}" min="0" data-dtype="Number" class="mana-class-field-input" placeholder="0" />
+        </div>
+        {{#if system.buffDuration}}
+        {{#unless (eq system.targetType "aoe")}}
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">BUFF RANGE</div>
+          <input type="number" name="system.aoeSize" value="{{system.aoeSize}}" min="0" data-dtype="Number" class="mana-class-field-input" />
+        </div>
+        <div class="mana-class-field">
+          <div class="mana-class-field-label">BUFF TARGET</div>
+          <select name="system.aoeTargetFilter" class="mana-class-field-select">
+            {{#each config.aoeTargetFilters as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.aoeTargetFilter)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        {{/unless}}
+        {{/if}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- ─── Flavor Text ─── --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-feather-pointed"></i> Flavor Text</div>
+      {{#if editable}}
+      <prose-mirror name="system.description" toggled data-document-uuid="{{item.uuid}}" value="{{system.description}}">
+        {{{enrichedDescription}}}
+      </prose-mirror>
+      {{else}}
+      <div class="editor-content">{{{enrichedDescription}}}</div>
+      {{/if}}
+    </div>
+
+  </div>
+  {{/if}} {{!-- /manaciteType else --}}
+  {{/if}} {{!-- /manacite --}}
+
+  {{!-- MATERIAL --}}
+  {{#if (eq itemType "material")}}
+  <div class="equip-details-body mat-details-body">
+
+    {{!-- Item Identity --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-id-badge"></i> Item Identity</div>
+      <div class="equip-stats-grid">
+        <div class="equip-stat">
+          <span class="equip-stat-label">Weight</span>
+          <input type="number" name="system.weight" value="{{system.weight}}" min="0" step="1" data-dtype="Number" class="equip-stat-input" />
+        </div>
+      </div>
+    </div>
+
+    {{!-- Quantity & Value --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-cubes"></i> Quantity & Value</div>
+      <div class="equip-stats-grid">
+        <div class="equip-stat">
+          <span class="equip-stat-label">Quantity</span>
+          <input type="number" name="system.quantity" value="{{system.quantity}}" min="0" data-dtype="Number" class="equip-stat-input" />
+        </div>
+        <div class="equip-stat">
+          <span class="equip-stat-label">Max Stack</span>
+          <input type="number" name="system.maxStack" value="{{system.maxStack}}" min="1" data-dtype="Number" class="equip-stat-input" />
+        </div>
+        <div class="equip-stat">
+          <span class="equip-stat-label">Price</span>
+          <input type="number" name="system.price" value="{{system.price}}" min="0" data-dtype="Number" class="equip-stat-input eiress" />
+        </div>
+      </div>
+    </div>
+
+    {{!-- Sources --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-map-marker-alt"></i> Sources</div>
+      <div class="acc-tag-editor">
+        {{#each materialSources}}
+        <span class="acc-tag">{{this}}<i class="fas fa-xmark acc-tag-remove" data-action="removeTag" data-field="sources" data-value="{{this}}"></i></span>
+        {{/each}}
+        <input type="text" name="system.sources" value="{{system.sources}}" placeholder="source1, source2, ..." class="acc-tag-input" />
+      </div>
+    </div>
+
+    {{!-- Tags --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-tags"></i> Tags</div>
+      <div class="acc-tag-editor">
+        {{#each materialTags}}
+        <span class="acc-tag">{{this}}<i class="fas fa-xmark acc-tag-remove" data-action="removeTag" data-field="tags" data-value="{{this}}"></i></span>
+        {{/each}}
+        <input type="text" name="system.tags" value="{{system.tags}}" placeholder="tag1, tag2, ..." class="acc-tag-input" />
+      </div>
+    </div>
+
+    {{!-- Flavor Text --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-feather-pointed"></i> Flavor Text</div>
+      {{#if editable}}
+      <prose-mirror name="system.description" toggled data-document-uuid="{{item.uuid}}" value="{{system.description}}">
+        {{{enrichedDescription}}}
+      </prose-mirror>
+      {{else}}
+      <div class="editor-content">{{{enrichedDescription}}}</div>
+      {{/if}}
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- CONSUMABLE --}}
+  {{#if (eq itemType "consumable")}}
+  <div class="equip-details-body">
+
+    {{!-- Classification --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-flask"></i> Classification</div>
+      <div class="equip-detail-row">
+        <div class="form-group slim">
+          <label>Category</label>
+          <select name="system.category">
+            {{#each config.consumableCategories as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.category)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="form-group slim">
+          <label>Target</label>
+          <select name="system.targetType">
+            {{#each config.targetTypes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.targetType)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="form-group slim">
+          <label>Price</label>
+          <input type="number" name="system.price" value="{{system.price}}" min="0" data-dtype="Number" />
+        </div>
+      </div>
+      <div class="equip-detail-row">
+        <div class="form-group slim">
+          <label>Restores</label>
+          <select name="system.restoreType">
+            <option value="hp" {{#if (eq system.restoreType "hp")}}selected{{/if}}>HP</option>
+            <option value="mp" {{#if (eq system.restoreType "mp")}}selected{{/if}}>MP</option>
+          </select>
+        </div>
+        <div class="form-group slim">
+          <label>Amount</label>
+          <input type="number" name="system.restoreAmount" value="{{system.restoreAmount}}" min="0" data-dtype="Number" />
+        </div>
+      </div>
+      {{#if (eq system.targetType "aoe")}}
+      <div class="equip-detail-row">
+        <div class="form-group slim">
+          <label>AOE Shape</label>
+          <select name="system.aoeShape">
+            {{#each config.aoeShapes as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.aoeShape)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="form-group slim">
+          <label>AOE Size</label>
+          <input type="number" name="system.aoeSize" value="{{system.aoeSize}}" min="1" />
+        </div>
+        <div class="form-group slim">
+          <label>AOE Filter</label>
+          <select name="system.aoeTargetFilter">
+            {{#each config.aoeTargetFilters as |label key|}}
+            <option value="{{key}}" {{#if (eq key ../system.aoeTargetFilter)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- Inventory --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-box"></i> Inventory</div>
+      <div class="equip-detail-row">
+        <div class="form-group slim">
+          <label>Quantity</label>
+          <input type="number" name="system.quantity" value="{{system.quantity}}" min="0" data-dtype="Number" />
+        </div>
+        <div class="form-group slim">
+          <label>Max Stack</label>
+          <input type="number" name="system.maxStack" value="{{system.maxStack}}" min="1" data-dtype="Number" />
+        </div>
+      </div>
+      <div class="equip-detail-row">
+        <div class="form-group slim" style="flex-direction:row;align-items:center;gap:8px;">
+          <input type="checkbox" name="system.consumedOnUse" {{#if system.consumedOnUse}}checked{{/if}} />
+          <label style="margin:0;">Consumed on Use</label>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Flavor Text / Description --}}
+    <div class="equip-detail-section">
+      <div class="equip-detail-header"><i class="fas fa-scroll"></i> Flavor Text</div>
+      <div class="equip-detail-row">
+        <div class="form-group slim" style="flex:1;">
+          {{prosemirror content=system.description name="system.description"}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- SPECIES --}}
+  {{#if (eq itemType "species")}}
+  <div class="job-sheet-body">
+
+    {{!-- Species Configuration --}}
+    <div class="job-section-panel">
+      <div class="job-section-header">
+        <span class="skill-type-icon species-trait-icon"><i class="fas fa-dna"></i></span>
+        <span class="job-section-title">Species Configuration</span>
+      </div>
+      <div class="species-config-row">
+        <div class="species-size-group">
+          <label>Size</label>
+          <input type="number" name="system.size" value="{{system.size}}" min="1" max="5" data-dtype="Number" />
+        </div>
+      </div>
+    </div>
+
+    {{!-- Description / Flavor Text --}}
+    <div class="job-section-panel">
+      <div class="job-section-header">
+        <span class="skill-type-icon qualities"><i class="fas fa-feather-pointed"></i></span>
+        <span class="job-section-title">Description</span>
+      </div>
+      <div class="job-desc-editor-section">
+        {{#if editable}}
+        <prose-mirror name="system.description" toggled data-document-uuid="{{item.uuid}}" value="{{system.description}}">
+          {{{enrichedDescription}}}
+        </prose-mirror>
+        {{else}}
+        <div class="editor-content">{{{enrichedDescription}}}</div>
+        {{/if}}
+      </div>
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- Description editor (types that don't have their own description editor) --}}
+  {{#unless (or (eq itemType "manacite") (eq itemType "species") (eq itemType "accessory") (eq itemType "armor") (eq itemType "weapon"))}}
+  <div class="form-group description-field">
+    <label>Description</label>
+    {{#if editable}}
+    <prose-mirror name="system.description" toggled data-document-uuid="{{item.uuid}}" value="{{system.description}}">
+      {{{enrichedDescription}}}
+    </prose-mirror>
+    {{else}}
+    <div class="editor-content">{{{enrichedDescription}}}</div>
+    {{/if}}
+  </div>
+  {{/unless}}
+
+
+</div>
+</section>

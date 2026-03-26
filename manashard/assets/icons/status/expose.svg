@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#ee5544" stroke-width="4"/>
+  <!-- Broken shield -->
+  <path d="M128 45 L185 75 L185 145 C185 185 128 220 128 220 C128 220 71 185 71 145 L71 75 Z" fill="none" stroke="#ee5544" stroke-width="7"/>
+  <!-- Crack through shield -->
+  <path d="M128 55 L135 100 L120 120 L140 155 L125 190" fill="none" stroke="#ee5544" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Small break marks -->
+  <line x1="120" y1="120" x2="105" y2="115" stroke="#ee5544" stroke-width="4" stroke-linecap="round"/>
+  <line x1="140" y1="155" x2="155" y2="150" stroke="#ee5544" stroke-width="4" stroke-linecap="round"/>
+</svg>

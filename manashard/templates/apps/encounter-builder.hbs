@@ -1,0 +1,23 @@
+<div class="eb-container">
+
+  {{!-- Tab Bar --}}
+  <nav class="eb-tabs">
+    {{#each tabs}}
+    <button class="eb-tab {{#if this.active}}active{{/if}}"
+            data-action="switchTab" data-tab="{{this.id}}">
+      <i class="fas {{this.icon}}"></i>
+      <span>{{this.label}}</span>
+    </button>
+    {{/each}}
+  </nav>
+
+  {{!-- Tab Content --}}
+  <div class="eb-content">
+    {{#if (eq activeTab "threat")}}
+      {{> "systems/manashard/templates/apps/encounter-builder-threat.hbs"}}
+    {{/if}}
+    {{#if (eq activeTab "encounter")}}
+      {{> "systems/manashard/templates/apps/encounter-builder-encounter.hbs"}}
+    {{/if}}
+  </div>
+</div>

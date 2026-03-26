@@ -1,0 +1,43 @@
+<div class="wizard-container">
+  {{!-- Progress Bar --}}
+  <nav class="wizard-progress">
+    {{#each steps}}
+    <a class="wizard-step-dot {{cssClass}}" data-action="goToStep" data-step="{{index}}"
+       title="{{label}}" {{#unless reachable}}inert{{/unless}}>
+      <div class="dot-icon"><i class="fas {{icon}}"></i></div>
+      <span class="step-label">{{label}}</span>
+    </a>
+    {{#unless @last}}<div class="wizard-step-connector {{#if completed}}completed{{/if}}"></div>{{/unless}}
+    {{/each}}
+  </nav>
+
+  {{!-- Step Content --}}
+  <div class="wizard-step-content">
+    {{{stepContent}}}
+  </div>
+
+  {{!-- Navigation Footer --}}
+  <footer class="wizard-nav">
+    {{#if showPrev}}
+    <button type="button" class="wizard-btn wizard-prev" data-action="prevStep">
+      <i class="fas fa-chevron-left"></i> Back
+    </button>
+    {{else}}
+    <div class="wizard-nav-spacer"></div>
+    {{/if}}
+
+    <div class="wizard-nav-spacer"></div>
+
+    {{#if showNext}}
+    <button type="button" class="wizard-btn wizard-next" data-action="nextStep" {{#unless canAdvance}}disabled{{/unless}}>
+      Next <i class="fas fa-chevron-right"></i>
+    </button>
+    {{/if}}
+
+    {{#if showConfirm}}
+    <button type="button" class="wizard-btn wizard-confirm" data-action="confirmCreate">
+      <i class="fas fa-wand-magic-sparkles"></i> Create Character
+    </button>
+    {{/if}}
+  </footer>
+</div>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#b0bec5" stroke-width="4"/>
+  <!-- Speech bubble -->
+  <path d="M60 70 L196 70 C200 70, 205 75, 205 80 L205 155 C205 160, 200 165, 196 165 L140 165 L110 200 L115 165 L60 165 C55 165, 50 160, 50 155 L50 80 C50 75, 55 70, 60 70Z" fill="none" stroke="#b0bec5" stroke-width="8"/>
+  <!-- Slash through -->
+  <line x1="55" y1="55" x2="200" y2="200" stroke="#b0bec5" stroke-width="10" stroke-linecap="round"/>
+</svg>

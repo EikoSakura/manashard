@@ -1,0 +1,40 @@
+<div class="manashard retaliation-chat-card">
+
+  {{!-- ═══ HEADER ═══ --}}
+  <div class="ret-header">
+    <div class="ret-portrait-frame">
+      <img src="{{defenderImg}}" class="ret-portrait" />
+    </div>
+    <div class="ret-header-text">
+      <span class="ret-actor-name">{{defenderName}}</span>
+      <span class="ret-action">retaliates!</span>
+    </div>
+  </div>
+
+  {{!-- ═══ DAMAGE DISPLAY ═══ --}}
+  <div class="ret-damage-zone">
+    <div class="ret-damage-label">RETALIATION</div>
+    <div class="ret-damage-value">{{retDamage}}</div>
+    <div class="ret-damage-badges">
+      <span class="ret-badge ret-badge-true-dmg"><span class="ret-badge-dot"></span>TRUE DAMAGE</span>
+    </div>
+  </div>
+
+  {{!-- ═══ TARGET ═══ --}}
+  <div class="ret-target-zone">
+    <div class="ret-target-row">
+      <img src="{{attackerImg}}" class="ret-target-portrait" />
+      <div class="ret-target-info">
+        <span class="ret-target-name">{{attackerName}}</span>
+        <span class="ret-hp-change">{{attackerOldHp}} &rarr; {{attackerNewHp}} HP</span>
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ EFFECT SOURCE ═══ --}}
+  <div class="ret-source">
+    <i class="fas fa-fire-flame-curved"></i>
+    <span>{{effectName}}</span>
+  </div>
+
+</div>

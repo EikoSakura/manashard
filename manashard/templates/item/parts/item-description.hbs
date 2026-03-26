@@ -1,0 +1,631 @@
+<section class="tab-content {{tab.cssClass}}" data-tab="description">
+<div class="item-description-display">
+
+  {{!-- ═══ WEAPON — MMO TOOLTIP CARD ═══ --}}
+  {{#if (eq itemType "weapon")}}
+  <div class="acc-tooltip-card">
+
+    {{!-- Primary weapon stats — 3-column grid --}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">WEAPON STATS</div>
+      <div class="wpn-tt-primary-stats">
+        <div class="wpn-tt-primary-stat">
+          <div class="wpn-tt-primary-stat-val">{{system.might}}</div>
+          <div class="wpn-tt-primary-stat-label">MIGHT</div>
+        </div>
+        <div class="wpn-tt-primary-stat">
+          <div class="wpn-tt-primary-stat-val">{{system.hit}}</div>
+          <div class="wpn-tt-primary-stat-label">HIT</div>
+        </div>
+        <div class="wpn-tt-primary-stat">
+          <div class="wpn-tt-primary-stat-val">{{system.crit}}</div>
+          <div class="wpn-tt-primary-stat-label">CRIT</div>
+        </div>
+      </div>
+      <div class="wpn-tt-secondary-stats">
+        <div class="wpn-tt-secondary-cell">
+          <span class="wpn-tt-secondary-label">{{#if (eq system.rangeType "melee")}}REACH{{else}}RANGE{{/if}}</span>
+          <span class="wpn-tt-secondary-val">{{system.rangeDisplay}}</span>
+        </div>
+        <div class="wpn-tt-secondary-cell">
+          <span class="wpn-tt-secondary-label">WEIGHT</span>
+          <span class="wpn-tt-secondary-val">{{system.weight}}</span>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Category-specific stats --}}
+    {{#if (eq system.category "shields")}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-stat-row">
+        <span class="acc-tt-stat-name">BLOCK</span>
+        <span class="acc-tt-stat-val">{{system.block}}</span>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- Element --}}
+    {{#if system.element}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-stat-row">
+        <span class="acc-tt-stat-name"><i class="fas fa-fire-flame-curved"></i> ELEMENT</span>
+        <span class="acc-tt-stat-val element-text-{{system.element}}">{{elementLabel}}</span>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- Bonus stats from rules --}}
+    {{#if weaponStatBonuses.length}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">BONUS STATS</div>
+      {{#each weaponStatBonuses}}
+      <div class="acc-tt-stat-row">
+        <span class="acc-tt-stat-name">{{this.label}}</span>
+        <span class="acc-tt-stat-val{{#if this.negative}} neutral{{/if}}">{{this.display}}</span>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{!-- Effects & Value --}}
+    <div class="acc-tt-section acc-tt-stats-effects">
+
+      {{!-- Special ability --}}
+      {{#if system.special}}
+      <div class="acc-tt-effect-row">
+        <i class="fas fa-diamond acc-tt-effect-icon"></i>
+        <span class="acc-tt-effect-text">{{system.special}}</span>
+      </div>
+      {{/if}}
+
+      {{!-- Passive effects from rules --}}
+      {{#each weaponEffects}}
+      <div class="acc-tt-effect-row">
+        <i class="fas {{this.icon}} acc-tt-effect-icon"></i>
+        <span class="acc-tt-effect-text">{{this.summary}}</span>
+      </div>
+      {{/each}}
+
+      {{!-- Price --}}
+      <div class="acc-tt-price-row">
+        <span class="acc-tt-price-label">PRICE</span>
+        <span class="acc-tt-price-coin"></span>
+        <span class="acc-tt-price-amount">{{system.price}}</span>
+      </div>
+
+    </div>
+
+    {{!-- Manacite Slots --}}
+    {{#if resolvedSlots.length}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">MANACITE SLOTS</div>
+      {{#each resolvedSlots}}
+      <div class="acc-tt-slot-row">
+        <div class="acc-tt-slot-diamond {{#if this.manaciteId}}filled{{/if}}"></div>
+        <span class="acc-tt-slot-label {{#if this.manaciteId}}filled{{else}}empty{{/if}}">{{#if this.manaciteName}}{{this.manaciteName}}{{else}}Empty Slot{{/if}}</span>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{!-- Requirements --}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">EQUIP SLOT</span>
+        <span class="acc-tt-req-val">Weapon</span>
+      </div>
+      {{#if system.rank}}
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">RANK</span>
+        <span class="acc-tt-req-val">{{upper system.rank}}</span>
+      </div>
+      {{/if}}
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">HANDEDNESS</span>
+        <span class="acc-tt-req-val">{{handednessLabel}}</span>
+      </div>
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">WEIGHT</span>
+        <span class="acc-tt-req-val">{{system.weight}}</span>
+      </div>
+    </div>
+
+    {{!-- Flavor Text --}}
+    {{#if enrichedDescription}}
+    <div class="acc-tt-section acc-tt-flavor-section">
+      <div class="acc-tt-flavor">{{{enrichedDescription}}}</div>
+    </div>
+    {{/if}}
+
+    {{!-- Tooltip Footer --}}
+    <div class="acc-tt-footer">
+      <div class="acc-tt-footer-gradient"></div>
+      <span class="acc-tt-footer-tag">WEAPON</span>
+      <span class="wpn-category-badge cat-{{system.category}} acc-tt-footer-tag">{{upper categoryLabel}}</span>
+      <span class="wpn-dmg-badge dmg-{{system.damageType}} acc-tt-footer-tag">{{upper damageTypeLabel}}</span>
+      <span class="acc-tt-footer-spacer"></span>
+      <span class="acc-tt-footer-id">ID: {{item.id}}</span>
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- ═══ ARMOR — MMO TOOLTIP CARD ═══ --}}
+  {{#if (eq itemType "armor")}}
+  <div class="acc-tooltip-card">
+
+    {{!-- Primary armor stats — big display --}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">ARMOR STATS</div>
+      <div class="armor-tt-primary-stats">
+        <div class="armor-tt-primary-stat">
+          <div class="armor-tt-primary-stat-val">{{system.pdef}}</div>
+          <div class="armor-tt-primary-stat-label">P.DEF</div>
+        </div>
+        <div class="armor-tt-primary-stat">
+          <div class="armor-tt-primary-stat-val">{{system.mdef}}</div>
+          <div class="armor-tt-primary-stat-label">M.DEF</div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Bonus stats from rules --}}
+    {{#if armorStatBonuses.length}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">BONUS STATS</div>
+      {{#each armorStatBonuses}}
+      <div class="acc-tt-stat-row">
+        <span class="acc-tt-stat-name">{{this.label}}</span>
+        <span class="acc-tt-stat-val{{#if this.negative}} neutral{{/if}}">{{this.display}}</span>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{!-- Effects & Value --}}
+    <div class="acc-tt-section acc-tt-stats-effects">
+
+      {{!-- Special ability --}}
+      {{#if system.special}}
+      <div class="acc-tt-effect-row">
+        <i class="fas fa-diamond acc-tt-effect-icon"></i>
+        <span class="acc-tt-effect-text">{{system.special}}</span>
+      </div>
+      {{/if}}
+
+      {{!-- Passive effects from rules --}}
+      {{#each armorEffects}}
+      <div class="acc-tt-effect-row">
+        <i class="fas {{this.icon}} acc-tt-effect-icon"></i>
+        <span class="acc-tt-effect-text">{{this.summary}}</span>
+      </div>
+      {{/each}}
+
+      {{!-- Price --}}
+      <div class="acc-tt-price-row">
+        <span class="acc-tt-price-label">PRICE</span>
+        <span class="acc-tt-price-coin"></span>
+        <span class="acc-tt-price-amount">{{system.price}}</span>
+      </div>
+
+    </div>
+
+    {{!-- Manacite Slots --}}
+    {{#if resolvedSlots.length}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">MANACITE SLOTS</div>
+      {{#each resolvedSlots}}
+      <div class="acc-tt-slot-row">
+        <div class="acc-tt-slot-diamond {{#if this.manaciteId}}filled{{/if}}"></div>
+        <span class="acc-tt-slot-label {{#if this.manaciteId}}filled{{else}}empty{{/if}}">{{#if this.manaciteName}}{{this.manaciteName}}{{else}}Empty Slot{{/if}}</span>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{!-- Requirements --}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">EQUIP SLOT</span>
+        <span class="acc-tt-req-val">Armor</span>
+      </div>
+      {{#if system.rank}}
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">RANK</span>
+        <span class="acc-tt-req-val">{{upper system.rank}}</span>
+      </div>
+      {{/if}}
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">WEIGHT</span>
+        <span class="acc-tt-req-val">{{system.weight}}</span>
+      </div>
+    </div>
+
+    {{!-- Flavor Text --}}
+    {{#if enrichedDescription}}
+    <div class="acc-tt-section acc-tt-flavor-section">
+      <div class="acc-tt-flavor">{{{enrichedDescription}}}</div>
+    </div>
+    {{/if}}
+
+    {{!-- Tooltip Footer --}}
+    <div class="acc-tt-footer">
+      <div class="acc-tt-footer-gradient"></div>
+      <span class="acc-tt-footer-tag">ARMOR</span>
+      <span class="acc-tt-footer-tag armor-category-badge cat-{{system.category}}">{{upper categoryLabel}}</span>
+      <span class="acc-tt-footer-spacer"></span>
+      <span class="acc-tt-footer-id">ID: {{item.id}}</span>
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- ═══ ACCESSORY — MMO TOOLTIP CARD ═══ --}}
+  {{#if (eq itemType "accessory")}}
+  <div class="acc-tooltip-card">
+
+    {{!-- Stats, Effects & Value — unified section --}}
+    <div class="acc-tt-section acc-tt-stats-effects">
+
+      {{!-- Stat bonuses --}}
+      {{#each accessoryStatBonuses}}
+      <div class="acc-tt-stat-row">
+        <span class="acc-tt-stat-name">{{this.label}}</span>
+        <span class="acc-tt-stat-val">{{this.display}}</span>
+      </div>
+      {{/each}}
+
+      {{!-- Passive / special effects --}}
+      {{#each accessoryEffects}}
+      <div class="acc-tt-effect-row">
+        <i class="fas {{this.icon}} acc-tt-effect-icon"></i>
+        <span class="acc-tt-effect-text">{{this.summary}}</span>
+      </div>
+      {{/each}}
+
+      {{!-- Price --}}
+      <div class="acc-tt-price-row">
+        <span class="acc-tt-price-label">PRICE</span>
+        <span class="acc-tt-price-coin"></span>
+        <span class="acc-tt-price-amount">{{system.price}}</span>
+      </div>
+
+    </div>
+
+    {{!-- Manacite Slots --}}
+    {{#if resolvedSlots.length}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">MANACITE SLOTS</div>
+      {{#each resolvedSlots}}
+      <div class="acc-tt-slot-row">
+        <div class="acc-tt-slot-diamond {{#if this.manaciteId}}filled{{/if}}"></div>
+        <span class="acc-tt-slot-label {{#if this.manaciteId}}filled{{else}}empty{{/if}}">{{#if this.manaciteName}}{{this.manaciteName}}{{else}}Empty Slot{{/if}}</span>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{!-- Requirements --}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">EQUIP SLOT</span>
+        <span class="acc-tt-req-val">Accessory</span>
+      </div>
+      {{#if system.rank}}
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">RANK</span>
+        <span class="acc-tt-req-val">{{upper system.rank}}</span>
+      </div>
+      {{/if}}
+      <div class="acc-tt-req-row">
+        <span class="acc-tt-req-label">WEIGHT</span>
+        <span class="acc-tt-req-val">{{system.weight}}</span>
+      </div>
+    </div>
+
+    {{!-- Flavor Text --}}
+    {{#if enrichedDescription}}
+    <div class="acc-tt-section acc-tt-flavor-section">
+      <div class="acc-tt-flavor">{{{enrichedDescription}}}</div>
+    </div>
+    {{/if}}
+
+    {{!-- Tooltip Footer --}}
+    <div class="acc-tt-footer">
+      <div class="acc-tt-footer-gradient"></div>
+      <span class="acc-tt-footer-tag">ACCESSORY</span>
+      <span class="acc-tt-footer-spacer"></span>
+      <span class="acc-tt-footer-id">ID: {{item.id}}</span>
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- ═══ JOB MANACITE ═══ --}}
+  {{#if (and (eq itemType "manacite") (eq system.manaciteType "job"))}}
+  <div class="desc-card job-desc-card">
+
+    {{!-- Unlock Requirements --}}
+    {{#if system.unlockRequirements}}
+    <div class="desc-unlock"><i class="fas fa-lock"></i> {{system.unlockRequirements}}</div>
+    {{/if}}
+
+    {{!-- Flavor Text --}}
+    {{#if enrichedDescription}}
+    <div class="job-desc-text">{{{enrichedDescription}}}</div>
+    {{/if}}
+  </div>
+
+  {{/if}}
+
+  {{!-- ═══ SKILL MANACITE — MMO TOOLTIP CARD ═══ --}}
+  {{#if (and (eq itemType "manacite") (eq system.manaciteType "skill"))}}
+  <div class="acc-tooltip-card mana-tooltip-card">
+
+    {{!-- Skill Combat Stats (Magic / Art) --}}
+    {{#if (or (eq system.skillType "magic") (eq system.skillType "art"))}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">SKILL STATS</div>
+      <div class="mana-tt-skill-stats">
+        <div class="mana-tt-skill-stat">
+          <div class="mana-tt-skill-stat-val mana-mp-color">{{effectiveMpCost}}{{#if mpCostDelta}}<span class="mana-delta mana-delta-buff">{{mpCostDelta}}</span>{{/if}}</div>
+          <div class="mana-tt-skill-stat-label">MP COST</div>
+        </div>
+        <div class="mana-tt-skill-stat">
+          <div class="mana-tt-skill-stat-val mana-dmg-color">{{#if isWeaponMode}}+{{/if}}{{effectiveBaseRate}}{{#if baseRateDelta}}<span class="mana-delta mana-delta-buff">+{{baseRateDelta}}</span>{{/if}}</div>
+          <div class="mana-tt-skill-stat-label">{{#if isWeaponMode}}BONUS DMG{{else}}DAMAGE{{/if}}</div>
+        </div>
+        <div class="mana-tt-skill-stat">
+          <div class="mana-tt-skill-stat-val">{{#if effectiveSkillHit}}{{effectiveSkillHit}}{{#if skillHitDelta}}<span class="mana-delta mana-delta-buff">+{{skillHitDelta}}</span>{{/if}}{{else}}—{{/if}}</div>
+          <div class="mana-tt-skill-stat-label">HIT RATE</div>
+        </div>
+      </div>
+      <div class="mana-tt-skill-secondary">
+        <div class="mana-tt-sec-cell">
+          <span class="mana-tt-sec-label">{{#if (or (eq system.rangeType "melee") (eq system.rangeType "weapon"))}}REACH{{else}}RANGE{{/if}}</span>
+          <span class="mana-tt-sec-val">{{#if system.rangeDisplay}}{{system.rangeDisplay}}{{else}}—{{/if}}</span>
+        </div>
+        <div class="mana-tt-sec-cell">
+          <span class="mana-tt-sec-label">DMG MODE</span>
+          <span class="mana-tt-sec-val">{{manaDmgModeLabel}}</span>
+        </div>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- Passive banner (passive only) --}}
+    {{#if (eq system.skillType "passive")}}
+    <div class="acc-tt-section">
+      <div class="mana-tt-passive-banner">
+        <i class="fas fa-shield-halved"></i>
+        <span>{{passiveModeLabel}} Passive</span>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- Targeting --}}
+    {{#if (or (eq system.skillType "magic") (eq system.skillType "art"))}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">TARGETING</div>
+      <div class="mana-tt-targeting">
+        <div class="mana-tt-target-cell">
+          <span class="mana-tt-target-label">TARGET</span>
+          <span class="mana-tt-target-val">{{manaTargetLabel}}{{#if system.isHealing}} <i class="fas fa-heart" style="color:#44cc88;"></i>{{/if}}</span>
+        </div>
+        <div class="mana-tt-target-cell">
+          <span class="mana-tt-target-label">ELEMENT</span>
+          <span class="mana-tt-target-val element-text-{{system.element}}">{{#if system.element}}{{elementLabel}}{{else}}None{{/if}}</span>
+        </div>
+      </div>
+    </div>
+    {{/if}}
+
+
+    {{!-- Effects are configured via the Active Effects tab, not shown here --}}
+
+
+    {{!-- Flavor Text --}}
+    {{#if enrichedDescription}}
+    <div class="acc-tt-section acc-tt-flavor-section">
+      <div class="acc-tt-flavor">{{{enrichedDescription}}}</div>
+    </div>
+    {{/if}}
+
+    {{!-- Tooltip Footer --}}
+    <div class="acc-tt-footer">
+      <div class="acc-tt-footer-gradient"></div>
+      <span class="acc-tt-footer-tag">MANACITE</span>
+      <span class="acc-tt-footer-tag mana-badge-{{system.skillType}}">{{upper skillTypeLabel}}</span>
+      {{#if system.element}}
+      <span class="acc-tt-footer-tag element-badge-{{system.element}}">{{upper elementLabel}}</span>
+      {{/if}}
+      <span class="acc-tt-footer-spacer"></span>
+      <span class="acc-tt-footer-id">ID: {{item.id}}</span>
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- ═══ CONSUMABLE — MMO TOOLTIP CARD ═══ --}}
+  {{#if (eq itemType "consumable")}}
+  <div class="con-tooltip-card con-cat-{{system.category}}">
+
+    {{!-- Category stripe --}}
+    <div class="con-tt-stripe"></div>
+
+    {{!-- Header: rounded icon + name + badges --}}
+    <div class="con-tt-header">
+      <div class="con-tt-icon">
+        <img src="{{item.img}}" alt="{{item.name}}" />
+      </div>
+      <div class="con-tt-title">
+        <span class="con-tt-name">{{item.name}}</span>
+        <div class="con-tt-badges">
+          <span class="con-tt-badge type-badge">CONSUMABLE</span>
+          <span class="con-tt-badge cat-badge">{{upper categoryLabel}}</span>
+        </div>
+      </div>
+    </div>
+
+    {{!-- On Use — star of the card --}}
+    <div class="con-tt-section">
+      <div class="con-tt-use-effect">
+        <div class="con-tt-use-label">ON USE</div>
+        {{#if consumableEffects.length}}
+        <div class="con-tt-use-grid">
+          {{#each consumableEffects}}
+          <div class="con-tt-use-stat">
+            <div class="con-tt-use-stat-icon" style="background:{{this.bgColor}};color:{{this.color}};"><i class="fas {{this.icon}}"></i></div>
+            <div>
+              <div class="con-tt-use-stat-val" style="color:{{this.color}};">{{this.value}}</div>
+              <div class="con-tt-use-stat-label">{{this.label}}</div>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+        {{else}}
+        <div class="con-tt-no-effects">NO EFFECTS CONFIGURED</div>
+        {{/if}}
+        {{#if system.effect}}
+        <div class="con-tt-use-desc">{{system.effect}}</div>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- Quantity & Target --}}
+    <div class="con-tt-section">
+      <div class="con-tt-section-label">INVENTORY</div>
+      <div class="con-tt-qty-row">
+        <div class="con-tt-qty-cell">
+          <div class="con-tt-qty-val">{{system.quantity}}</div>
+          <div>
+            <div class="con-tt-qty-label">QUANTITY</div>
+            <div class="con-tt-qty-sub">Max: {{system.maxStack}}</div>
+          </div>
+        </div>
+        <div class="con-tt-qty-cell">
+          <div class="con-tt-qty-val" style="color:var(--manashard-accent);">{{upper targetTypeLabel}}</div>
+          <div>
+            <div class="con-tt-qty-label">TARGET</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Value --}}
+    <div class="con-tt-section">
+      <div class="con-tt-section-label">VALUE</div>
+      <div class="acc-tt-price-row">
+        <span class="acc-tt-price-label">PRICE</span>
+        <span class="acc-tt-price-coin"></span>
+        <span class="acc-tt-price-amount">{{system.price}}</span>
+      </div>
+    </div>
+
+    {{!-- Flavor Text --}}
+    {{#if enrichedDescription}}
+    <div class="con-tt-section">
+      <div class="acc-tt-flavor">{{{enrichedDescription}}}</div>
+    </div>
+    {{/if}}
+
+    {{!-- Use Button --}}
+    {{#if item.isOwner}}
+    <div class="con-tt-section">
+      <button type="button" class="con-tt-use-btn" data-action="useConsumable" {{#unless system.quantity}}disabled{{/unless}}>
+        <i class="fas fa-flask"></i> USE
+      </button>
+    </div>
+    {{/if}}
+
+    {{!-- Footer --}}
+    <div class="con-tt-footer">
+      <div class="con-tt-footer-gradient"></div>
+      <span class="con-tt-footer-tag">CONSUMABLE</span>
+      <span class="con-tt-footer-tag" style="color:var(--con-cat-color);border-color:var(--con-cat-color);">{{upper categoryLabel}}</span>
+      <span class="con-tt-footer-spacer"></span>
+      <span class="con-tt-footer-id">ID: {{item.id}}</span>
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- ═══ MATERIAL ═══ --}}
+  {{#if (eq itemType "material")}}
+  <div class="acc-tooltip-card mat-tooltip-card">
+
+    {{!-- Quantity --}}
+    <div class="acc-tt-section">
+      <div class="mat-tt-quantity">
+        <div>
+          <div class="mat-tt-qty-val">{{system.quantity}}</div>
+          <div class="mat-tt-qty-label">QUANTITY</div>
+        </div>
+        <div class="mat-tt-qty-stack">MAX STACK: {{system.maxStack}}</div>
+      </div>
+    </div>
+
+    {{!-- Value --}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">VALUE</div>
+      <div class="acc-tt-price-row">
+        <span class="acc-tt-price-label">PRICE (EACH)</span>
+        <span class="acc-tt-price-coin"></span>
+        <span class="acc-tt-price-amount">{{system.price}}</span>
+      </div>
+      <div class="mat-tt-total-row">
+        <span class="mat-tt-total-label">TOTAL VALUE</span>
+        <span class="mat-tt-total-val">{{totalValue}}G</span>
+      </div>
+    </div>
+
+    {{!-- Obtained From --}}
+    {{#if materialSources.length}}
+    <div class="acc-tt-section">
+      <div class="acc-tt-section-label">OBTAINED FROM</div>
+      <div class="mat-tt-source-tags">
+        {{#each materialSources}}
+        <span class="mat-tt-source-tag">{{this}}</span>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- Flavor Text --}}
+    {{#if enrichedDescription}}
+    <div class="acc-tt-section acc-tt-flavor-section">
+      <div class="acc-tt-flavor">{{{enrichedDescription}}}</div>
+    </div>
+    {{/if}}
+
+    {{!-- Tooltip Footer --}}
+    <div class="acc-tt-footer">
+      <div class="acc-tt-footer-gradient"></div>
+      <span class="acc-tt-footer-tag">MATERIAL</span>
+      <span class="acc-tt-footer-spacer"></span>
+      <span class="acc-tt-footer-id">ID: {{item.id}}</span>
+    </div>
+
+  </div>
+  {{/if}}
+
+  {{!-- ═══ SPECIES ═══ --}}
+  {{#if (eq itemType "species")}}
+  <div class="desc-card species-desc-card">
+    {{#if enrichedDescription}}
+    <div class="species-desc-text">{{{enrichedDescription}}}</div>
+    {{else}}
+    <div class="desc-skill-empty"><i class="fas fa-dna"></i> No description</div>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{!-- Description text (exclude types that show it inside their own card/section) --}}
+  {{#unless (or (eq itemType "manacite") (eq itemType "species") (eq itemType "weapon") (eq itemType "armor") (eq itemType "accessory") (eq itemType "material"))}}
+  {{#if enrichedDescription}}
+  <div class="desc-flavor-text">{{{enrichedDescription}}}</div>
+  {{/if}}
+  {{/unless}}
+
+</div>
+</section>

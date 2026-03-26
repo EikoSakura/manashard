@@ -1,0 +1,65 @@
+<div class="manashard charge-card charge-{{phase}} {{#if element}}element-{{element}}{{/if}}">
+
+  {{!-- ═══ HEADER ═══ --}}
+  <div class="acc-header">
+    <div class="acc-portrait-frame">
+      <div class="acc-portrait-diamond">
+        <img src="{{actorImg}}" class="acc-portrait" />
+      </div>
+    </div>
+    <div class="acc-header-info">
+      <div class="acc-actor-name">{{actorName}}</div>
+      <div class="acc-action-line">
+        {{#if (eq phase "begin")}}
+          begins charging <span class="acc-skill-name">{{skillName}}</span>
+        {{else if (eq phase "resolve")}}
+          unleashes <span class="acc-skill-name">{{skillName}}</span>
+        {{else}}
+          <span class="acc-skill-name">{{skillName}}</span> was interrupted
+        {{/if}}
+      </div>
+    </div>
+    {{#if (gt mpCost 0)}}
+      <div class="acc-mp-badge">MP &minus;{{mpCost}}</div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ TARGET LINE ═══ --}}
+  {{#if targetName}}
+  <div class="acc-target-line">
+    <span class="acc-target-arrow">&#9656;</span>
+    <span class="acc-target-label">TARGET</span>
+    <span class="acc-target-name">{{targetName}}</span>
+    {{#if isHealing}}<span class="acc-heal-badge"><i class="fas fa-heart"></i></span>{{/if}}
+  </div>
+  {{/if}}
+
+  {{!-- ═══ SKILL BADGES ═══ --}}
+  <div class="charge-badges">
+    {{#if element}}
+      <span class="acc-badge acc-badge-elem acc-elem-{{element}}"><span class="acc-badge-dot"></span>{{upper element}}</span>
+    {{/if}}
+    {{#if isHealing}}
+      <span class="acc-badge charge-badge-healing"><span class="acc-badge-dot"></span>HEALING</span>
+    {{/if}}
+    {{#if (eq phase "begin")}}
+      <span class="acc-badge charge-badge-chant"><i class="fas fa-hourglass-start"></i> FULL CAST</span>
+    {{else if (eq phase "resolve")}}
+      <span class="acc-badge charge-badge-power"><i class="fas fa-bolt"></i> 150% POWER</span>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ STATUS BAR ═══ --}}
+  <div class="charge-status-bar">
+    {{#if (eq phase "begin")}}
+      <div class="charge-status-icon"><i class="fas fa-hourglass-start"></i></div>
+      <span>Resolves at start of next turn</span>
+    {{else if (eq phase "resolve")}}
+      <div class="charge-status-icon"><i class="fas fa-hat-wizard"></i></div>
+      <span>Charged spell unleashed!</span>
+    {{else}}
+      <div class="charge-status-icon"><i class="fas fa-ban"></i></div>
+      <span>Charge interrupted!</span>
+    {{/if}}
+  </div>
+</div>

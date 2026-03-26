@@ -1,0 +1,50 @@
+<section class="tab-content {{tab.cssClass}}" data-tab="biography" data-group="primary">
+
+  {{#unless isThreat}}
+  <div class="bio-details-grid">
+    <div class="bio-field">
+      <label>Age</label>
+      <input type="text" name="system.age" value="{{system.age}}" placeholder="—" />
+    </div>
+    <div class="bio-field">
+      <label>Height</label>
+      <input type="text" name="system.height" value="{{system.height}}" placeholder="—" />
+    </div>
+    <div class="bio-field">
+      <label>Weight</label>
+      <input type="text" name="system.weight" value="{{system.weight}}" placeholder="—" />
+    </div>
+    <div class="bio-field">
+      <label>Pronouns</label>
+      <input type="text" name="system.pronouns" value="{{system.pronouns}}" placeholder="—" />
+    </div>
+    <div class="bio-field">
+      <label>Eyes</label>
+      <input type="text" name="system.eyes" value="{{system.eyes}}" placeholder="—" />
+    </div>
+    <div class="bio-field">
+      <label>Hair</label>
+      <input type="text" name="system.hair" value="{{system.hair}}" placeholder="—" />
+    </div>
+    <div class="bio-field">
+      <label>Skin</label>
+      <input type="text" name="system.skin" value="{{system.skin}}" placeholder="—" />
+    </div>
+    <div class="bio-field">
+      <label>Gender</label>
+      <input type="text" name="system.gender" value="{{system.gender}}" placeholder="—" />
+    </div>
+  </div>
+  {{/unless}}
+
+  <div class="biography-editor">
+    <div class="lh-section-title"><i class="fas fa-book-open"></i> Backstory</div>
+    {{#if editable}}
+    <prose-mirror name="system.biography" toggled data-document-uuid="{{actor.uuid}}" value="{{system.biography}}">
+      {{{enrichedBiography}}}
+    </prose-mirror>
+    {{else}}
+    <div class="editor-content">{{{enrichedBiography}}}</div>
+    {{/if}}
+  </div>
+</section>

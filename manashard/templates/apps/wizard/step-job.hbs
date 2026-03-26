@@ -1,0 +1,37 @@
+<div class="wizard-step step-job">
+  <h2 class="wizard-step-title">Choose Starting Job</h2>
+  <p class="wizard-step-desc">Select your starting Job Manacite. This determines your weapon access, movement, and innate abilities.</p>
+
+  {{#if isEmpty}}
+  <div class="wizard-empty-notice">
+    <i class="fas fa-info-circle"></i>
+    <span>No jobs available in the compendium. You may skip this step.</span>
+  </div>
+  {{else}}
+  <div class="wizard-card-grid">
+    {{#each candidates}}
+    <div class="wizard-card {{#if (eq this.uuid ../selectedUuid)}}selected{{/if}}"
+         data-uuid="{{this.uuid}}" data-action="selectJob">
+      <div class="wizard-card-img">
+        <img src="{{this.img}}" alt="{{this.name}}" />
+      </div>
+      <div class="wizard-card-body">
+        <h3 class="wizard-card-name">{{this.name}}</h3>
+        <div class="wizard-card-details">
+          {{#if this.system.weaponAccess}}
+          <div class="wizard-card-tag tag-weapon"><i class="fas fa-sword"></i> {{this.system.weaponAccess}}</div>
+          {{/if}}
+          {{#if this.system.armorAccess}}
+          <div class="wizard-card-tag tag-armor"><i class="fas fa-shield"></i> {{this.system.armorAccess}}</div>
+          {{/if}}
+          <div class="wizard-card-tag tag-mov"><i class="fas fa-person-running"></i> MOV {{this.system.MOV}}</div>
+        </div>
+      </div>
+      <button type="button" class="wizard-card-info" data-action="viewItem" data-uuid="{{this.uuid}}" title="View Details">
+        <i class="fas fa-circle-info"></i>
+      </button>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+</div>

@@ -1,0 +1,68 @@
+<div class="manashard stat-check-forecast">
+  <div class="scf-header">
+    <div class="scf-portrait-wrap">
+      <img src="{{actorImg}}" class="scf-portrait" />
+    </div>
+    <span class="scf-name">{{actorName}}</span>
+  </div>
+
+  <div class="scf-fields">
+    <div class="scf-field">
+      <label class="scf-label">Stat</label>
+      <select class="scf-stat-select">
+        {{#each stats}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>
+            {{this.label}} ({{this.value}})
+          </option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="scf-field">
+      <label class="scf-label">Difficulty</label>
+      <select class="scf-difficulty-select">
+        {{#each difficulties}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>
+            {{this.label}} ({{this.modLabel}})
+          </option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="scf-field">
+      <label class="scf-label">Context <span class="scf-optional">(optional)</span></label>
+      <input type="text" class="scf-context-input" placeholder="What is being attempted?" />
+    </div>
+  </div>
+
+  {{#if conditionalCheckBonuses.length}}
+  <div class="scf-conditionals">
+    <label class="scf-label">Situational Bonuses</label>
+    {{#each conditionalCheckBonuses}}
+    <label class="scf-conditional-row" data-selector="{{this.selector}}">
+      <input type="checkbox" class="scf-conditional-cb"
+             data-index="{{@index}}"
+             data-value="{{this.value}}"
+             data-selector="{{this.selector}}"
+             data-label="{{this.conditionLabel}}" />
+      <span class="scf-conditional-name">{{this.sourceName}}</span>
+      <span class="scf-conditional-value">{{this.signedValue}}</span>
+      <span class="scf-conditional-condition">{{this.conditionLabel}}</span>
+    </label>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  <div class="scf-preview">
+    <span class="scf-preview-label">Threshold</span>
+    <span class="scf-preview-value">{{defaultThreshold}}</span>
+    <span class="scf-preview-formula"></span>
+  </div>
+
+  {{#if contested}}
+  <div class="scf-contested-info">
+    <i class="fas fa-bolt"></i>
+    <span>Contested check vs <strong>{{targetName}}</strong></span>
+  </div>
+  {{/if}}
+</div>

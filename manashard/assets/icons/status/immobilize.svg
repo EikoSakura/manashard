@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#6688bb" stroke-width="4"/>
+  <!-- Anchor -->
+  <circle cx="128" cy="65" r="16" fill="none" stroke="#6688bb" stroke-width="7"/>
+  <line x1="128" y1="81" x2="128" y2="195" stroke="#6688bb" stroke-width="8" stroke-linecap="round"/>
+  <!-- Anchor arms -->
+  <path d="M80 195 Q80 160 128 160 Q176 160 176 195" fill="none" stroke="#6688bb" stroke-width="8" stroke-linecap="round"/>
+  <!-- Anchor tips -->
+  <line x1="80" y1="195" x2="95" y2="180" stroke="#6688bb" stroke-width="7" stroke-linecap="round"/>
+  <line x1="176" y1="195" x2="161" y2="180" stroke="#6688bb" stroke-width="7" stroke-linecap="round"/>
+  <!-- Crossbar -->
+  <line x1="100" y1="105" x2="156" y2="105" stroke="#6688bb" stroke-width="7" stroke-linecap="round"/>
+</svg>

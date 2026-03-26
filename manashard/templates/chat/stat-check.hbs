@@ -1,0 +1,173 @@
+<div class="manashard stat-check-card {{#if success}}sc-pass{{else}}sc-fail{{/if}} {{#if contested}}sc-contested{{/if}}" style="--sc-accent: {{statColor}}">
+
+  {{!-- ═══ HEADER ═══ --}}
+  <div class="sc-header">
+    <div class="acc-portrait-frame">
+      <div class="acc-portrait-diamond">
+        <img src="{{actorImg}}" class="acc-portrait" />
+      </div>
+    </div>
+    <div class="sc-header-info">
+      <div class="sc-actor-name">{{actorName}}</div>
+      <div class="sc-action-line">makes a stat check</div>
+    </div>
+    <div class="sc-stat-badge" style="--sc-stat-color: {{statColor}}">{{statLabel}}</div>
+  </div>
+
+  {{!-- ═══ CONTEXT LINE ═══ --}}
+  {{#if context}}
+  <div class="sc-context-line">
+    <span class="sc-context-icon">&#9656;</span>
+    <span class="sc-context-text">{{context}}</span>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ ROLL ZONE ═══ --}}
+  <div class="sc-roll-zone {{#if success}}sc-roll-pass{{else}}sc-roll-fail{{/if}}">
+    <i class="sc-roll-icon fas fa-dice-d20"></i>
+    <span class="sc-roll-stat-label" style="color: {{statColor}}">{{statLabel}}</span>
+    <div class="sc-roll-values">
+      <span class="sc-roll-result">{{rollTotal}}</span>
+      <span class="sc-roll-sep">/</span>
+      <span class="sc-roll-threshold">{{threshold}}</span>
+    </div>
+    <span class="sc-outcome-badge {{#if success}}sc-badge-pass{{else}}sc-badge-fail{{/if}}">
+      {{#if success}}PASS{{else}}FAIL{{/if}}
+    </span>
+  </div>
+
+  {{!-- ═══ CONTESTED: OPPONENT ═══ --}}
+  {{#if contested}}
+    <div class="sc-vs-divider">
+      <span class="sc-vs-text">VS</span>
+    </div>
+
+    {{!-- Opponent Header --}}
+    <div class="sc-header sc-opponent-header">
+      <div class="acc-portrait-frame">
+        <div class="acc-portrait-diamond" style="--sc-accent: {{opponentStatColor}}">
+          <img src="{{opponentImg}}" class="acc-portrait" />
+        </div>
+      </div>
+      <div class="sc-header-info">
+        <div class="sc-actor-name sc-opponent-name">{{opponentName}}</div>
+        <div class="sc-action-line">responds with a stat check</div>
+      </div>
+      <div class="sc-stat-badge" style="--sc-stat-color: {{opponentStatColor}}">{{opponentStatLabel}}</div>
+    </div>
+
+    {{!-- Opponent Roll Zone --}}
+    <div class="sc-roll-zone {{#if opponentSuccess}}sc-roll-pass{{else}}sc-roll-fail{{/if}}">
+      <i class="sc-roll-icon fas fa-dice-d20"></i>
+      <span class="sc-roll-stat-label" style="color: {{opponentStatColor}}">{{opponentStatLabel}}</span>
+      <div class="sc-roll-values">
+        <span class="sc-roll-result">{{opponentRollTotal}}</span>
+        <span class="sc-roll-sep">/</span>
+        <span class="sc-roll-threshold">{{opponentThreshold}}</span>
+      </div>
+      <span class="sc-outcome-badge {{#if opponentSuccess}}sc-badge-pass{{else}}sc-badge-fail{{/if}}">
+        {{#if opponentSuccess}}PASS{{else}}FAIL{{/if}}
+      </span>
+    </div>
+
+    {{!-- Winner Banner --}}
+    <div class="sc-winner-banner sc-has-winner">
+      <i class="fas fa-trophy"></i>
+      <span><strong>{{winnerName}}</strong> wins!</span>
+    </div>
+  {{/if}}
+
+  {{!-- ═══ FORMULA PANEL (right-click) ═══ --}}
+  <div class="sc-formula-context">
+    <div class="sc-formula-header">
+      <i class="fas fa-scroll"></i>
+      <span>{{actorName}} — {{statLabel}} Check</span>
+    </div>
+
+    <div class="sc-formula-section">
+      <div class="sc-formula-section-label">Check Formula</div>
+      <div class="sc-formula-row">
+        <span class="sc-formula-label">Base {{statLabel}}</span>
+        <span class="sc-formula-value">{{baseStat}}</span>
+      </div>
+      <div class="sc-formula-row">
+        <span class="sc-formula-label">{{statLabel}} &times; 2</span>
+        <span class="sc-formula-value">{{threshold}}</span>
+      </div>
+      {{#if checkBonus}}
+      <div class="sc-formula-row">
+        <span class="sc-formula-label">Check Bonus</span>
+        <span class="sc-formula-value">{{#if (gt checkBonus 0)}}+{{/if}}{{checkBonus}}</span>
+      </div>
+      {{/if}}
+      {{#if conditionalBonus}}
+      <div class="sc-formula-row">
+        <span class="sc-formula-label">Conditional</span>
+        <span class="sc-formula-value">{{#if (gt conditionalBonus 0)}}+{{/if}}{{conditionalBonus}}</span>
+      </div>
+      {{#each activeCondLabels}}
+      <div class="sc-formula-row sc-formula-sub">
+        <span class="sc-formula-label sc-conditional-detail">↳ {{this}}</span>
+      </div>
+      {{/each}}
+      {{/if}}
+      {{#if difficultyMod}}
+      <div class="sc-formula-row">
+        <span class="sc-formula-label">Difficulty ({{difficultyLabel}})</span>
+        <span class="sc-formula-value">{{#if (gt difficultyMod 0)}}+{{/if}}{{difficultyMod}}</span>
+      </div>
+      {{/if}}
+      <hr class="sc-formula-divider" />
+      <div class="sc-formula-row sc-formula-total">
+        <span class="sc-formula-label">Threshold</span>
+        <span class="sc-formula-value">{{threshold}}</span>
+      </div>
+      <div class="sc-formula-row sc-formula-total">
+        <span class="sc-formula-label">Roll</span>
+        <span class="sc-formula-value">{{rollTotal}}</span>
+      </div>
+    </div>
+
+    {{#if contested}}
+    <div class="sc-formula-section">
+      <div class="sc-formula-section-label">{{opponentName}} — {{opponentStatLabel}} Check</div>
+      <div class="sc-formula-row">
+        <span class="sc-formula-label">Base {{opponentStatLabel}}</span>
+        <span class="sc-formula-value">{{opponentBaseStat}}</span>
+      </div>
+      <div class="sc-formula-row">
+        <span class="sc-formula-label">{{opponentStatLabel}} &times; 2</span>
+        <span class="sc-formula-value">{{opponentThreshold}}</span>
+      </div>
+      {{#if opponentCheckBonus}}
+      <div class="sc-formula-row">
+        <span class="sc-formula-label">Check Bonus</span>
+        <span class="sc-formula-value">{{#if (gt opponentCheckBonus 0)}}+{{/if}}{{opponentCheckBonus}}</span>
+      </div>
+      {{/if}}
+      {{#if opponentDifficultyMod}}
+      <div class="sc-formula-row">
+        <span class="sc-formula-label">Difficulty ({{opponentDifficultyLabel}})</span>
+        <span class="sc-formula-value">{{#if (gt opponentDifficultyMod 0)}}+{{/if}}{{opponentDifficultyMod}}</span>
+      </div>
+      {{/if}}
+      <hr class="sc-formula-divider" />
+      <div class="sc-formula-row sc-formula-total">
+        <span class="sc-formula-label">Threshold</span>
+        <span class="sc-formula-value">{{opponentThreshold}}</span>
+      </div>
+      <div class="sc-formula-row sc-formula-total">
+        <span class="sc-formula-label">Roll</span>
+        <span class="sc-formula-value">{{opponentRollTotal}}</span>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ INSPECT HINT ═══ --}}
+  <div class="sc-inspect-hint">
+    <span class="sc-hint-key">Right-click</span>
+    <span>to inspect formulas</span>
+  </div>
+
+</div>

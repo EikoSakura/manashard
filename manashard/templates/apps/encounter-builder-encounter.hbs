@@ -1,0 +1,271 @@
+<div class="eb-mission-layout">
+
+  {{!-- ═══ MISSION HEADER ═══ --}}
+  <div class="eb-section eb-mission-header">
+    <div class="eb-mission-row">
+      {{!-- Scene Selection --}}
+      <div class="eb-field">
+        <label class="eb-field-label">{{localize "MANASHARD.EncBuilder.Scene"}}</label>
+        <select name="mission-scene" class="eb-select">
+          <option value="">— {{localize "MANASHARD.EncBuilder.NoSceneSelected"}} —</option>
+          {{#each scenes}}
+          <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      {{!-- Objective --}}
+      <div class="eb-field">
+        <label class="eb-field-label">{{localize "MANASHARD.EncBuilder.Objective"}}</label>
+        <select name="mission-objective" class="eb-select">
+          {{#each objectiveOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      {{!-- Objective Modifier Badge --}}
+      <div class="eb-obj-mod">
+        <i class="{{objectiveIcon}}"></i>
+        <span class="eb-obj-mod-value">{{objectiveModifierDisplay}}</span>
+      </div>
+
+      {{!-- Ambush Toggle --}}
+      <button class="eb-btn-sm eb-ambush-btn {{#if ambush}}active{{/if}}" data-action="toggleAmbush" title="{{localize 'MANASHARD.EncBuilder.Ambush'}}">
+        <i class="fas fa-eye-slash"></i> {{localize "MANASHARD.EncBuilder.Ambush"}}
+      </button>
+    </div>
+  </div>
+
+  {{!-- ═══ PARTY PANEL ═══ --}}
+  <div class="eb-section eb-party-panel">
+    <div class="eb-party-header">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.Party"}}</h4>
+      <div class="eb-party-summary">
+        <span class="eb-party-badge">{{localize "MANASHARD.EncBuilder.PartySize"}}: <strong>{{partySize}}</strong></span>
+        <span class="eb-party-badge">{{localize "MANASHARD.EncBuilder.AvgLevel"}}: <strong>{{avgLevel}}</strong></span>
+        <span class="eb-party-badge eb-budget-badge">{{localize "MANASHARD.EncBuilder.PartyBudget"}}: <strong>{{partyBudget}}</strong></span>
+        <label class="eb-level-override">
+          {{localize "MANASHARD.EncBuilder.LevelOverride"}}
+          <input type="number" name="party-level-override" value="{{partyLevelOverride}}" min="1" max="40" placeholder="Auto" />
+        </label>
+        <button class="eb-btn-sm" data-action="refreshParty" title="{{localize 'MANASHARD.EncBuilder.RefreshParty'}}">
+          <i class="fas fa-sync"></i>
+        </button>
+      </div>
+    </div>
+    <div class="eb-party-strip">
+      {{#each party}}
+      <div class="eb-pc-card">
+        <img class="eb-pc-img" src="{{this.img}}" alt="{{this.name}}" />
+        <span class="eb-pc-name">{{this.name}}</span>
+        <span class="eb-pc-level">Lv {{this.level}}</span>
+      </div>
+      {{/each}}
+      {{#unless party.length}}
+      <p class="eb-hint">No party members detected. Add characters to the Party Sheet or override level above.</p>
+      {{/unless}}
+    </div>
+  </div>
+
+  {{!-- ═══ ENEMY ZONES ═══ --}}
+  <div class="eb-section">
+    <div class="eb-zones-header">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.StartingForces"}}</h4>
+      <button class="eb-btn-sm" data-action="addZone"><i class="fas fa-plus"></i> {{localize "MANASHARD.EncBuilder.AddZone"}}</button>
+    </div>
+
+    {{#each zones}}
+    <div class="eb-zone" data-zone-index="{{this.index}}">
+      <div class="eb-zone-header">
+        <i class="fas fa-map-pin eb-zone-icon"></i>
+        <input type="text" class="eb-zone-label-input" data-zone-label="{{this.index}}" value="{{this.label}}" placeholder="Zone name..." />
+        <span class="eb-zone-tl" title="Zone Threat Level">TL {{this.zoneTL}}</span>
+        <button class="eb-btn-sm eb-btn-danger-sm" data-action="removeZone" data-index="{{this.index}}" title="Remove Zone"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="eb-zone-drop eb-drop-zone" data-zone-index="{{this.index}}">
+        {{#each this.enemies}}
+        <div class="eb-roster-row {{#if this.placeholder}}placeholder{{/if}}">
+          <img class="eb-roster-img" src="{{this.img}}" />
+          <div class="eb-roster-info">
+            <span class="eb-roster-name">{{this.name}}</span>
+            <span class="eb-roster-meta">
+              Lv {{this.level}}
+              <span class="eb-rank-badge rank-{{this.rank}}">{{this.rankLabel}}</span>
+              <span class="eb-role-badge"><i class="{{this.roleIcon}}"></i> {{this.roleLabel}}</span>
+            </span>
+          </div>
+          <span class="eb-roster-tl" title="Threat Level">TL {{this.threatLevel}}</span>
+          <div class="eb-roster-count">
+            <button class="eb-count-btn" data-action="adjustEnemyCount" data-zone="{{../index}}" data-index="{{@index}}" data-delta="-1">-</button>
+            <span class="eb-count-value">{{this.count}}</span>
+            <button class="eb-count-btn" data-action="adjustEnemyCount" data-zone="{{../index}}" data-index="{{@index}}" data-delta="1">+</button>
+          </div>
+          <span class="eb-roster-total-tl">= {{this.totalTL}}</span>
+          <button class="eb-remove-btn" data-action="removeEnemy" data-zone="{{../index}}" data-index="{{@index}}"><i class="fas fa-times"></i></button>
+        </div>
+        {{/each}}
+        {{#unless this.enemies.length}}
+        <p class="eb-drop-hint"><i class="fas fa-arrow-down"></i> {{localize "MANASHARD.EncBuilder.DropThreats"}}</p>
+        {{/unless}}
+      </div>
+    </div>
+    {{/each}}
+
+    <div class="eb-starting-total">
+      <span>{{localize "MANASHARD.EncBuilder.StartingTL"}}:</span>
+      <strong>{{startingTL}}</strong>
+    </div>
+  </div>
+
+  {{!-- ═══ REINFORCEMENT WAVES ═══ --}}
+  <div class="eb-section">
+    <div class="eb-zones-header">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.ReinforcementWaves"}}</h4>
+      <button class="eb-btn-sm" data-action="addWave"><i class="fas fa-plus"></i> {{localize "MANASHARD.EncBuilder.AddWave"}}</button>
+    </div>
+
+    {{#each waves}}
+    <div class="eb-wave-section" data-wave-index="{{this.index}}">
+      <div class="eb-wave-header">
+        <i class="fas fa-flag-checkered eb-wave-icon"></i>
+        <input type="text" class="eb-wave-label-input" name="wave-label" value="{{this.label}}" placeholder="Wave name..." />
+        <span class="eb-wave-tl" title="Wave Threat Level">TL {{this.waveTL}}</span>
+        <button class="eb-btn-sm eb-btn-danger-sm" data-action="removeWave" data-index="{{this.index}}" title="Remove Wave"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="eb-wave-config">
+        <div class="eb-field eb-field-sm">
+          <label class="eb-field-label">{{localize "MANASHARD.EncBuilder.Trigger"}}</label>
+          <select name="wave-trigger-type" class="eb-select eb-select-sm">
+            {{#each ../waveTriggerTypes}}
+            <option value="{{this.key}}" {{#if (eq this.key ../trigger.type)}}selected{{/if}}>{{this.label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        {{#if (ne this.trigger.type "manual")}}
+        <div class="eb-field eb-field-sm">
+          <label class="eb-field-label">
+            {{#if (eq this.trigger.type "turn")}}{{localize "MANASHARD.EncBuilder.TurnNumber"}}{{else}}{{localize "MANASHARD.EncBuilder.HPPercent"}}{{/if}}
+          </label>
+          <input type="number" name="wave-trigger-value" class="eb-input-sm" value="{{this.trigger.value}}" min="1" {{#if (eq this.trigger.type "bossHp")}}max="99"{{/if}} />
+        </div>
+        {{/if}}
+        <div class="eb-field eb-field-sm">
+          <label class="eb-field-label">{{localize "MANASHARD.EncBuilder.SpawnZone"}}</label>
+          <input type="text" name="wave-zone" class="eb-input-sm" value="{{this.zone}}" placeholder="Zone label..." />
+        </div>
+      </div>
+      <div class="eb-wave-drop eb-drop-zone" data-wave-index="{{this.index}}">
+        {{#each this.enemies}}
+        <div class="eb-roster-row">
+          <img class="eb-roster-img" src="{{this.img}}" />
+          <div class="eb-roster-info">
+            <span class="eb-roster-name">{{this.name}}</span>
+            <span class="eb-roster-meta">
+              Lv {{this.level}}
+              <span class="eb-rank-badge rank-{{this.rank}}">{{this.rankLabel}}</span>
+              <span class="eb-role-badge"><i class="{{this.roleIcon}}"></i> {{this.roleLabel}}</span>
+            </span>
+          </div>
+          <span class="eb-roster-tl" title="Threat Level">TL {{this.threatLevel}}</span>
+          <div class="eb-roster-count">
+            <button class="eb-count-btn" data-action="adjustWaveEnemyCount" data-wave="{{../index}}" data-index="{{@index}}" data-delta="-1">-</button>
+            <span class="eb-count-value">{{this.count}}</span>
+            <button class="eb-count-btn" data-action="adjustWaveEnemyCount" data-wave="{{../index}}" data-index="{{@index}}" data-delta="1">+</button>
+          </div>
+          <span class="eb-roster-total-tl">= {{this.totalTL}}</span>
+          <button class="eb-remove-btn" data-action="removeWaveEnemy" data-wave="{{../index}}" data-index="{{@index}}"><i class="fas fa-times"></i></button>
+        </div>
+        {{/each}}
+        {{#unless this.enemies.length}}
+        <p class="eb-drop-hint"><i class="fas fa-arrow-down"></i> {{localize "MANASHARD.EncBuilder.DropThreats"}}</p>
+        {{/unless}}
+      </div>
+    </div>
+    {{/each}}
+
+    {{#unless waves.length}}
+    <p class="eb-hint eb-hint-sm">{{localize "MANASHARD.EncBuilder.NoWaves"}}</p>
+    {{/unless}}
+
+    {{#if reinforcementTL}}
+    <div class="eb-starting-total">
+      <span>{{localize "MANASHARD.EncBuilder.ReinforcementTL"}}:</span>
+      <strong>{{reinforcementTL}}</strong>
+    </div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ SUMMARY BAR ═══ --}}
+  <div class="eb-section eb-summary-bar">
+
+    {{!-- Difficulty Meter --}}
+    <div class="eb-difficulty-section">
+      <div class="eb-difficulty-meter">
+        <div class="eb-difficulty-fill" style="width: {{difficulty.percent}}%; background: {{difficulty.color}};"></div>
+      </div>
+      <div class="eb-difficulty-info">
+        <span class="eb-difficulty-label" style="color: {{difficulty.color}};">{{difficulty.label}}</span>
+        <span class="eb-difficulty-ratio">{{totalTL}} TL × {{objectiveModifierDisplay}} = {{difficulty.ratioDisplay}}x budget ({{partyBudget}})</span>
+      </div>
+    </div>
+
+    {{!-- EXP Preview --}}
+    <div class="eb-exp-section">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.EXPPreview"}}</h4>
+      <table class="eb-exp-table">
+        <thead>
+          <tr>
+            <th>Enemy</th>
+            <th>{{localize "MANASHARD.EncBuilder.Count"}}</th>
+            <th>{{localize "MANASHARD.EncBuilder.KillEXP"}}</th>
+            <th>{{localize "MANASHARD.EncBuilder.CombatEXP"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each expPreview}}
+          <tr>
+            <td>{{this.name}}</td>
+            <td>{{this.count}}</td>
+            <td>{{this.killEXP}}</td>
+            <td>{{this.combatEXP}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr class="eb-exp-totals">
+            <td><strong>Total</strong></td>
+            <td></td>
+            <td><strong>{{totalKillEXP}}</strong></td>
+            <td><strong>{{totalCombatEXP}}</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    {{!-- Quick Templates --}}
+    <div class="eb-template-section">
+      {{#each templates}}
+      <button class="eb-btn eb-template-btn" data-action="applyTemplate" data-template="{{this.key}}">
+        {{this.label}}
+      </button>
+      {{/each}}
+    </div>
+
+    {{!-- Action Buttons --}}
+    <div class="eb-actions">
+      <button class="eb-btn eb-btn-accent" data-action="deployToScene">
+        <i class="fas fa-map-marker-alt"></i> {{localize "MANASHARD.EncBuilder.Deploy"}}
+      </button>
+      <button class="eb-btn" data-action="saveEncounter">
+        <i class="fas fa-save"></i> {{localize "MANASHARD.EncBuilder.SaveMission"}}
+      </button>
+      <button class="eb-btn" data-action="loadEncounter">
+        <i class="fas fa-folder-open"></i> {{localize "MANASHARD.EncBuilder.LoadMission"}}
+      </button>
+      <button class="eb-btn eb-btn-danger" data-action="clearEncounter">
+        <i class="fas fa-trash"></i> Clear
+      </button>
+    </div>
+  </div>
+</div>

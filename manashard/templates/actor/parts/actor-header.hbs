@@ -1,0 +1,122 @@
+{{#if isCharacter}}
+{{!-- PlayerUnit: No header — sidebar handles everything --}}
+<header class="sheet-header lh-header-hidden"></header>
+{{else}}
+  {{#if isTrap}}
+  {{!-- Trap: Header bar with trap badge, armed indicator, and danger pips --}}
+  <header class="sheet-header trap-header-bar">
+    <span class="trap-badge {{#if system.armed}}armed{{else}}disarmed{{/if}}">
+      {{#if system.armed}}ARMED{{else}}DISARMED{{/if}}
+    </span>
+    <span class="trap-sheet-title">{{actor.name}}</span>
+    <div class="trap-header-right">
+      <div class="hu-threat-pips">
+        <span class="hu-threat-label">DANGER</span>
+        {{#each threatPips}}
+        <span class="hu-threat-pip {{#if this}}filled{{/if}}"></span>
+        {{/each}}
+      </div>
+    </div>
+  </header>
+  {{else if isThreat}}
+  {{!-- HostileUnit: Thin header bar with hostile badge and threat pips --}}
+  <header class="sheet-header hu-header-bar">
+    <span class="hu-hostile-badge">THREAT</span>
+    <span class="hu-sheet-title">{{actor.name}}</span>
+    <div class="hu-threat-pips">
+      <span class="hu-threat-label">THREAT</span>
+      {{#each threatPips}}
+      <span class="hu-threat-pip {{#if this}}filled{{/if}}"></span>
+      {{/each}}
+    </div>
+  </header>
+  {{else}}
+  {{!-- Other NPC: Full header --}}
+  <header class="sheet-header">
+    {{!-- Left: Diamond Portrait --}}
+    <div class="hdr-portrait-col">
+      <div class="hdr-diamond-outer">
+        <div class="hdr-diamond-frame">
+          <div class="hdr-diamond-inner">
+            <img class="hdr-portrait-img" src="{{actor.img}}" data-action="editImage" title="{{actor.name}}"
+                 style="object-position: {{system.portraitOffsetX}}% {{system.portraitOffsetY}}%;{{#if system.portraitMirrored}} transform: scaleX(-1);{{/if}}" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Right: All info --}}
+    <div class="hdr-info">
+      {{!-- Name --}}
+      <div class="hdr-name-row">
+        <input class="hdr-name" name="name" type="text" value="{{actor.name}}" placeholder="Name" />
+      </div>
+
+      {{!-- HP --}}
+      <div class="hdr-resource-row">
+        <span class="hdr-res-label hp-label">HP</span>
+        <div class="hdr-res-values">
+          <input type="number" name="system.stats.hp.value" value="{{system.stats.hp.value}}" min="0" data-dtype="Number" />
+          <span class="hdr-res-sep">/</span>
+          <input type="number" name="system.stats.hp.max" value="{{system.stats.hp.max}}" min="0" data-dtype="Number" />
+        </div>
+      </div>
+      <div class="hdr-bar-track">
+        <div class="hdr-hp-bar" style="width: {{#if system.stats.hp.max}}{{math system.stats.hp.value "/" system.stats.hp.max "*" 100}}%{{else}}0%{{/if}}"></div>
+        {{#if system.stats.hp.barrier}}
+        <div class="hdr-barrier-bar" style="right: {{barrierRight}}%; width: {{barrierPercent}}%"></div>
+        {{/if}}
+      </div>
+
+      {{!-- MP --}}
+      <div class="hdr-resource-row">
+        <span class="hdr-res-label mp-label">MP</span>
+        <div class="hdr-res-values">
+          <input type="number" name="system.stats.mp.value" value="{{system.stats.mp.value}}" min="0" data-dtype="Number" />
+          <span class="hdr-res-sep">/</span>
+          <input type="number" name="system.stats.mp.max" value="{{system.stats.mp.max}}" min="0" data-dtype="Number" />
+        </div>
+      </div>
+      <div class="hdr-bar-track">
+        <div class="hdr-mp-bar" style="width: {{#if system.stats.mp.max}}{{math system.stats.mp.value "/" system.stats.mp.max "*" 100}}%{{else}}0%{{/if}}"></div>
+      </div>
+
+      {{!-- NPC Detail Rows --}}
+      <div class="hdr-detail-row">
+        <div class="hdr-detail">
+          <span class="hdr-detail-label">Level</span>
+          <input type="number" name="system.level" value="{{system.level}}" min="1" data-dtype="Number" />
+        </div>
+        <div class="hdr-detail-divider"></div>
+        <div class="hdr-detail">
+          <span class="hdr-detail-label">Size</span>
+          <input type="number" name="system.size" value="{{system.size}}" min="1" max="5" data-dtype="Number" />
+        </div>
+        <div class="hdr-detail-divider"></div>
+        <div class="hdr-detail">
+          <span class="hdr-detail-label">Type</span>
+          <select name="system.creatureType">
+            {{#each creatureTypeOptions}}
+            <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="hdr-detail-divider"></div>
+        <div class="hdr-detail">
+          <label class="checkbox-label">
+            <input type="checkbox" name="system.isBoss" {{#if system.isBoss}}checked{{/if}} />
+            Boss
+          </label>
+        </div>
+        <div class="hdr-detail-divider"></div>
+        <div class="hdr-detail">
+          <label class="checkbox-label">
+            <input type="checkbox" name="system.crystallizeInstantly" {{#if system.crystallizeInstantly}}checked{{/if}} />
+            Instant Crystallize
+          </label>
+        </div>
+      </div>
+    </div>
+  </header>
+  {{/if}}
+{{/if}}

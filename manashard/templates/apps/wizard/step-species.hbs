@@ -1,0 +1,31 @@
+<div class="wizard-step step-species">
+  <h2 class="wizard-step-title">Choose Species</h2>
+  <p class="wizard-step-desc">Select your character's species. This determines their size, innate traits, and creature type.</p>
+
+  {{#if isEmpty}}
+  <div class="wizard-empty-notice">
+    <i class="fas fa-info-circle"></i>
+    <span>No species available in the compendium. You may skip this step.</span>
+  </div>
+  {{else}}
+  <div class="wizard-card-grid">
+    {{#each candidates}}
+    <div class="wizard-card {{#if (eq this.uuid ../selectedUuid)}}selected{{/if}}"
+         data-uuid="{{this.uuid}}" data-action="selectSpecies">
+      <div class="wizard-card-img">
+        <img src="{{this.img}}" alt="{{this.name}}" />
+      </div>
+      <div class="wizard-card-body">
+        <h3 class="wizard-card-name">{{this.name}}</h3>
+        <div class="wizard-card-details">
+          <div class="wizard-card-tag tag-size"><i class="fas fa-expand"></i> Size {{this.system.size}}</div>
+        </div>
+      </div>
+      <button type="button" class="wizard-card-info" data-action="viewItem" data-uuid="{{this.uuid}}" title="View Details">
+        <i class="fas fa-circle-info"></i>
+      </button>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+</div>

@@ -1,0 +1,44 @@
+<section class="tab-content {{tab.cssClass}}" data-tab="loot" data-group="primary">
+{{#if isThreat}}
+  <div class="hu-loot-section">
+    <div class="lh-section-title">
+      <i class="fas fa-gem"></i> Loot Table
+      <span class="hu-eiress-drop">
+        Eiress <input type="number" name="system.eiressDrop" value="{{system.eiressDrop}}" min="0" data-dtype="Number" class="hu-eiress-drop-input" />
+      </span>
+    </div>
+
+    {{#each resolvedLoot}}
+    <div class="hu-loot-entry" data-index="{{this.index}}" data-item-id="{{this.itemId}}">
+      <input type="hidden" name="system.lootTable.{{this.index}}.itemId" value="{{this.itemId}}" />
+      <input type="hidden" name="system.lootTable.{{this.index}}.stolen" value="{{this.stolen}}" />
+      <img src="{{this.img}}" class="hu-loot-img" draggable="true" data-action="editItem" />
+      <span class="hu-loot-name">{{this.name}}</span>
+      <div class="hu-loot-chance-group">
+        <input type="number" name="system.lootTable.{{this.index}}.chance" value="{{this.chance}}"
+               min="1" max="100" class="hu-loot-chance-input" data-dtype="Number" />
+        <span class="hu-loot-pct">%</span>
+      </div>
+      <div class="hu-loot-chance-bar">
+        <div class="hu-loot-chance-fill" style="width: {{this.chance}}%"></div>
+      </div>
+      {{#if this.stolen}}<span class="hu-loot-stolen-badge">Stolen</span>{{/if}}
+      <a class="hu-loot-remove-btn" data-action="removeLootEntry" data-index="{{this.index}}" title="Remove">
+        <i class="fas fa-trash"></i>
+      </a>
+    </div>
+    {{/each}}
+
+    {{#unless resolvedLoot.length}}
+    <div class="hu-loot-empty">
+      <i class="fas fa-gem"></i>
+      <span>No loot entries — drag items or manacite here to add drops.</span>
+    </div>
+    {{/unless}}
+
+    <a class="hu-loot-add-btn" data-action="addLootEntry">
+      <i class="fas fa-plus"></i> Add Loot Entry
+    </a>
+  </div>
+{{/if}}
+</section>

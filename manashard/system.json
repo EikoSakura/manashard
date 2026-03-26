@@ -1,0 +1,132 @@
+{
+  "id": "manashard",
+  "title": "Manashard",
+  "description": "A grid-based tactical RPG system inspired by Fire Emblem, featuring side-based turns, Job/Manacite progression, and D100 roll-under mechanics.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13.351",
+    "maximum": "13"
+  },
+  "authors": [
+    {
+      "name": "Manashard Team"
+    }
+  ],
+  "esmodules": ["manashard.mjs"],
+  "styles": ["styles/manashard.css", "styles/wizard.css", "styles/party-sheet.css", "styles/compendium-browser.css", "styles/manacite-manager.css", "styles/spatial-inventory.css", "styles/encounter-builder.css"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": ["biography"]
+      },
+      "threat": {
+        "htmlFields": ["biography"]
+      },
+      "trap": {
+        "htmlFields": ["biography"]
+      }
+    },
+    "Item": {
+      "accessory": {
+        "htmlFields": ["description"]
+      },
+      "armor": {
+        "htmlFields": ["description"]
+      },
+      "consumable": {
+        "htmlFields": ["description"]
+      },
+      "item": {
+        "htmlFields": ["description"]
+      },
+      "manacite": {
+        "htmlFields": ["description"]
+      },
+      "material": {
+        "htmlFields": ["description"]
+      },
+      "species": {
+        "htmlFields": ["description", "trait.description"]
+      },
+      "weapon": {
+        "htmlFields": ["description"]
+      }
+    },
+    "RegionBehavior": {}
+},
+  "packs": [
+    {
+      "name": "accessories",
+      "label": "Accessories",
+      "path": "packs/accessories",
+      "type": "Item",
+      "system": "manashard"
+    },
+    {
+      "name": "armor",
+      "label": "Armor",
+      "path": "packs/armor",
+      "type": "Item",
+      "system": "manashard"
+    },
+    {
+      "name": "consumables",
+      "label": "Consumables",
+      "path": "packs/consumables",
+      "type": "Item",
+      "system": "manashard"
+    },
+    {
+      "name": "manacite",
+      "label": "Manacite",
+      "path": "packs/manacite",
+      "type": "Item",
+      "system": "manashard"
+    },
+    {
+      "name": "species",
+      "label": "Species",
+      "path": "packs/species",
+      "type": "Item",
+      "system": "manashard"
+    },
+    {
+      "name": "weapons",
+      "label": "Weapons",
+      "path": "packs/weapons",
+      "type": "Item",
+      "system": "manashard"
+    },
+    {
+      "name": "adventurers",
+      "label": "Adventurers",
+      "path": "packs/adventurers",
+      "type": "Actor",
+      "system": "manashard"
+    },
+    {
+      "name": "threats",
+      "label": "Threats",
+      "path": "packs/threats",
+      "type": "Actor",
+      "system": "manashard"
+    }
+  ],
+  "socket": false,
+  "initiative": "1",
+  "grid": {
+    "distance": 1,
+    "units": "tiles",
+    "diagonals": 3
+  },
+  "primaryTokenAttribute": "stats.hp",
+  "secondaryTokenAttribute": "stats.mp"
+}

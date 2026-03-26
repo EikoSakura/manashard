@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#ee66aa" stroke-width="4"/>
+  <!-- Broken heart -->
+  <path d="M128 200 L60 130 C40 100 40 70 70 55 C100 40 128 70 128 70 C128 70 156 40 186 55 C216 70 216 100 196 130 Z" fill="none" stroke="#ee66aa" stroke-width="7"/>
+  <!-- Crack down middle -->
+  <path d="M128 80 L135 115 L120 140 L132 170 L128 200" fill="none" stroke="#ee66aa" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Spiral/hypnotic swirls in heart halves -->
+  <circle cx="95" cy="105" r="10" fill="none" stroke="#ee66aa" stroke-width="3"/>
+  <circle cx="161" cy="105" r="10" fill="none" stroke="#ee66aa" stroke-width="3"/>
+</svg>

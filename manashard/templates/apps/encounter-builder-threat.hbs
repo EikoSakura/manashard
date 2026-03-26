@@ -1,0 +1,314 @@
+<div class="eb-threat-layout">
+
+  {{!-- ═══ LEFT COLUMN: Form ═══ --}}
+  <div class="eb-threat-form">
+
+    {{!-- Header: Name + Portrait + Level --}}
+    <div class="eb-section eb-header-row">
+      <img class="eb-portrait" src="{{threat.img}}" alt="portrait" data-action="editImage" title="Change Image" />
+      <div class="eb-header-fields">
+        <input type="text" name="threat-name" class="eb-name-input" value="{{threat.name}}"
+               placeholder="{{localize 'MANASHARD.EncBuilder.ThreatName'}}" />
+        <div class="eb-header-meta">
+          <label class="eb-inline-label">
+            {{localize "MANASHARD.EncBuilder.Level"}}
+            <input type="number" name="threat-level" value="{{threat.level}}" min="1" max="40" />
+          </label>
+          <label class="eb-inline-label">
+            {{localize "MANASHARD.EncBuilder.Size"}}
+            <select name="threat-size">
+              {{#each (array 1 2 3 4 5)}}
+              <option value="{{this}}" {{#if (eq this ../threat.size)}}selected{{/if}}>{{this}}</option>
+              {{/each}}
+            </select>
+          </label>
+          <label class="eb-inline-label">
+            {{localize "MANASHARD.EncBuilder.MOV"}}
+            <input type="number" name="threat-mov" value="{{threat.mov}}" min="0" max="20" />
+          </label>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Core Selectors Row --}}
+    <div class="eb-section eb-selectors-row">
+      <label class="eb-select-label">
+        {{localize "MANASHARD.EncBuilder.Rank"}}
+        <select name="threat-rank">
+          {{#each rankOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </label>
+      <label class="eb-select-label">
+        {{localize "MANASHARD.EncBuilder.Role"}}
+        <select name="threat-role">
+          {{#each roleOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </label>
+      <label class="eb-select-label">
+        {{localize "MANASHARD.EncBuilder.Archetype"}}
+        <select name="threat-archetype">
+          {{#each archetypeOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </label>
+      <button class="eb-btn eb-btn-accent" data-action="applySuggestion">
+        <i class="fas fa-magic"></i> {{localize "MANASHARD.EncBuilder.ApplySuggestion"}}
+      </button>
+    </div>
+
+    {{!-- HP / MP --}}
+    <div class="eb-section">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.Stats"}}</h4>
+      <div class="eb-resource-row">
+        <div class="eb-resource-cell">
+          <span class="eb-stat-label">HP</span>
+          <input type="number" data-stat="hp" value="{{threat.stats.hp}}" min="1" />
+          <div class="eb-cap-bar"><div class="eb-cap-fill {{#if hpStat.overCap}}over-cap{{/if}}" style="width:{{hpStat.percent}}%"></div></div>
+          <span class="eb-cap-text">/ {{hpStat.cap}}</span>
+        </div>
+        <div class="eb-resource-cell">
+          <span class="eb-stat-label">MP</span>
+          <input type="number" data-stat="mp" value="{{threat.stats.mp}}" min="0" />
+          <div class="eb-cap-bar"><div class="eb-cap-fill {{#if mpStat.overCap}}over-cap{{/if}}" style="width:{{mpStat.percent}}%"></div></div>
+          <span class="eb-cap-text">/ {{mpStat.cap}}</span>
+        </div>
+      </div>
+
+      {{!-- Stat Grid --}}
+      <div class="eb-stat-grid">
+        {{#each statGrid}}
+        <div class="eb-stat-cell {{#if this.overCap}}over-cap{{/if}}">
+          <span class="eb-stat-label">{{this.label}}</span>
+          <input type="number" data-stat="{{this.key}}" value="{{this.value}}" min="0" />
+          <div class="eb-cap-bar"><div class="eb-cap-fill {{#if this.overCap}}over-cap{{/if}}" style="width:{{this.percent}}%"></div></div>
+          <span class="eb-cap-text">/ {{this.cap}}</span>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- Elemental Profile --}}
+    <div class="eb-section">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.ElementalProfile"}}</h4>
+      <div class="eb-element-grid">
+        {{#each elementGrid}}
+        <button class="eb-tier-btn eb-element-{{this.key}} tier-{{this.tier}}"
+                data-action="cycleElementTier" data-element="{{this.key}}"
+                title="{{this.label}}: {{this.tierLabel}}">
+          <span class="eb-tier-icon">{{this.label}}</span>
+          <span class="eb-tier-value">{{upper (substring this.tier 0 3)}}</span>
+        </button>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- Status Resistances --}}
+    <div class="eb-section">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.StatusResistances"}}</h4>
+      <div class="eb-status-grid">
+        {{#each statusGrid}}
+        <button class="eb-tier-btn eb-status-btn tier-{{this.tier}}"
+                data-action="cycleStatusTier" data-condition="{{this.key}}"
+                title="{{this.label}}: {{this.tier}}">
+          <i class="{{this.icon}}"></i>
+          <span class="eb-tier-value">{{upper (substring this.tier 0 3)}}</span>
+        </button>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- Movement Modes --}}
+    <div class="eb-section">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.MovementModes"}}</h4>
+      <div class="eb-movement-modes">
+        {{#each movementModes}}
+        <label class="eb-checkbox-label">
+          <input type="checkbox" data-action="toggleMovement" data-mode="{{this.key}}"
+                 {{#if this.active}}checked{{/if}} />
+          {{this.label}}
+        </label>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- Creature Types --}}
+    <div class="eb-section">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.CreatureTypes"}}</h4>
+      <div class="eb-creature-tags">
+        {{#each creatureTypes}}
+        <span class="eb-tag">
+          {{this}}
+          <button class="eb-tag-remove" data-action="removeCreatureType" data-type="{{this}}"><i class="fas fa-times"></i></button>
+        </span>
+        {{/each}}
+        <div class="eb-tag-input-wrap">
+          <input type="text" name="creature-type-input" placeholder="{{localize 'MANASHARD.EncBuilder.AddType'}}" list="creature-type-suggestions" />
+          <datalist id="creature-type-suggestions">
+            {{#each creatureTypeSuggestions}}
+            <option value="{{this}}">
+            {{/each}}
+          </datalist>
+          <button class="eb-btn-sm" data-action="addCreatureType"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Equipment Zone --}}
+    <div class="eb-section">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.Equipment"}}</h4>
+      <div class="eb-equipment-zone eb-drop-zone">
+        {{#if equipment.length}}
+          {{#each equipment}}
+          <div class="eb-item-row">
+            <img class="eb-item-img" src="{{this.img}}" />
+            <span class="eb-item-name">{{this.name}}</span>
+            <span class="eb-item-type">{{this.type}}</span>
+            <button class="eb-remove-btn" data-action="removeEquipment" data-index="{{@index}}"><i class="fas fa-times"></i></button>
+          </div>
+          {{/each}}
+        {{else}}
+          <p class="eb-drop-hint"><i class="fas fa-arrow-down"></i> {{localize "MANASHARD.EncBuilder.DropEquipment"}}</p>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- Skills Zone --}}
+    <div class="eb-section">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.Skills"}}</h4>
+      <div class="eb-skills-zone eb-drop-zone">
+        {{#if skills.length}}
+          {{#each skills}}
+          <div class="eb-item-row">
+            <img class="eb-item-img" src="{{this.img}}" />
+            <span class="eb-item-name">{{this.name}}</span>
+            <button class="eb-remove-btn" data-action="removeSkill" data-index="{{@index}}"><i class="fas fa-times"></i></button>
+          </div>
+          {{/each}}
+        {{else}}
+          <p class="eb-drop-hint"><i class="fas fa-arrow-down"></i> {{localize "MANASHARD.EncBuilder.DropSkills"}}</p>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- Loot Table --}}
+    <div class="eb-section">
+      <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.LootTable"}}</h4>
+      <div class="eb-loot-table">
+        {{#each lootTable}}
+        <div class="eb-loot-row" data-index="{{@index}}">
+          <input type="text" name="loot-name" value="{{this.itemName}}" placeholder="{{localize 'MANASHARD.EncBuilder.ItemName'}}" />
+          <label class="eb-loot-chance">
+            <input type="number" name="loot-chance" value="{{this.chance}}" min="1" max="100" />%
+          </label>
+          <label class="eb-loot-stolen" title="{{localize 'MANASHARD.EncBuilder.Stolen'}}">
+            <input type="checkbox" name="loot-stolen" {{#if this.stolen}}checked{{/if}} />
+            <i class="fas fa-hand-lizard"></i>
+          </label>
+          <button class="eb-remove-btn" data-action="removeLootRow" data-index="{{@index}}"><i class="fas fa-times"></i></button>
+        </div>
+        {{/each}}
+        <button class="eb-btn-sm" data-action="addLootRow"><i class="fas fa-plus"></i> {{localize "MANASHARD.EncBuilder.AddLoot"}}</button>
+      </div>
+    </div>
+
+    {{!-- Crystallize --}}
+    <div class="eb-section">
+      <label class="eb-checkbox-label">
+        <input type="checkbox" name="threat-crystallize" {{#if threat.crystallizeInstantly}}checked{{/if}} />
+        {{localize "MANASHARD.EncBuilder.CrystallizeInstantly"}}
+      </label>
+    </div>
+
+    {{!-- Action Buttons --}}
+    <div class="eb-section eb-actions">
+      <button class="eb-btn eb-btn-accent" data-action="saveThreat">
+        <i class="fas fa-save"></i> {{localize "MANASHARD.EncBuilder.SaveThreat"}}
+      </button>
+      <button class="eb-btn" data-action="loadThreat">
+        <i class="fas fa-folder-open"></i> {{localize "MANASHARD.EncBuilder.LoadThreat"}}
+      </button>
+      <button class="eb-btn eb-btn-danger" data-action="clearThreat">
+        <i class="fas fa-trash"></i> {{localize "MANASHARD.EncBuilder.ClearThreat"}}
+      </button>
+    </div>
+  </div>
+
+  {{!-- ═══ RIGHT COLUMN: Preview ═══ --}}
+  <aside class="eb-threat-preview">
+    <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.DerivedPreview"}}</h4>
+
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.ThreatLevel"}}</span>
+      <span class="eb-preview-value eb-tl-value" data-preview="threatLevel">{{preview.threatLevel}}</span>
+    </div>
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.ActionsPerTurn"}}</span>
+      <span class="eb-preview-value" data-preview="actionsPerTurn">{{preview.actionsPerTurn}}</span>
+    </div>
+
+    <hr class="eb-divider" />
+
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.Damage"}}</span>
+      <span class="eb-preview-value" data-preview="damage">{{preview.damage}}</span>
+    </div>
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.Accuracy"}}</span>
+      <span class="eb-preview-value" data-preview="accuracy">{{preview.accuracy}}</span>
+    </div>
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.Critical"}}</span>
+      <span class="eb-preview-value" data-preview="critical">{{preview.critical}}</span>
+    </div>
+
+    <hr class="eb-divider" />
+
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.PEVA"}}</span>
+      <span class="eb-preview-value" data-preview="peva">{{preview.peva}}</span>
+    </div>
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.MEVA"}}</span>
+      <span class="eb-preview-value" data-preview="meva">{{preview.meva}}</span>
+    </div>
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.CritAvoid"}}</span>
+      <span class="eb-preview-value" data-preview="critAvoid">{{preview.critAvoid}}</span>
+    </div>
+
+    <hr class="eb-divider" />
+
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.PDEF"}}</span>
+      <span class="eb-preview-value" data-preview="pdef">{{preview.pdef}}</span>
+    </div>
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.MDEF"}}</span>
+      <span class="eb-preview-value" data-preview="mdef">{{preview.mdef}}</span>
+    </div>
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.Block"}}</span>
+      <span class="eb-preview-value" data-preview="blockChance">{{preview.blockChance}}</span>
+    </div>
+
+    <hr class="eb-divider" />
+
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.MPRegen"}}</span>
+      <span class="eb-preview-value" data-preview="mpRegen">{{preview.mpRegen}}</span>
+    </div>
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.Reach"}}</span>
+      <span class="eb-preview-value" data-preview="reach">{{preview.reach}}</span>
+    </div>
+    <div class="eb-preview-stat">
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.Vision"}}</span>
+      <span class="eb-preview-value" data-preview="vision">{{preview.vision}}</span>
+    </div>
+  </aside>
+</div>

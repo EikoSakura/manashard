@@ -1,0 +1,277 @@
+<section class="ctb-tracker">
+  {{!-- Combat Controls --}}
+  <div class="ctb-controls">
+    {{#if combatStarted}}
+      <span class="ctb-round-label">Round {{round}}</span>
+      <span class="ctb-turn-indicator ctb-turn-{{currentSide}}">{{turnLabel}}</span>
+      <button type="button" class="ctb-btn ctb-btn--end-combat" data-action="endCombat" title="End Combat">
+        <i class="fas fa-flag-checkered"></i>
+      </button>
+    {{else if hasCombat}}
+      <button type="button" class="ctb-btn ctb-btn--begin" data-action="beginCombat">
+        <i class="fas fa-swords"></i> Begin Combat
+      </button>
+    {{else}}
+      <button type="button" class="ctb-btn ctb-btn--create" data-action="createCombat">
+        <i class="fas fa-plus"></i> Create Encounter
+      </button>
+    {{/if}}
+  </div>
+
+  {{#if combatStarted}}
+
+    {{!-- ═══ OBJECTIVE BANNER ═══ --}}
+    {{#if objective}}
+    <div class="ctb-objective-banner objective-{{objectiveType}} {{#if objective.isComplete}}objective-complete{{/if}} {{#if objective.isFailed}}objective-failed{{/if}} {{#if objective.capturable}}objective-capturable{{/if}}">
+      <i class="{{objectiveIcon}} ctb-objective-icon"></i>
+      <div class="ctb-objective-text">
+        <span class="ctb-objective-type">{{objective.label}}</span>
+        <span class="ctb-objective-desc">{{objective.description}}</span>
+        {{#if objective.capturable}}
+          <span class="ctb-objective-capture-ready"><i class="fas fa-hand-holding-heart"></i> Capture Ready!</span>
+        {{/if}}
+      </div>
+      {{#if objective.target}}
+        <span class="ctb-objective-progress">{{objective.current}}/{{objective.target}}</span>
+      {{/if}}
+      {{#if objective.isComplete}}
+        <span class="ctb-objective-complete-badge"><i class="fas fa-check"></i></span>
+      {{/if}}
+      {{#if objective.isFailed}}
+        <span class="ctb-objective-failed-badge"><i class="fas fa-times"></i></span>
+      {{/if}}
+      {{#if objective.showManualComplete}}
+        <button type="button" class="ctb-btn ctb-btn--complete" data-action="completeObjective" title="Complete Objective">
+          <i class="fas fa-check"></i>
+        </button>
+      {{/if}}
+    </div>
+    {{/if}}
+
+    {{!-- ═══ SELECTION PROMPT — Choose who acts next ═══ --}}
+    {{#if awaitingSelection}}
+    <div class="ctb-selection-prompt">
+      <i class="fas fa-hand-pointer"></i>
+      <span>Select who acts next</span>
+    </div>
+    {{/if}}
+
+    {{!-- ═══ HERO CARD — Active Combatant ═══ --}}
+    {{#if heroCard}}
+    <div class="ctb-hero-card">
+      <div class="ctb-hero-portrait">
+        <img src="{{heroCard.img}}" alt="{{heroCard.name}}" />
+      </div>
+      <div class="ctb-hero-info">
+        <span class="ctb-hero-tag">Now Acting</span>
+        <span class="ctb-hero-name">{{heroCard.name}}</span>
+        <div class="ctb-hero-bars">
+          <div class="ctb-hero-bar">
+            <span class="ctb-hero-bar-label hp-label">HP</span>
+            <div class="ctb-hero-bar-track">
+              <div class="ctb-hero-bar-fill hp-fill" style="width: {{heroCard.hpPercent}}%"></div>
+              {{#if heroCard.hpBarrier}}
+              <div class="ctb-hero-bar-fill barrier-fill" style="right: {{heroCard.hpBarrierRight}}%; width: {{heroCard.hpBarrierPercent}}%"></div>
+              {{/if}}
+            </div>
+            <span class="ctb-hero-bar-text">{{heroCard.hpValue}}{{#if heroCard.hpBarrier}}+{{heroCard.hpBarrier}}{{/if}}/{{heroCard.hpMax}}</span>
+          </div>
+          <div class="ctb-hero-bar">
+            <span class="ctb-hero-bar-label mp-label">MP</span>
+            <div class="ctb-hero-bar-track">
+              <div class="ctb-hero-bar-fill mp-fill" style="width: {{heroCard.mpPercent}}%"></div>
+            </div>
+            <span class="ctb-hero-bar-text">{{heroCard.mpValue}}/{{heroCard.mpMax}}</span>
+          </div>
+        </div>
+      </div>
+      <span class="ctb-hero-agi" title="Agility">AGI {{heroCard.agi}}</span>
+      {{#if (gt heroCard.actionsPerTurn 1)}}
+      <span class="ctb-hero-actions" title="Actions Remaining">{{heroCard.actionsRemaining}}/{{heroCard.actionsPerTurn}} <i class="fas fa-bolt"></i></span>
+      {{/if}}
+    </div>
+    {{/if}}
+
+    {{!-- Charging indicator --}}
+    {{#if isCharging}}
+    <div class="ctb-charging-notice">
+      <i class="fas fa-hourglass-half"></i>
+      <strong>{{currentCombatantName}}</strong> is charging <em>{{chargingSkillName}}</em> — resolves this turn!
+    </div>
+    {{/if}}
+
+    {{!-- End Turn button (only when a combatant is actively selected, not during selection) --}}
+    {{#if canEndTurn}}
+    <button type="button" class="ctb-btn ctb-btn--end-turn" data-action="endTurn">
+      <i class="fas fa-forward-step"></i> End Turn
+    </button>
+    {{/if}}
+
+    {{!-- ═══ COMBATANT LISTS ═══ --}}
+
+    {{!-- Player Side --}}
+    <div class="ctb-side-section">
+      <div class="ctb-side-header ctb-side-players" data-action="toggleSection" data-section="players">
+        <i class="fas fa-shield-alt"></i>
+        <span>Players</span>
+        <span class="ctb-remaining-badge">{{playerRemaining}} left</span>
+      </div>
+      {{#unless playersCollapsed}}
+      <ol class="ctb-combatant-list">
+        {{#each players}}
+          <li class="ctb-combatant-entry disposition-friendly {{#if isCurrent}}ctb-entry--active{{/if}} {{#if hasActed}}ctb-entry--acted{{/if}} {{#if isDefeated}}ctb-entry--defeated{{/if}} {{#if isSelectable}}ctb-entry--selectable{{/if}}" data-combatant-id="{{id}}">
+            <div class="ctb-entry-portrait">
+              <img src="{{img}}" alt="{{name}}" />
+            </div>
+            <div class="ctb-entry-info">
+              <span class="ctb-entry-name">{{name}}</span>
+              {{#if statusIcons.length}}
+                <div class="ct-bar-statuses">
+                  {{#each statusIcons}}
+                    <i class="{{icon}} ct-status-icon ct-status-{{key}}" title="{{label}}"></i>
+                  {{/each}}
+                </div>
+              {{/if}}
+              {{#if isCharging}}
+                <span class="ct-charging-badge"><i class="fas fa-hourglass-half"></i> {{chargingSkillName}}</span>
+              {{/if}}
+            </div>
+            <div class="ctb-entry-status">
+              {{#if isDefeated}}<i class="fas fa-skull" title="Defeated"></i>
+              {{else if isCurrent}}<i class="fas fa-chevron-right" title="Acting"></i>
+              {{else if hasActed}}<i class="fas fa-check" title="Acted"></i>
+              {{else if isSelectable}}
+                <button type="button" class="ctb-btn ctb-btn--go" data-action="selectCombatant" data-combatant-id="{{id}}" title="Select">
+                  GO
+                </button>
+              {{else}}<i class="fas fa-clock" title="Pending"></i>
+              {{/if}}
+            </div>
+          </li>
+        {{/each}}
+      </ol>
+      {{/unless}}
+    </div>
+
+    {{!-- Enemy Side --}}
+    <div class="ctb-side-section">
+      <div class="ctb-side-header ctb-side-enemies" data-action="toggleSection" data-section="enemies">
+        <i class="fas fa-skull-crossbones"></i>
+        <span>Enemies</span>
+        <span class="ctb-remaining-badge">{{enemyRemaining}} left</span>
+      </div>
+      {{#unless enemiesCollapsed}}
+      <ol class="ctb-combatant-list">
+        {{#each enemies}}
+          <li class="ctb-combatant-entry disposition-hostile {{#if isCurrent}}ctb-entry--active{{/if}} {{#if hasActed}}ctb-entry--acted{{/if}} {{#if isDefeated}}ctb-entry--defeated{{/if}} {{#if isSelectable}}ctb-entry--selectable{{/if}}" data-combatant-id="{{id}}">
+            <div class="ctb-entry-portrait">
+              <img src="{{img}}" alt="{{name}}" />
+            </div>
+            <div class="ctb-entry-info">
+              <span class="ctb-entry-name">
+                {{name}}
+                {{#if roleBadge}}<span class="ctb-role-badge role-{{role}}" title="{{roleBadge}}"><i class="{{roleIcon}}"></i></span>{{/if}}
+                {{#if (gt actionsPerTurn 1)}}<span class="ctb-action-count">{{actionsRemaining}}/{{actionsPerTurn}}</span>{{/if}}
+              </span>
+              {{#if statusIcons.length}}
+                <div class="ct-bar-statuses">
+                  {{#each statusIcons}}
+                    <i class="{{icon}} ct-status-icon ct-status-{{key}}" title="{{label}}"></i>
+                  {{/each}}
+                </div>
+              {{/if}}
+              {{#if isCharging}}
+                <span class="ct-charging-badge"><i class="fas fa-hourglass-half"></i> {{chargingSkillName}}</span>
+              {{/if}}
+            </div>
+            <div class="ctb-entry-status">
+              {{#if isDefeated}}<i class="fas fa-skull" title="Defeated"></i>
+              {{else if isCurrent}}<i class="fas fa-chevron-right" title="Acting"></i>
+              {{else if hasActed}}<i class="fas fa-check" title="Acted"></i>
+              {{else if isSelectable}}
+                <button type="button" class="ctb-btn ctb-btn--go" data-action="selectCombatant" data-combatant-id="{{id}}" title="Select">
+                  GO
+                </button>
+              {{else}}<i class="fas fa-clock" title="Pending"></i>
+              {{/if}}
+            </div>
+          </li>
+        {{/each}}
+      </ol>
+      {{/unless}}
+    </div>
+
+  {{else if hasCombat}}
+
+    {{!-- ═══ PRE-COMBAT: Objective Configuration (GM only) ═══ --}}
+    {{#if isGM}}
+    <div class="ctb-objective-config">
+      <label class="ctb-objective-config-label"><i class="fas fa-bullseye"></i> Mission Objective</label>
+      <select data-change="setObjective" class="ctb-objective-select">
+        {{#each objectiveTypes}}
+          <option value="{{@key}}" {{#if (eq @key ../currentObjective.type)}}selected{{/if}}>{{this}}</option>
+        {{/each}}
+      </select>
+
+      {{!-- Turn count parameter --}}
+      {{#if objectiveNeedsTurns}}
+        <div class="ctb-objective-param">
+          <label>Rounds</label>
+          <input type="number" data-change="setObjectiveTurns" value="{{currentObjective.turnCount}}" min="1" max="99" class="ctb-objective-turns" />
+        </div>
+      {{/if}}
+
+      {{!-- Boss/target selection --}}
+      {{#if objectiveNeedsBoss}}
+        <div class="ctb-objective-param">
+          <label>Target</label>
+          <select data-change="setObjectiveBoss" class="ctb-objective-boss-select">
+            {{#each hostileCombatants}}
+              <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}{{#if isBoss}} ★{{/if}}</option>
+            {{/each}}
+          </select>
+        </div>
+      {{/if}}
+
+      {{!-- Escort VIP selection --}}
+      {{#if (eq currentObjective.type "escort")}}
+        <div class="ctb-objective-param">
+          <label>VIP</label>
+          <select data-change="setObjectiveEscort" class="ctb-objective-boss-select">
+            {{#each friendlyCombatants}}
+              <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+            {{/each}}
+          </select>
+        </div>
+      {{/if}}
+
+      {{!-- Ambush toggle --}}
+      <div class="ctb-ambush-toggle">
+        <label>
+          <input type="checkbox" data-action="toggleAmbush" {{#if ambush}}checked{{/if}} />
+          <i class="fas fa-eye-slash"></i> Ambush (Enemies go first)
+        </label>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- Pre-combat combatant list --}}
+    <div class="ctb-precombat-header">
+      <i class="fas fa-users"></i> Combatants
+    </div>
+    <ol class="ctb-combatant-list">
+      {{#each combatants}}
+        <li class="ctb-combatant-entry disposition-{{disposition}}" data-combatant-id="{{id}}">
+          <img src="{{img}}" alt="{{name}}" class="ctb-combatant-img" />
+          <span class="ctb-combatant-name">{{name}}</span>
+          <span class="ctb-combatant-agi">AGI {{agi}}</span>
+          <button type="button" class="ctb-btn-remove" data-action="removeCombatant" data-combatant-id="{{id}}" title="Remove">
+            <i class="fas fa-times"></i>
+          </button>
+        </li>
+      {{/each}}
+    </ol>
+  {{else}}
+    <p class="ctb-empty">No active encounter.</p>
+  {{/if}}
+</section>

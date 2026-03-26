@@ -1,0 +1,16 @@
+{{!-- Token Info Panel Configuration Dialog --}}
+<div class="token-info-config-body">
+  {{#each settings}}
+  <div class="form-group">
+    <label>{{this.name}}</label>
+    <div class="form-fields">
+      <input type="checkbox" name="{{this.key}}" {{checked this.value}}>
+    </div>
+    <p class="hint">{{this.hint}}</p>
+  </div>
+  {{/each}}
+
+  <footer class="sheet-footer flexrow">
+    <button type="submit"><i class="fa-solid fa-save"></i> Save Changes</button>
+  </footer>
+</div>

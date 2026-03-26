@@ -1,0 +1,268 @@
+<section class="tab-content {{tab.cssClass}}" data-tab="skills">
+
+{{#if isCharacter}}
+
+  {{!-- ═══ EQUIPPED JOB ═══ --}}
+  <div class="job-display-panel">
+    <h3><i class="fas fa-briefcase"></i> Equipped Job</h3>
+    {{#if equippedJob}}
+    <div class="job-display-row">
+      <img src="{{equippedJob.img}}" class="job-display-img" data-item-id="{{equippedJob.id}}" data-action="postItemToChat" title="Post to chat" />
+      <div class="job-display-info">
+        <div class="job-display-name-row">
+          <span class="job-display-name">{{equippedJob.name}}</span>
+          <button type="button" class="job-unequip-btn" data-action="unequipJob" data-item-id="{{equippedJob.id}}" title="Unequip Job"><i class="fas fa-times"></i></button>
+        </div>
+        {{#if jobGrowthRates}}
+        <div class="job-growth-rates">
+          <span class="growth-label">Growth:</span>
+          {{#each jobGrowthRates}}
+          {{#if this}}
+          <span class="growth-stat" title="{{@key}} +{{this}}%">{{@key}} +{{this}}%</span>
+          {{/if}}
+          {{/each}}
+        </div>
+        {{/if}}
+      </div>
+    </div>
+    {{else}}
+    <div class="job-empty-state">
+      <i class="fas fa-briefcase"></i>
+      <span>No Job equipped</span>
+    </div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ SKILL LOADOUT ═══ --}}
+  <div class="skills-section">
+    <h3><i class="fas fa-th-large"></i> Loadout
+      <span class="loadout-counter {{#if (gt loadoutSlotsUsed maxLoadoutSlots)}}over{{else if (eq loadoutSlotsUsed maxLoadoutSlots)}}full{{/if}}">{{loadoutSlotsUsed}} / {{maxLoadoutSlots}}</span>
+      <button type="button" class="manage-manacite-btn" data-action="openManaciteManager" title="Manage Manacite"><i class="fas fa-gem"></i> Manage</button>
+    </h3>
+    {{#if (gt loadoutSlotsUsed maxLoadoutSlots)}}
+    <div class="loadout-over-warning"><i class="fas fa-exclamation-triangle"></i> Over slot limit! Remove skills to get back within capacity.</div>
+    {{/if}}
+
+    <div class="skill-loadout-zone">
+      {{#if skillLoadout.length}}
+      <div class="skill-card-grid">
+        {{#each skillLoadout}}
+        <div class="skill-grid-card loadout-slot {{this.system.skillType}} {{#if this._isLoadoutFree}}loadout-slot-free{{/if}}" data-item-id="{{this.id}}">
+          <div class="skill-grid-card-summary">
+            <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
+            <span class="skill-grid-card-name">{{this.name}}</span>
+            {{#if (eq this.system.skillType "magic")}}
+            <a class="skill-card-action cast-button" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
+            {{else if (eq this.system.skillType "art")}}
+            <a class="skill-card-action activate-button" data-action="useSkill" title="Activate"><i class="fas fa-dice-d20"></i></a>
+            {{/if}}
+            <a class="skill-card-action remove-button" data-action="removeFromLoadout" title="Remove from loadout"><i class="fas fa-times"></i></a>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <div class="adv-empty-state">
+        <i class="fas fa-th-large"></i>
+        <span>No skills equipped — click Manage to add skills</span>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+
+
+{{else}}
+
+  {{!-- ═══ THREAT LOADOUT: EQUIPMENT ═══ --}}
+  <div class="skills-section">
+    <h3><i class="fas fa-shield-halved"></i> Equipment</h3>
+
+    {{!-- Weapons --}}
+    {{#if weapons.length}}
+    <div class="adv-tile-grid">
+      {{#each weapons}}
+      <div class="adv-tile {{#if this.system.equipped}}equipped{{/if}}" data-item-id="{{this.id}}">
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;">
+          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          {{#if this.system.equipped}}
+            {{#if (eq this.system.equipSlot "offhand")}}<span class="adv-tile-badge">Off-hand</span>
+            {{else if (eq this.system.category "natural")}}<span class="adv-tile-badge">Natural</span>
+            {{else}}<span class="adv-tile-badge">Mainhand</span>
+            {{/if}}
+          {{/if}}
+          {{#unless (eq this.system.category "natural")}}
+          <a class="adv-tile-action" data-action="toggleEquip" title="{{#if this.system.equipped}}Unequip{{else}}Equip{{/if}}">
+            <i class="fas {{#if this.system.equipped}}fa-circle-check{{else}}fa-circle{{/if}}"></i>
+          </a>
+          {{/unless}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{!-- Armor --}}
+    {{#if armors.length}}
+    <div class="adv-tile-grid">
+      {{#each armors}}
+      <div class="adv-tile {{#if this.system.equipped}}equipped{{/if}}" data-item-id="{{this.id}}">
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;">
+          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          {{#if this.system.equipped}}<span class="adv-tile-badge">Equipped</span>{{/if}}
+          <a class="adv-tile-action" data-action="toggleEquip" title="{{#if this.system.equipped}}Unequip{{else}}Equip{{/if}}">
+            <i class="fas {{#if this.system.equipped}}fa-circle-check{{else}}fa-circle{{/if}}"></i>
+          </a>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{!-- Accessories --}}
+    {{#if accessories.length}}
+    <div class="adv-tile-grid">
+      {{#each accessories}}
+      <div class="adv-tile {{#if this.system.equipped}}equipped{{/if}}" data-item-id="{{this.id}}">
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;">
+          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          {{#if this.system.equipped}}<span class="adv-tile-badge">Equipped</span>{{/if}}
+          <a class="adv-tile-action" data-action="toggleEquip" title="{{#if this.system.equipped}}Unequip{{else}}Equip{{/if}}">
+            <i class="fas {{#if this.system.equipped}}fa-circle-check{{else}}fa-circle{{/if}}"></i>
+          </a>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{!-- Consumables --}}
+    {{#if consumables.length}}
+    <div class="adv-tile-grid">
+      {{#each consumables}}
+      <div class="adv-tile" data-item-id="{{this.id}}">
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;">
+          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
+          <span class="adv-tile-name">{{this.name}}</span>
+          <span class="adv-tile-badge">x{{this.system.quantity}}</span>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{!-- Empty state --}}
+    {{#unless weapons.length}}{{#unless armors.length}}{{#unless accessories.length}}{{#unless consumables.length}}
+    <div class="adv-empty-state">
+      <i class="fas fa-shield-halved"></i>
+      <span>No equipment — drop items onto this sheet</span>
+    </div>
+    {{/unless}}{{/unless}}{{/unless}}{{/unless}}
+  </div>
+
+  {{!-- ═══ THREAT LOADOUT: SKILLS ═══ --}}
+  <div class="skills-section">
+    <h3><i class="fas fa-magic-wand-sparkles"></i> Skills
+      {{#if allActiveSkills.length}}<span class="section-count-badge">{{allActiveSkills.length}}</span>{{/if}}
+    </h3>
+
+    {{#if allActiveSkills.length}}
+    <div class="skill-card-grid">
+      {{#each allActiveSkills}}
+      <div class="skill-grid-card {{this.skillType}} {{#if this._isTaught}}taught{{/if}}" data-item-id="{{this.id}}">
+        <div class="skill-grid-card-summary">
+          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
+          <span class="skill-grid-card-name">{{this.name}}</span>
+          {{#if (eq this.skillType "magic")}}
+          <a class="skill-card-action cast-button" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
+          {{else if (eq this.skillType "art")}}
+          <a class="skill-card-action activate-button" data-action="useSkill" title="Activate"><i class="fas fa-dice-d20"></i></a>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="adv-empty-state">
+      <i class="fas fa-magic-wand-sparkles"></i>
+      <span>No active skills — drop Manacite onto this sheet</span>
+    </div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ THREAT LOADOUT: PASSIVES ═══ --}}
+  {{#if passiveAbilities.length}}
+  <div class="skills-section">
+    <h3><i class="fas fa-star"></i> Passives
+      <span class="section-count-badge">{{passiveAbilities.length}}</span>
+    </h3>
+
+    <div class="skill-card-grid">
+      {{#each passiveAbilities}}
+      <div class="skill-grid-card passive" data-item-id="{{this.id}}">
+        <div class="skill-grid-card-summary">
+          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
+          <span class="skill-grid-card-name">{{this.name}}</span>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ THREAT LOADOUT: MANACITE COLLECTION ═══ --}}
+  <div class="jewel-case">
+    <div class="jewel-case-header">
+      <h3><i class="fas fa-gem"></i> Manacite Collection</h3>
+      <div class="jewel-case-actions">
+        <a class="item-control add-item" data-action="addItem" data-type="manacite"><i class="fas fa-plus"></i></a>
+      </div>
+    </div>
+
+    <div class="jewel-case-tray">
+      {{#if jobManacites.length}}
+      <div class="jewel-case-section">
+        <span class="jewel-section-label"><i class="fas fa-briefcase"></i> Jobs</span>
+        <div class="jewel-row">
+          {{#each jobManacites}}
+          <div class="jewel-gem {{#if this.system.equipped}}jewel-equipped{{/if}}"
+               data-item-id="{{this.id}}" title="{{this.name}}{{#if this.system.equipped}} — Equipped{{/if}}">
+            <img src="{{this.img}}" class="jewel-img" data-action="postItemToChat" title="Post to chat" />
+            <span class="jewel-name">{{this.name}}</span>
+            {{#if this.system.equipped}}<span class="jewel-equipped-indicator"><i class="fas fa-check-circle"></i></span>{{/if}}
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+
+      {{#if skillManacites.length}}
+      <div class="jewel-case-section">
+        <span class="jewel-section-label"><i class="fas fa-gem"></i> Skills</span>
+        <div class="jewel-row">
+          {{#each skillManacites}}
+          <div class="jewel-gem skill-gem-{{this.system.skillType}}"
+               data-item-id="{{this.id}}" title="{{this.name}} ({{this.system.skillType}})">
+            <img src="{{this.img}}" class="jewel-img" data-action="postItemToChat" title="Post to chat" />
+            <span class="jewel-name">{{this.name}}</span>
+            <span class="skill-type-badge {{this.system.skillType}}">{{this.system.skillType}}</span>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+
+      {{#unless (or jobManacites.length skillManacites.length)}}
+      <div class="jewel-case-empty">
+        <i class="fas fa-gem"></i>
+        <span>No manacite in collection</span>
+      </div>
+      {{/unless}}
+    </div>
+  </div>
+
+{{/if}}
+
+</section>

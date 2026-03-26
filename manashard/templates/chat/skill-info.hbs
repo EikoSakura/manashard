@@ -1,0 +1,83 @@
+<div class="manashard skill-chat-card">
+  {{!-- ═══ HEADER BAR ═══ --}}
+  <div class="scc-header">
+    <div class="scc-portrait-frame">
+      <div class="scc-portrait-diamond">
+        <img src="{{actorImg}}" class="scc-portrait" />
+      </div>
+    </div>
+    {{#if (eq skillType "magic")}}
+      <i class="scc-type-icon fas fa-hat-wizard"></i>
+    {{else if (eq skillType "art")}}
+      <i class="scc-type-icon fas fa-swords"></i>
+    {{else}}
+      <i class="scc-type-icon fas fa-sparkles"></i>
+    {{/if}}
+    <div class="scc-header-text">
+      <span class="scc-actor-name">{{actorName}}</span>
+      <span class="scc-action">
+        {{#if (eq skillType "magic")}}casts{{else}}uses{{/if}}
+        <strong>{{skillName}}</strong>
+      </span>
+    </div>
+    {{#if element}}
+      <span class="scc-element element-pip element-{{element}}">{{element}}</span>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ SKILL TYPE BADGES ═══ --}}
+  <div class="scc-type-row">
+    <span class="scc-type-badge scc-type-{{skillType}}">{{skillType}}</span>
+    {{#if isHealing}}
+      <span class="scc-type-badge scc-type-healing"><i class="fas fa-heart"></i> Healing</span>
+    {{/if}}
+    {{#if (eq targetType "aoe")}}
+      <span class="scc-type-badge scc-type-aoe"><i class="fas fa-burst"></i> AoE</span>
+    {{else if (eq targetType "self")}}
+      <span class="scc-type-badge scc-type-self"><i class="fas fa-user-shield"></i> Self</span>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ STAT PIPS ═══ --}}
+  <div class="scc-stats">
+    {{#if mpCost}}
+      <div class="scc-stat-pip scc-mp">
+        <span class="scc-stat-label">MP</span>
+        <span class="scc-stat-value">{{mpCost}}</span>
+      </div>
+    {{/if}}
+    {{#if range}}
+      <div class="scc-stat-pip">
+        <span class="scc-stat-label">{{#if isMeleeSkill}}Reach{{else}}Rng{{/if}}</span>
+        <span class="scc-stat-value">{{range}}</span>
+      </div>
+    {{/if}}
+    {{#if chantLabel}}
+      <div class="scc-stat-pip scc-chant-{{chantKey}}">
+        <span class="scc-stat-label">Chant</span>
+        <span class="scc-stat-value">{{chantLabel}}</span>
+      </div>
+    {{/if}}
+    {{#if showEffectMod}}
+      <div class="scc-stat-pip">
+        <span class="scc-stat-label">Effect</span>
+        <span class="scc-stat-value">x{{effectModifier}}</span>
+      </div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ DESCRIPTION ═══ --}}
+  {{#if description}}
+    <div class="scc-desc {{#unless longDescription}}scc-desc-short{{/unless}}">{{{description}}}</div>
+  {{/if}}
+
+  {{!-- ═══ APPLY EFFECT BUTTON (buff/debuff skills) ═══ --}}
+  {{#if buffDuration}}
+    <div class="scc-apply-row">
+      <button type="button" class="scc-apply-buff"
+              data-buff="{{{buffRulesJson}}}">
+        <i class="fas fa-shield-halved"></i> Apply Effect to Targets ({{buffDuration}} turns)
+      </button>
+    </div>
+  {{/if}}
+</div>

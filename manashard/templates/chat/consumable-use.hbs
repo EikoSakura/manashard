@@ -1,0 +1,65 @@
+<div class="manashard absorption-chat-card consumable-chat-card">
+
+  {{!-- ═══ HEADER: Portrait + Actor Name ═══ --}}
+  <div class="abc-header">
+    <div class="abc-portrait-frame con-portrait-frame">
+      <img src="{{actorImg}}" class="abc-portrait" />
+    </div>
+    <div class="abc-header-text">
+      <span class="abc-actor-name">{{actorName}}</span>
+      <span class="abc-action con-action">used</span>
+    </div>
+  </div>
+
+  {{!-- ═══ ITEM DISPLAY ═══ --}}
+  <div class="abc-skill-row con-item-row">
+    <div class="abc-skill-icon-frame con-icon-frame">
+      <img src="{{itemImg}}" class="abc-skill-icon" alt="{{itemName}}" />
+    </div>
+    <div class="abc-skill-info">
+      <div class="abc-skill-name">{{itemName}}</div>
+      <div class="abc-badges">
+        <span class="abc-badge">{{upper categoryLabel}}</span>
+        {{#if targetName}}
+        <span class="abc-badge con-target-badge">ON {{upper targetName}}</span>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ RESTORE STAT ═══ --}}
+  {{#if restoreAmount}}
+  <div class="abc-stats">
+    <div class="abc-stat-cell">
+      <span class="abc-stat-label">RESTORES</span>
+      <span class="abc-stat-value con-restore-value {{restoreType}}">+{{restoreAmount}} {{upper restoreType}}</span>
+    </div>
+    {{#if remaining}}
+    <div class="abc-stat-cell">
+      <span class="abc-stat-label">REMAINING</span>
+      <span class="abc-stat-value">{{remaining}}</span>
+    </div>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{!-- ═══ APPLY BUTTON ═══ --}}
+  {{#unless applied}}
+  <div class="abc-confirm con-apply-row">
+    <button type="button" class="con-apply-btn"
+            data-target-token-id="{{targetTokenId}}"
+            data-user-actor-id="{{userActorId}}"
+            data-item-id="{{itemId}}"
+            data-restore-type="{{restoreType}}"
+            data-restore-amount="{{restoreAmount}}"
+            data-consumed="{{consumed}}">
+      <i class="fas fa-flask"></i> Apply
+    </button>
+  </div>
+  {{else}}
+  <div class="abc-confirm con-applied-row">
+    <i class="fas fa-check"></i> {{appliedSummary}}
+  </div>
+  {{/unless}}
+
+</div>

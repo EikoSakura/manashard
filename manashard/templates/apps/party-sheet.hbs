@@ -1,0 +1,233 @@
+<div class="party-sheet-inner">
+
+  {{!-- ═══ GUILD BANNER HEADER ═══ --}}
+  <div class="party-banner">
+    <div class="party-banner-ornament left"><i class="fas fa-diamond"></i></div>
+    <div class="party-banner-content">
+      <h1 class="party-banner-title">
+        {{partyName}}
+        {{#if isGM}}
+        <a class="party-name-edit" data-action="editPartyName" title="Rename Party">
+          <i class="fas fa-pen"></i>
+        </a>
+        {{/if}}
+      </h1>
+      <div class="party-banner-stats">
+        <span class="party-stat"><i class="fas fa-users"></i> {{memberCount}} Members</span>
+        {{#if avgLevel}}
+        <span class="party-stat-sep"></span>
+        <span class="party-stat"><i class="fas fa-arrow-trend-up"></i> Avg Lv. {{avgLevel}}</span>
+        {{/if}}
+      </div>
+    </div>
+    <div class="party-banner-ornament right"><i class="fas fa-diamond"></i></div>
+  </div>
+
+  {{!-- ═══ TAB NAVIGATION ═══ --}}
+  <nav class="sheet-tabs party-tabs">
+    <a class="tab {{rosterTabClass}}" data-action="switchTab" data-tab="roster">
+      <i class="fas fa-users"></i>
+      <span>Roster</span>
+    </a>
+    <a class="tab {{stashTabClass}}" data-action="switchTab" data-tab="stash">
+      <i class="fas fa-box-open"></i>
+      <span>Party Stash</span>
+      {{#if stashCount}}<span class="tab-badge">{{stashCount}}</span>{{/if}}
+    </a>
+  </nav>
+
+  {{!-- ═══ ROSTER TAB ═══ --}}
+  {{#if (eq activeTab "roster")}}
+  <div class="party-roster-section">
+    {{#if members.length}}
+    <div class="party-roster">
+      {{#each members}}
+      <div class="party-unit-card" data-actor-id="{{this.id}}">
+
+        {{!-- Portrait Column --}}
+        <div class="unit-portrait-col" data-action="openSheet">
+          <div class="unit-portrait-frame">
+            <img src="{{this.img}}" alt="{{this.name}}"
+                 style="object-position: {{this.portraitOffsetX}}% {{this.portraitOffsetY}}%;{{#if this.portraitMirrored}} transform: scaleX(-1);{{/if}}" />
+          </div>
+          <div class="unit-level-pip">{{this.level}}</div>
+        </div>
+
+        {{!-- Info Column --}}
+        <div class="unit-info-col">
+          <div class="unit-identity">
+            <span class="unit-name" data-action="openSheet">{{this.name}}</span>
+            <span class="unit-rank rank-{{this.rankKey}}">{{this.rank}}</span>
+          </div>
+
+          <div class="unit-class-row">
+            {{#if this.jobImg}}<img src="{{this.jobImg}}" class="unit-job-icon" width="14" height="14" />{{/if}}
+            <span class="unit-job">{{this.jobName}}</span>
+            {{#if this.speciesName}}
+            <span class="unit-species">{{this.speciesName}}</span>
+            {{/if}}
+          </div>
+
+          {{!-- Resource Bars --}}
+          <div class="unit-bars">
+            <div class="unit-bar hp">
+              <div class="unit-bar-fill" style="width: {{this.hpPct}}%"></div>
+              <span class="unit-bar-label">HP</span>
+              <span class="unit-bar-value">{{this.hp.value}}<small>/{{this.hp.max}}</small></span>
+            </div>
+            <div class="unit-bar mp">
+              <div class="unit-bar-fill" style="width: {{this.mpPct}}%"></div>
+              <span class="unit-bar-label">MP</span>
+              <span class="unit-bar-value">{{this.mp.value}}<small>/{{this.mp.max}}</small></span>
+            </div>
+          </div>
+
+          {{!-- Stat Strip --}}
+          <div class="unit-stat-strip">
+            <span class="unit-mini-stat"><b>DMG</b> {{this.dmg}}</span>
+            <span class="unit-mini-stat"><b>ACC</b> {{this.acc}}</span>
+            <span class="unit-mini-stat"><b>P.EVA</b> {{this.peva}}</span>
+            <span class="unit-mini-stat"><b>M.EVA</b> {{this.meva}}</span>
+            <span class="unit-mini-stat"><b>MOV</b> {{this.mov}}</span>
+          </div>
+
+          {{!-- Taught Skill --}}
+          {{#if this.taughtSkill}}
+          <div class="unit-taught-tag">
+            <i class="fas fa-chalkboard-teacher"></i> Learning: {{this.taughtSkill}}
+          </div>
+          {{/if}}
+        </div>
+
+        {{!-- Remove button (GM) --}}
+        {{#if ../isGM}}
+        <a class="unit-remove-btn" data-action="removeMember" data-actor-id="{{this.id}}" title="Remove from party">
+          <i class="fas fa-times"></i>
+        </a>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="party-empty-state">
+      <div class="party-empty-icon"><i class="fas fa-shield-halved"></i></div>
+      <span class="party-empty-title">No Adventurers Enlisted</span>
+      <span class="party-empty-hint">Add party members to begin</span>
+    </div>
+    {{/if}}
+
+    {{#if isGM}}
+    <a class="party-add-btn" data-action="addMember">
+      <i class="fas fa-user-plus"></i> Enlist Member
+    </a>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ SECTION DIVIDER ═══ --}}
+  <div class="party-divider">
+    <span class="party-divider-line"></span>
+    <span class="party-divider-icon"><i class="fas fa-campground"></i></span>
+    <span class="party-divider-line"></span>
+  </div>
+
+  {{!-- ═══ DOWNTIME ACTIONS ═══ --}}
+  <div class="downtime-section">
+    <h2 class="downtime-heading">Downtime Actions</h2>
+    <div class="downtime-actions-grid">
+
+      {{!-- Teach Skill --}}
+      <a class="downtime-action-card" data-action="teachSkill">
+        <div class="downtime-action-icon teach">
+          <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <div class="downtime-action-info">
+          <span class="downtime-action-name">Teach Skill</span>
+          <span class="downtime-action-desc">Share a skill with an ally until next rest</span>
+        </div>
+        <div class="downtime-action-arrow"><i class="fas fa-chevron-right"></i></div>
+      </a>
+
+      {{!-- Clear Taught Skills (GM only) --}}
+      {{#if isGM}}
+      {{#if hasTaughtSkills}}
+      <a class="downtime-action-card danger" data-action="clearTaughtSkills">
+        <div class="downtime-action-icon danger">
+          <i class="fas fa-moon"></i>
+        </div>
+        <div class="downtime-action-info">
+          <span class="downtime-action-name">Rest (Clear Teachings)</span>
+          <span class="downtime-action-desc">Remove all taught skills from the party</span>
+        </div>
+        <div class="downtime-action-arrow"><i class="fas fa-chevron-right"></i></div>
+      </a>
+      {{/if}}
+      {{/if}}
+
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ STASH TAB ═══ --}}
+  {{#if (eq activeTab "stash")}}
+  <div class="party-stash-section">
+
+    {{!-- Eiress (Party Fund) --}}
+    <div class="stash-eiress-bar">
+      <div class="stash-eiress-label">
+        <i class="fas fa-coins"></i>
+        <span>Party Fund</span>
+      </div>
+      <div class="stash-eiress-controls">
+        <a class="eiress-btn subtract" data-action="subtractEiress" title="Subtract Eiress">
+          <i class="fas fa-minus"></i>
+        </a>
+        <span class="stash-eiress-value">{{partyEiress}}<small> E</small></span>
+        <a class="eiress-btn add" data-action="addEiress" title="Add Eiress">
+          <i class="fas fa-plus"></i>
+        </a>
+      </div>
+    </div>
+
+    {{!-- Drop zone hint --}}
+    <div class="stash-drop-hint">
+      <i class="fas fa-arrow-down"></i> Drag items here to deposit &mdash; drag them out to withdraw
+    </div>
+
+    {{!-- Item list --}}
+    {{#if stashItems.length}}
+    <div class="stash-item-list">
+      {{#each stashItems}}
+      <div class="stash-item-row" draggable="true" data-stash-index="{{this.index}}">
+        <img class="stash-item-img" src="{{this.img}}" alt="{{this.name}}" width="32" height="32" />
+        <div class="stash-item-info">
+          <span class="stash-item-name">{{this.name}}</span>
+          <span class="stash-item-meta">
+            <span class="stash-item-type">{{this.typeLabel}}</span>
+            {{#if (gt this.quantity 1)}}
+            <span class="stash-item-qty">x{{this.quantity}}</span>
+            {{/if}}
+            <span class="stash-item-from">from {{this.depositedBy}}</span>
+          </span>
+        </div>
+        {{#if ../../isGM}}
+        <div class="stash-item-actions">
+          <a class="stash-action-btn danger" data-action="deleteStashItem" data-stash-index="{{this.index}}" title="Delete">
+            <i class="fas fa-trash"></i>
+          </a>
+        </div>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="party-empty-state">
+      <div class="party-empty-icon"><i class="fas fa-box-open"></i></div>
+      <span class="party-empty-title">Stash is Empty</span>
+      <span class="party-empty-hint">Drag items here from character sheets</span>
+    </div>
+    {{/if}}
+
+  </div>
+  {{/if}}
+
+</div>

@@ -1,0 +1,82 @@
+{{!-- Character Creation Configuration Dialog --}}
+<div class="creation-config-body">
+
+  {{!-- Stat Distribution --}}
+  <fieldset class="creation-config-section">
+    <legend><i class="fa-solid fa-chart-bar"></i> Stat Distribution</legend>
+    <div class="form-group">
+      <label>Stat Point Pool</label>
+      <div class="form-fields">
+        <input type="number" name="statPool" value="{{statPool}}" min="0" step="1" />
+      </div>
+      <p class="hint">Free stat points to distribute at character creation (on top of minimums).</p>
+    </div>
+  </fieldset>
+
+  {{!-- Growth Rates --}}
+  <fieldset class="creation-config-section">
+    <legend><i class="fa-solid fa-arrow-trend-up"></i> Growth Rates</legend>
+    <div class="form-group">
+      <label>Growth Rate Pool</label>
+      <div class="form-fields">
+        <input type="number" name="growthPool" value="{{growthPool}}" min="0" step="1" />
+      </div>
+      <p class="hint">Free growth rate points to distribute (on top of baseline per stat).</p>
+    </div>
+    <div class="form-group">
+      <label>Growth Rate Baseline</label>
+      <div class="form-fields">
+        <input type="number" name="growthBaseline" value="{{growthBaseline}}" min="0" step="1" />
+      </div>
+      <p class="hint">Starting growth rate percentage for each stat before allocation.</p>
+    </div>
+  </fieldset>
+
+  {{!-- Equipment --}}
+  <fieldset class="creation-config-section">
+    <legend><i class="fa-solid fa-shield-halved"></i> Equipment</legend>
+    <div class="form-group">
+      <label>Starting Eiress</label>
+      <div class="form-fields">
+        <input type="number" name="startingEiress" value="{{startingEiress}}" min="0" step="1" />
+      </div>
+      <p class="hint">Eiress budget for purchasing equipment during character creation.</p>
+    </div>
+    <div class="form-group">
+      <label>Max Equipment Rank</label>
+      <div class="form-fields">
+        <select name="maxEquipRank">
+          {{#each ranks}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <p class="hint">Only equipment at or below this rank will appear in the creation shop.</p>
+    </div>
+  </fieldset>
+
+  {{!-- Availability Sub-Menus --}}
+  <fieldset class="creation-config-section">
+    <legend><i class="fa-solid fa-list-check"></i> Availability</legend>
+    <div class="creation-config-submenu-row">
+      <button type="button" data-action="openSpecies" class="creation-config-submenu-btn">
+        <i class="fa-solid fa-paw"></i>
+        <span>Available Species</span>
+        {{#if excludedSpeciesCount}}
+        <span class="creation-config-badge">{{excludedSpeciesCount}} excluded</span>
+        {{/if}}
+      </button>
+      <button type="button" data-action="openJobs" class="creation-config-submenu-btn">
+        <i class="fa-solid fa-briefcase"></i>
+        <span>Available Jobs</span>
+        {{#if excludedJobsCount}}
+        <span class="creation-config-badge">{{excludedJobsCount}} excluded</span>
+        {{/if}}
+      </button>
+    </div>
+  </fieldset>
+
+  <footer class="sheet-footer flexrow">
+    <button type="submit"><i class="fa-solid fa-save"></i> Save Changes</button>
+  </footer>
+</div>

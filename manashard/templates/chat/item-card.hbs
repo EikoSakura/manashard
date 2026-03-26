@@ -1,0 +1,86 @@
+<div class="manashard item-chat-card">
+
+  {{!-- ═══ HEADER: Icon + Name + Type Badges ═══ --}}
+  <div class="ic-header">
+    <div class="ic-icon-frame {{iconFrameClass}}">
+      {{#if (eq iconFrameClass "diamond")}}
+        <img src="{{itemImg}}" class="ic-icon-img ic-diamond-inner" alt="{{itemName}}" />
+      {{else}}
+        <img src="{{itemImg}}" class="ic-icon-img" alt="{{itemName}}" />
+      {{/if}}
+    </div>
+    <div class="ic-header-info">
+      <div class="ic-name">{{itemName}}</div>
+      <div class="ic-meta">
+        {{#each typeBadges}}
+          <span class="ic-type-badge">{{this}}</span>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ STATS ZONE ═══ --}}
+  {{#if stats.length}}
+  <div class="ic-stats">
+    {{#each stats}}
+    <div class="ic-stat-cell">
+      <span class="ic-stat-label">{{this.label}}</span>
+      <span class="ic-stat-value">{{this.value}}</span>
+    </div>
+    {{/each}}
+
+    {{!-- Badges --}}
+    {{#if ../badges.length}}
+    <div class="ic-badges">
+      {{#each ../badges}}
+      <span class="ic-badge" style="background:{{this.bg}}; border-color:{{this.border}}; color:{{this.text}};">
+        <span class="ic-badge-dot" style="background:{{this.text}};"></span>{{this.label}}
+      </span>
+      {{/each}}
+    </div>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{!-- ═══ EFFECT LINE ═══ --}}
+  {{#if effectLine}}
+  <div class="ic-effect">
+    <span class="ic-effect-icon">{{effectLine.icon}}</span>
+    <span class="ic-effect-text">{{{effectLine.text}}}</span>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ DESCRIPTION ═══ --}}
+  {{#if description}}
+  <div class="ic-description">
+    <div class="ic-desc-inner">
+      <div class="ic-flavor">{{description}}</div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ APPLY BUTTON ═══ --}}
+  {{#if hasApply}}
+  <div class="ic-apply-row">
+    <button type="button" class="item-card-apply"
+            data-apply-type="{{applyType}}"
+            data-actor-id="{{actorId}}"
+            data-item-id="{{itemId}}"
+            {{#if applyData.targetType}}data-target-type="{{applyData.targetType}}"{{/if}}
+            {{#if applyData.consumed}}data-consumed="{{applyData.consumed}}"{{/if}}
+            {{#if applyData.restoreType}}data-restore-type="{{applyData.restoreType}}"{{/if}}
+            {{#if applyData.restoreAmount}}data-restore-amount="{{applyData.restoreAmount}}"{{/if}}
+            {{#if applyData.effectsJson}}data-effects-json='{{{applyData.effectsJson}}}'{{/if}}>
+      <i class="fas {{applyIcon}}"></i>
+      {{applyLabel}}
+    </button>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ FOOTER ═══ --}}
+  <div class="ic-footer">
+    <span class="ic-footer-text">posted by</span>
+    <span class="ic-footer-name">{{actorName}}</span>
+  </div>
+
+</div>

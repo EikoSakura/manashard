@@ -1,0 +1,212 @@
+<div class="manashard aoe-chat-card {{#if element}}element-{{element}}{{/if}}">
+
+  {{!-- ═══ HEADER ═══ --}}
+  <div class="acc-header">
+    <div class="acc-portrait-frame">
+      <div class="acc-portrait-diamond">
+        <img src="{{actorImg}}" class="acc-portrait" />
+      </div>
+    </div>
+    <div class="acc-header-info">
+      <div class="acc-actor-name">{{actorName}}</div>
+      <div class="acc-action-line">
+        casts <span class="acc-skill-name">{{skillName}}</span>
+      </div>
+    </div>
+    {{#if (gt mpCost 0)}}
+      <div class="acc-mp-badge">MP &minus;{{mpCost}}</div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ AOE INFO LINE ═══ --}}
+  <div class="aoe-info-line">
+    <span class="aoe-shape-badge"><i class="fas fa-burst"></i> {{aoeShape}}</span>
+    <span class="aoe-size-badge">Size {{aoeSize}}</span>
+    <span class="aoe-hit-summary">{{hitCount}} hit / {{totalCount}} targets</span>
+  </div>
+
+  {{!-- ═══ DAMAGE TYPE / ELEMENT BADGES ═══ --}}
+  <div class="acc-damage-badges" style="padding: 2px 8px;">
+    {{#if isBarrier}}
+      <span class="acc-badge acc-badge-barrier"><span class="acc-badge-dot"></span>BARRIER</span>
+    {{else if (eq damageType "physical")}}
+      <span class="acc-badge acc-badge-physical"><span class="acc-badge-dot"></span>PHYSICAL</span>
+    {{else}}
+      <span class="acc-badge acc-badge-magical"><span class="acc-badge-dot"></span>MAGICAL</span>
+    {{/if}}
+    {{#if element}}
+      <span class="acc-badge acc-badge-elem acc-elem-{{element}}"><span class="acc-badge-dot"></span>{{upper element}}</span>
+    {{else}}
+      <span class="acc-badge acc-badge-elem acc-elem-neutral"><span class="acc-badge-dot"></span>NEUTRAL</span>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ PER-TARGET RESULTS ═══ --}}
+  {{#each targets}}
+  <div class="aoe-target-block {{#if this.critHit}}acc-crit{{/if}} {{#if this.hit}}aoe-hit{{else}}aoe-miss{{/if}}">
+
+    {{!-- Target Header --}}
+    <div class="aoe-target-header">
+      <img src="{{this.targetImg}}" class="aoe-target-portrait" />
+      <span class="aoe-target-name">{{this.targetName}}</span>
+      {{#if this.isHealing}}
+        <span class="acc-heal-badge"><i class="fas fa-heart"></i></span>
+      {{else if this.isBarrier}}
+        <span class="acc-heal-badge"><i class="fas fa-shield-halved"></i></span>
+      {{/if}}
+    </div>
+
+    {{!-- Hit Roll --}}
+    {{#if this.isHealing}}
+      <div class="acc-roll-row acc-roll-hit acc-autohit aoe-roll-compact">
+        <i class="acc-roll-icon fas fa-heart"></i>
+        <span class="acc-roll-label">HIT</span>
+        <span class="acc-outcome-badge badge-hit">HIT</span>
+      </div>
+    {{else if this.isBarrier}}
+      <div class="acc-roll-row acc-roll-hit acc-autohit aoe-roll-compact">
+        <i class="acc-roll-icon fas fa-shield-halved"></i>
+        <span class="acc-roll-label">HIT</span>
+        <span class="acc-outcome-badge badge-hit">HIT</span>
+      </div>
+    {{else}}
+      <div class="acc-roll-row {{#if this.hit}}acc-roll-hit{{else}}acc-roll-miss{{/if}} aoe-roll-compact">
+        <i class="acc-roll-icon fas fa-dice-d20"></i>
+        <span class="acc-roll-label">HIT</span>
+        <div class="acc-roll-values">
+          <span class="acc-roll-result">{{this.hitRoll}}</span>
+          <span class="acc-roll-sep">/</span>
+          <span class="acc-roll-threshold">{{this.hitChance}}</span>
+        </div>
+        <span class="acc-outcome-badge {{#if this.hit}}badge-hit{{else}}badge-miss{{/if}}">
+          {{#if this.hit}}HIT{{else}}MISS{{/if}}
+        </span>
+      </div>
+    {{/if}}
+
+    {{#if this.hit}}
+      {{!-- Crit Row --}}
+      {{#if this.critHit}}
+        <div class="acc-roll-row acc-roll-crit aoe-roll-compact">
+          <i class="acc-roll-icon fas fa-star"></i>
+          <span class="acc-roll-label">CRIT</span>
+          <div class="acc-roll-values">
+            <span class="acc-roll-result">{{this.critRoll}}</span>
+            <span class="acc-roll-sep">&le;</span>
+            <span class="acc-roll-threshold">{{this.critChance}}</span>
+          </div>
+          <span class="acc-outcome-badge badge-crit">CRIT!</span>
+        </div>
+      {{/if}}
+
+      {{!-- Block Row --}}
+      {{#unless this.isHealing}}
+        {{#if this.blocked}}
+          <div class="acc-roll-row acc-roll-block aoe-roll-compact">
+            <i class="acc-roll-icon fas fa-shield"></i>
+            <span class="acc-roll-label">BLOCK</span>
+            <div class="acc-roll-values">
+              <span class="acc-roll-result">{{this.blockRoll}}</span>
+              <span class="acc-roll-sep">/</span>
+              <span class="acc-roll-threshold">{{this.blockChance}}</span>
+            </div>
+            <span class="acc-outcome-badge badge-block">BLOCKED</span>
+          </div>
+        {{/if}}
+      {{/unless}}
+
+      {{!-- Damage Display --}}
+      <div class="aoe-damage-compact {{#if this.isHealing}}acc-healing{{/if}} {{#if this.critHit}}acc-crit-damage{{/if}} {{#if (eq this.finalDamage 0)}}acc-immune{{/if}}">
+        <span class="aoe-damage-label">
+          {{#if (eq this.finalDamage 0)}}NO EFFECT{{else}}{{#if this.isBarrier}}BARRIER{{else}}{{#if this.isHealing}}HEAL{{else}}{{#if this.critHit}}CRIT DMG{{else}}DMG{{/if}}{{/if}}{{/if}}{{/if}}
+        </span>
+        <span class="aoe-damage-value">{{#if (eq this.finalDamage 0)}}&mdash;{{else}}{{this.finalDamage}}{{/if}}</span>
+      </div>
+
+      {{!-- Modifier Notes (compact) --}}
+      {{#if this.elementTierLabel}}
+        <div class="acc-element-tier tier-{{this.elementTier}}">{{this.elementTierLabel}}</div>
+      {{/if}}
+      {{#if this.impairApplied}}
+        <div class="acc-modifier-note acc-note-impair"><i class="fas fa-eye-slash"></i> Impair — ACC/CRIT halved</div>
+      {{/if}}
+      {{#if this.exposeApplied}}
+        <div class="acc-modifier-note acc-note-expose"><i class="fas fa-shield-virus"></i> Expose — EVA/DEF halved</div>
+      {{/if}}
+
+      {{!-- Status Inflictions --}}
+      {{#each this.statusResults}}
+        {{#if this.success}}
+          <div class="acc-status-inflict">
+            <i class="fas fa-skull-crossbones"></i>
+            <span>Inflicted <strong>{{this.statusLabel}}</strong>!</span>
+          </div>
+        {{else}}
+          <div class="acc-status-failed">
+            <i class="fas fa-shield-halved"></i>
+            <span>{{this.statusLabel}} resisted ({{this.roll}} / {{this.chance}})</span>
+          </div>
+        {{/if}}
+      {{/each}}
+
+      {{!-- Apply Button --}}
+      {{#if this.targetTokenId}}
+        <div class="acc-apply-row aoe-apply-row">
+          <button type="button" class="acc-apply-damage"
+                  data-token-id="{{this.targetTokenId}}"
+                  data-attacker-token-id="{{../attackerTokenId}}"
+                  data-damage="{{this.finalDamage}}"
+                  data-healing="{{this.isHealing}}"
+                  data-barrier="{{this.isBarrier}}"
+                  {{#if this.statusDataJson}}data-statuses="{{{this.statusDataJson}}}"{{/if}}>
+            {{#if (eq this.finalDamage 0)}}
+              <i class="fas fa-shield"></i> No Effect
+            {{else if this.isBarrier}}
+              <i class="fas fa-shield-halved"></i> Barrier {{this.finalDamage}} &rarr; {{this.targetName}}
+            {{else if this.isHealing}}
+              <i class="fas fa-heart"></i> Heal {{this.finalDamage}} &rarr; {{this.targetName}}
+            {{else}}
+              <i class="fas fa-crosshairs"></i> {{this.finalDamage}} dmg &rarr; {{this.targetName}}
+            {{/if}}
+          </button>
+        </div>
+      {{/if}}
+    {{else}}
+      {{!-- Miss state --}}
+      {{#unless this.isHealing}}
+        <div class="aoe-miss-label">MISS</div>
+      {{/unless}}
+    {{/if}}
+  </div>
+  {{/each}}
+
+  {{!-- ═══ FORMULA PANEL (right-click) ═══ --}}
+  <div class="acc-formula-context">
+    <div class="acc-formula-header">
+      <i class="fas fa-scroll"></i>
+      <span>{{actorName}} — {{skillName}} (AOE)</span>
+    </div>
+    <div class="acc-formula-section">
+      <div class="acc-formula-section-label">Attack Formula (shared)</div>
+      {{#each formulaSteps}}
+        <div class="acc-formula-row">
+          <span class="acc-formula-label">{{this.label}}</span>
+          <span class="acc-formula-value">{{this.value}}</span>
+        </div>
+      {{/each}}
+      {{#if chantLabel}}
+        <div class="acc-formula-row">
+          <span class="acc-formula-label">{{chantLabel}}</span>
+          <span class="acc-formula-value">&times;{{chantModifier}}</span>
+        </div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ═══ INSPECT HINT ═══ --}}
+  <div class="acc-inspect-hint">
+    <span class="acc-hint-key">Right-click</span>
+    <span>to inspect formulas</span>
+  </div>
+
+</div>

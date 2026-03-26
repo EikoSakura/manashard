@@ -1,0 +1,23 @@
+<div class="portrait-adjuster">
+  <p class="pa-hint">Drag to reposition</p>
+  <div class="pa-preview-wrap">
+    <div class="pa-diamond-border"></div>
+    <div class="pa-diamond">
+      <img src="{{img}}" alt="Portrait" draggable="false"
+           style="object-position: {{offsetX}}% {{offsetY}}%;{{#if mirrored}} transform: scaleX(-1);{{/if}}" />
+    </div>
+  </div>
+  <div class="pa-toolbar">
+    <button type="button" class="pa-icon-btn {{#if mirrored}}active{{/if}}" data-action="flipImage" title="Flip horizontal">
+      <i class="fas fa-arrows-left-right"></i>
+    </button>
+  </div>
+  <div class="pa-actions">
+    <button type="button" class="pa-btn" data-action="changeImage">
+      <i class="fas fa-image"></i> Change Image
+    </button>
+    <button type="button" class="pa-btn pa-btn-confirm" data-action="confirm">
+      <i class="fas fa-check"></i> Confirm
+    </button>
+  </div>
+</div>

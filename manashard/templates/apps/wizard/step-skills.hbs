@@ -1,0 +1,108 @@
+<div class="wizard-step step-skills">
+  <h2 class="wizard-step-title">Choose Starting Skills</h2>
+  <p class="wizard-step-desc">Select Skill Manacite to absorb permanently.</p>
+
+  {{#if isEmpty}}
+  <div class="wizard-empty-notice">
+    <i class="fas fa-info-circle"></i>
+    <span>No skills available in the compendium. You may skip this step.</span>
+  </div>
+  {{else}}
+
+  {{!-- Constrained Slots --}}
+  {{#if hasConstrainedSlots}}
+  {{#each constrainedSlots}}
+  <div class="constrained-slot">
+    <h3 class="constrained-slot-title"><i class="fas fa-star"></i> {{this.label}}</h3>
+    <div class="constrained-skill-list">
+      {{#each this.items}}
+      <div class="skill-list-row {{#if this.selected}}selected{{/if}}"
+           data-uuid="{{this.uuid}}" data-action="selectSkill" data-constrained-slot="{{this.slotIdx}}">
+        <div class="skill-list-icon">
+          <img src="{{this.img}}" alt="{{this.name}}" />
+        </div>
+        <div class="skill-list-name">{{this.name}}</div>
+        <div class="skill-list-type">
+          <span class="skill-type-badge badge-passive"><i class="fas fa-shield-heart"></i> {{this.type}}</span>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/each}}
+  {{/if}}
+
+  {{!-- Search & Filters --}}
+  <div class="skill-catalog-controls">
+    <div class="skill-search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" name="skill-search" class="skill-search-input" placeholder="Search by name..." value="{{searchQuery}}" />
+    </div>
+    <div class="skill-filter-row">
+      <div class="skill-filter-group">
+        <button type="button" class="skill-filter-btn {{#if (eq activeTypeFilter 'all')}}active{{/if}}" data-action="filterSkills" data-filter-type="all">All</button>
+        <button type="button" class="skill-filter-btn filter-magic {{#if (eq activeTypeFilter 'magic')}}active{{/if}}" data-action="filterSkills" data-filter-type="magic"><i class="fas fa-hat-wizard"></i> Magic</button>
+        <button type="button" class="skill-filter-btn filter-art {{#if (eq activeTypeFilter 'art')}}active{{/if}}" data-action="filterSkills" data-filter-type="art"><i class="fas fa-burst"></i> Arts</button>
+        <button type="button" class="skill-filter-btn filter-passive {{#if (eq activeTypeFilter 'passive')}}active{{/if}}" data-action="filterSkills" data-filter-type="passive"><i class="fas fa-shield-heart"></i> Passives</button>
+      </div>
+      <div class="skill-filter-group">
+        <button type="button" class="skill-filter-btn {{#if (eq activeElementFilter 'all')}}active{{/if}}" data-action="filterSkillElement" data-filter-element="all">All</button>
+        {{#each elements}}
+        <button type="button" class="skill-filter-btn filter-element-{{this.key}} {{#if this.active}}active{{/if}}" data-action="filterSkillElement" data-filter-element="{{this.key}}" title="{{this.label}}">
+          <i class="fas fa-droplet"></i> {{this.label}}
+        </button>
+        {{/each}}
+      </div>
+    </div>
+    <div class="skill-catalog-status">
+      <span class="skill-result-count">{{filteredCount}} skill{{#unless singleResult}}s{{/unless}} found</span>
+      <span class="skill-pick-counter">{{picksUsed}} / {{picksMax}} selected</span>
+    </div>
+  </div>
+
+  {{!-- Skill List --}}
+  <div class="skill-catalog-list">
+    {{#each skills}}
+    <div class="skill-list-row {{#if this.selected}}selected{{/if}} skill-type-{{this.skillType}}"
+         data-uuid="{{this.uuid}}" data-action="selectSkill"
+         data-tooltip="{{this.description}}">
+      <div class="skill-list-icon">
+        <img src="{{this.img}}" alt="{{this.name}}" />
+      </div>
+      <div class="skill-list-name">{{this.name}}</div>
+      <div class="skill-list-type">
+        {{#if (eq this.skillType "magic")}}<span class="skill-type-badge badge-magic"><i class="fas fa-hat-wizard"></i> Magic</span>{{/if}}
+        {{#if (eq this.skillType "art")}}<span class="skill-type-badge badge-art"><i class="fas fa-burst"></i> Art</span>{{/if}}
+        {{#if (eq this.skillType "passive")}}<span class="skill-type-badge badge-passive"><i class="fas fa-shield-heart"></i> Passive</span>{{/if}}
+      </div>
+      <div class="skill-list-tags">
+        {{#if this.element}}
+        <span class="skill-mini-tag tag-element">{{this.element}}</span>
+        {{/if}}
+        {{#if this.mpCost}}
+        <span class="skill-mini-tag tag-mp">{{this.mpCost}} MP</span>
+        {{/if}}
+        {{#unless (eq this.skillType "passive")}}
+        <span class="skill-mini-tag tag-range">{{this.rangeDisplay}}</span>
+        <span class="skill-mini-tag tag-target">{{this.targetType}}</span>
+        {{/unless}}
+      </div>
+      {{#if this.hasPrerequisites}}
+      <div class="skill-list-prereq" title="{{this.unlockRequirements}}"><i class="fas fa-lock"></i></div>
+      {{/if}}
+      <button type="button" class="skill-list-info" data-action="viewItem" data-uuid="{{this.uuid}}" title="View Details">
+        <i class="fas fa-circle-info"></i>
+      </button>
+    </div>
+    {{/each}}
+
+    {{#unless skills.length}}
+    <div class="skill-no-results">
+      <i class="fas fa-filter-circle-xmark"></i>
+      <span>No skills match your filters.</span>
+    </div>
+    {{/unless}}
+  </div>
+
+  {{/if}}
+</div>

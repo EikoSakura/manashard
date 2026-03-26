@@ -1,0 +1,359 @@
+{{#if isCharacter}}
+<aside class="adv-sidebar {{#if showGrowth}}show-growth{{/if}}">
+
+  {{!-- ═══ IDENTITY (Portrait + Name + Meta) ═══ --}}
+  <div class="adv-panel adv-identity">
+    <img class="adv-portrait" src="{{actor.img}}" data-action="editImage" title="{{actor.name}}"
+         style="object-position: {{system.portraitOffsetX}}% {{system.portraitOffsetY}}%;{{#if system.portraitMirrored}} transform: scaleX(-1);{{/if}}" />
+    <div class="adv-identity-info">
+      <input class="adv-char-name" name="name" type="text" value="{{actor.name}}" placeholder="Character Name" />
+      <div class="adv-meta-line">
+        {{#if equippedSpecies}}<a class="adv-meta-species" data-action="editItem" data-item-id="{{equippedSpecies.id}}">{{equippedSpecies.name}}</a>{{else}}<span class="adv-meta-species dim">No Species</span>{{/if}}
+      </div>
+      <div class="adv-level-rank">
+        <span class="adv-level-lbl">Lv</span>
+        <input type="number" name="system.level" value="{{system.level}}" min="1" max="40" data-dtype="Number" class="adv-level-input" />
+        <span class="adv-rank-lbl">Rank</span>
+        <select name="system.rank" class="adv-rank-select">
+          {{#each config.ranks as |rank key|}}
+          <option value="{{key}}" {{#if (eq key ../system.rank)}}selected{{/if}}>{{rank.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ RESOURCE BARS ═══ --}}
+  <div class="adv-panel">
+
+    {{!-- HP --}}
+    <div class="adv-bar-group">
+      <div class="adv-bar-head">
+        <span class="adv-bar-lbl hp">HP</span>
+        <span class="adv-bar-val">
+          <input type="number" name="system.stats.hp.value" value="{{system.stats.hp.value}}" min="0" data-dtype="Number" class="adv-bar-cur" />
+          <span class="adv-bar-sep">/</span>
+          <input type="number" name="system.stats.hp.max" value="{{system.stats.hp.max}}" min="0" data-dtype="Number" class="adv-bar-max" />
+        </span>
+      </div>
+      <div class="adv-bar-track hp">
+        <div class="adv-bar-fill hp" style="width: {{#if system.stats.hp.max}}{{math system.stats.hp.value "/" system.stats.hp.max "*" 100}}%{{else}}0%{{/if}}"></div>
+        {{#if system.stats.hp.barrier}}
+        <div class="adv-bar-fill barrier" style="right: {{barrierRight}}%; width: {{barrierPercent}}%"></div>
+        {{/if}}
+      </div>
+      {{#if ../isCharacter}}
+      <div class="adv-stat-growth adv-resource-growth">
+        <input type="number" name="system.stats.hp.growth" value="{{system.stats.hp.growth}}" min="0" max="200"
+               data-dtype="Number" class="adv-growth-input" />
+        <span class="adv-growth-pct">%</span>
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- MP --}}
+    <div class="adv-bar-group">
+      <div class="adv-bar-head">
+        <span class="adv-bar-lbl mp">MP</span>
+        <span class="adv-bar-val">
+          <input type="number" name="system.stats.mp.value" value="{{system.stats.mp.value}}" min="0" data-dtype="Number" class="adv-bar-cur" />
+          <span class="adv-bar-sep">/</span>
+          <input type="number" name="system.stats.mp.max" value="{{system.stats.mp.max}}" min="0" data-dtype="Number" class="adv-bar-max" />
+        </span>
+      </div>
+      <div class="adv-bar-track mp">
+        <div class="adv-bar-fill mp" style="width: {{#if system.stats.mp.max}}{{math system.stats.mp.value "/" system.stats.mp.max "*" 100}}%{{else}}0%{{/if}}"></div>
+      </div>
+      {{#if ../isCharacter}}
+      <div class="adv-stat-growth adv-resource-growth">
+        <input type="number" name="system.stats.mp.growth" value="{{system.stats.mp.growth}}" min="0" max="200"
+               data-dtype="Number" class="adv-growth-input" />
+        <span class="adv-growth-pct">%</span>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ═══ EXP / RP / Eiress / SP ═══ --}}
+  <div class="adv-panel">
+    <div class="adv-detail-row">
+      <div class="adv-detail">
+        <span class="adv-detail-label">EXP</span>
+        <input type="number" name="system.exp" value="{{system.exp}}" min="0" data-dtype="Number" class="adv-detail-input" />
+        <span class="adv-detail-sep">/100</span>
+      </div>
+      <div class="adv-detail">
+        <span class="adv-detail-label">RP</span>
+        <input type="number" name="system.rankPoints" value="{{system.rankPoints}}" min="0" data-dtype="Number" class="adv-detail-input" />
+      </div>
+      <div class="adv-detail">
+        <span class="adv-detail-label">Eiress</span>
+        <input type="number" name="system.eiress" value="{{system.eiress}}" min="0" data-dtype="Number" class="adv-detail-input" />
+      </div>
+      <div class="adv-detail">
+        <span class="adv-detail-label">SP</span>
+        <input type="number" name="system.sp" value="{{system.sp}}" min="0" data-dtype="Number" class="adv-detail-input" />
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ CORE STATS ═══ --}}
+  <div class="adv-panel adv-stats-panel {{#if showGrowth}}show-growth{{/if}}">
+    <div class="adv-section-title">
+      Core Stats
+      <div class="adv-stats-controls">
+        <span class="adv-stats-total {{#if growthOverBudget}}over-budget{{/if}}">{{system.growthTotal}}</span>
+        <a class="adv-growth-toggle {{#if showGrowth}}active{{/if}}" data-action="toggleGrowth" title="Toggle Growth Rates">
+          <i class="fas fa-seedling"></i>
+        </a>
+        <a class="adv-levelup-btn" data-action="levelUp" title="Level Up">
+          <i class="fas fa-arrow-up"></i>
+        </a>
+      </div>
+    </div>
+    <div class="adv-stats-grid">
+      {{#each statEntries}}
+      {{#unless isResource}}
+      <div class="adv-stat-row {{#if atCap}}stat-at-cap{{/if}}">
+        <span class="adv-stat-abbr" data-action="rollStat" data-stat="{{key}}">{{abbr}}</span>
+        <input type="number" name="system.stats.{{key}}.value" value="{{value}}" min="0"
+               data-dtype="Number" class="adv-stat-val {{#if modClass}}stat-value-{{modClass}}{{/if}}"
+               data-stat-key="{{key}}" {{#if hasModifiers}}data-has-modifiers="true"{{/if}} />
+        {{#if ../isCharacter}}
+        <div class="adv-stat-growth">
+          <input type="number" name="system.stats.{{key}}.growth" value="{{growth}}" min="0" max="100"
+                 data-dtype="Number" class="adv-growth-input" />
+          <span class="adv-growth-pct">%</span>
+        </div>
+        {{/if}}
+      </div>
+      {{/unless}}
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- ═══ ELEMENTS ═══ --}}
+  {{#if elementalEntries}}
+  <div class="adv-panel">
+    <div class="adv-section-title">Elements</div>
+    <div class="adv-element-grid">
+      {{#each elementalEntries}}
+      <div class="adv-el-row" data-element="{{key}}" data-action="cycleElementTier">
+        <span class="adv-el-icon element-{{key}}"></span>
+        <span class="adv-el-name">{{label}}</span>
+        <span class="adv-el-val tier-{{tier}}">{{tierLabel}}</span>
+        <input type="hidden" name="system.elementalProfile.{{key}}" value="{{tier}}" />
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ STATUS RESISTANCES ═══ --}}
+  {{#if statusResistanceEntries}}
+  <div class="adv-panel">
+    <div class="adv-section-title">Status Resistances</div>
+    <div class="adv-element-grid">
+      {{#each statusResistanceEntries}}
+      <div class="adv-el-row" data-status="{{key}}" data-action="cycleStatusTier">
+        <span class="adv-el-icon element-neutral"></span>
+        <span class="adv-el-name">{{label}}</span>
+        <span class="adv-sr-val tier-{{tier}}">{{tierLabel}}</span>
+        <input type="hidden" name="system.statusResistances.{{key}}" value="{{tier}}" />
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+</aside>
+{{/if}}
+
+{{#if isTrap}}
+<aside class="trap-sidebar">
+
+  {{!-- ═══ IDENTITY ═══ --}}
+  <div class="adv-panel adv-identity">
+    <img class="adv-portrait" src="{{actor.img}}" data-action="editImage" title="{{actor.name}}"
+         style="object-position: {{system.portraitOffsetX}}% {{system.portraitOffsetY}}%;{{#if system.portraitMirrored}} transform: scaleX(-1);{{/if}}" />
+    <div class="adv-identity-info">
+      <input class="adv-char-name" name="name" type="text" value="{{actor.name}}" placeholder="Trap Name" />
+      <div class="adv-meta-line">
+        <select name="system.rank" class="hu-rank-select">
+          {{#each rankOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>Rank {{this.label}}</option>
+          {{/each}}
+        </select>
+        <span class="adv-level-lbl">Lv</span>
+        <input type="number" name="system.level" value="{{system.level}}" min="1" max="40" data-dtype="Number" class="adv-level-input" />
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ ARMED STATUS ═══ --}}
+  <div class="adv-panel trap-armed-panel">
+    <label class="trap-armed-toggle">
+      <input type="checkbox" name="system.armed" {{#if system.armed}}checked{{/if}} />
+      <span class="trap-armed-indicator {{#if system.armed}}armed{{else}}disarmed{{/if}}">
+        <i class="fas {{#if system.armed}}fa-land-mine-on{{else}}fa-ban{{/if}}"></i>
+        {{#if system.armed}}ARMED{{else}}DISARMED{{/if}}
+      </span>
+    </label>
+  </div>
+
+  {{!-- ═══ QUICK STATS ═══ --}}
+  <div class="adv-panel">
+    <div class="adv-section-title">Effect Summary</div>
+    <div class="trap-quick-stats">
+      <div class="trap-quick-row">
+        <span class="trap-quick-label">Damage</span>
+        <span class="trap-quick-value">{{system.damage}}</span>
+      </div>
+      <div class="trap-quick-row">
+        <span class="trap-quick-label">Difficulty</span>
+        <span class="trap-quick-value">{{system.difficultyPenalty}}</span>
+      </div>
+      {{#unless (eq system.statusInflict "none")}}
+      <div class="trap-quick-row">
+        <span class="trap-quick-label">Status</span>
+        <span class="trap-quick-value">{{system.statusInflict}}</span>
+      </div>
+      {{/unless}}
+    </div>
+  </div>
+
+</aside>
+{{/if}}
+
+{{#if isThreat}}
+<aside class="hu-sidebar">
+
+  {{!-- ═══ IDENTITY (Portrait + Name + Meta) ═══ --}}
+  <div class="adv-panel adv-identity">
+    <img class="adv-portrait" src="{{actor.img}}" data-action="editImage" title="{{actor.name}}"
+         style="object-position: {{system.portraitOffsetX}}% {{system.portraitOffsetY}}%;{{#if system.portraitMirrored}} transform: scaleX(-1);{{/if}}" />
+    <div class="adv-identity-info">
+      <input class="adv-char-name" name="name" type="text" value="{{actor.name}}" placeholder="Creature Name" />
+      <div class="adv-meta-line">
+        <select name="system.rank" class="hu-rank-select">
+          {{#each rankOptions}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>Rank {{this.label}}</option>
+          {{/each}}
+        </select>
+        <span class="adv-level-lbl">Lv</span>
+        <input type="number" name="system.level" value="{{system.level}}" min="1" data-dtype="Number" class="adv-level-input" />
+        <span class="adv-level-lbl">Size</span>
+        <input type="number" name="system.size" value="{{system.size}}" min="1" max="5" data-dtype="Number" class="adv-level-input" />
+        <label class="hu-crystal-toggle">
+          <input type="checkbox" name="system.crystallizeInstantly" {{#if system.crystallizeInstantly}}checked{{/if}} />
+          <i class="fas fa-gem" title="Instant Crystallize"></i>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="hu-creature-tags">
+    {{{creatureTypeTags}}}
+  </div>
+
+  {{!-- ═══ ROLE & ACTIONS ═══ --}}
+  <div class="hu-role-row">
+    <select name="system.role" class="hu-role-select">
+      {{#each roleOptions}}
+      <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+      {{/each}}
+    </select>
+    <span class="hu-actions-badge" title="Actions per Turn">
+      <i class="fas fa-bolt"></i> {{system.actionsPerTurn}}
+    </span>
+  </div>
+
+  {{!-- ═══ RESOURCE BARS ═══ --}}
+  <div class="adv-panel">
+
+    {{!-- HP --}}
+    <div class="adv-bar-group">
+      <div class="adv-bar-head">
+        <span class="adv-bar-lbl hp">HP</span>
+        <span class="adv-bar-val">
+          <input type="number" name="system.stats.hp.value" value="{{system.stats.hp.value}}" min="0" data-dtype="Number" class="adv-bar-cur" />
+          <span class="adv-bar-sep">/</span>
+          <input type="number" name="system.stats.hp.max" value="{{system.stats.hp.max}}" min="0" data-dtype="Number" class="adv-bar-max" />
+        </span>
+      </div>
+      <div class="adv-bar-track hp">
+        <div class="adv-bar-fill hp" style="width: {{#if system.stats.hp.max}}{{math system.stats.hp.value "/" system.stats.hp.max "*" 100}}%{{else}}0%{{/if}}"></div>
+        {{#if system.stats.hp.barrier}}
+        <div class="adv-bar-fill barrier" style="right: {{barrierRight}}%; width: {{barrierPercent}}%"></div>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- MP --}}
+    <div class="adv-bar-group">
+      <div class="adv-bar-head">
+        <span class="adv-bar-lbl mp">MP</span>
+        <span class="adv-bar-val">
+          <input type="number" name="system.stats.mp.value" value="{{system.stats.mp.value}}" min="0" data-dtype="Number" class="adv-bar-cur" />
+          <span class="adv-bar-sep">/</span>
+          <input type="number" name="system.stats.mp.max" value="{{system.stats.mp.max}}" min="0" data-dtype="Number" class="adv-bar-max" />
+        </span>
+      </div>
+      <div class="adv-bar-track mp">
+        <div class="adv-bar-fill mp" style="width: {{#if system.stats.mp.max}}{{math system.stats.mp.value "/" system.stats.mp.max "*" 100}}%{{else}}0%{{/if}}"></div>
+      </div>
+    </div>
+  </div>
+
+  {{!-- ═══ CORE STATS ═══ --}}
+  <div class="adv-panel adv-stats-panel">
+    <div class="adv-section-title">Core Stats</div>
+    <div class="adv-stats-grid">
+      {{#each statEntries}}
+      {{#unless isResource}}
+      <div class="adv-stat-row {{#if atCap}}stat-at-cap{{/if}}">
+        <span class="adv-stat-abbr" data-action="rollStat" data-stat="{{key}}">{{abbr}}</span>
+        <input type="number" name="system.stats.{{key}}.value" value="{{value}}" min="0"
+               data-dtype="Number" class="adv-stat-val {{#if modClass}}stat-value-{{modClass}}{{/if}}"
+               data-stat-key="{{key}}" {{#if hasModifiers}}data-has-modifiers="true"{{/if}} />
+      </div>
+      {{/unless}}
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- ═══ ELEMENTS ═══ --}}
+  {{#if elementalEntries}}
+  <div class="adv-panel">
+    <div class="adv-section-title">Elements</div>
+    <div class="adv-element-grid">
+      {{#each elementalEntries}}
+      <div class="adv-el-row" data-element="{{key}}" data-action="cycleElementTier">
+        <span class="adv-el-icon element-{{key}}"></span>
+        <span class="adv-el-name">{{label}}</span>
+        <span class="adv-el-val tier-{{tier}}">{{tierLabel}}</span>
+        <input type="hidden" name="system.elementalProfile.{{key}}" value="{{tier}}" />
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ═══ STATUS RESISTANCES ═══ --}}
+  {{#if statusResistanceEntries}}
+  <div class="adv-panel">
+    <div class="adv-section-title">Status Resistances</div>
+    <div class="adv-element-grid">
+      {{#each statusResistanceEntries}}
+      <div class="adv-el-row" data-status="{{key}}" data-action="cycleStatusTier">
+        <span class="adv-el-icon element-neutral"></span>
+        <span class="adv-el-name">{{label}}</span>
+        <span class="adv-sr-val tier-{{tier}}">{{tierLabel}}</span>
+        <input type="hidden" name="system.statusResistances.{{key}}" value="{{tier}}" />
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+</aside>
+{{/if}}
