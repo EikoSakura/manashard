@@ -1164,14 +1164,47 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
       });
     }
 
-    // Add purchased equipment
+    // Add purchased equipment — respect slot limits, extras go to inventory
     if (state.cart.length > 0) {
       const equipDocs = await Promise.all(
         state.cart.map(c => fromUuid(c.uuid))
       );
+      let weaponMainFilled = false;
+      let weaponOffFilled = false;
+      let armorFilled = false;
+      const maxAcc = actor.system.maxAccessorySlots ?? 2;
+      let accCount = 0;
+
       const equipData = equipDocs.filter(Boolean).map(d => {
         const data = d.toObject();
-        data.system.equipped = true;
+        const type = data.type;
+        let equip = false;
+
+        if (type === "weapon") {
+          if (!weaponMainFilled) {
+            equip = true;
+            data.system.equipSlot = "mainhand";
+            weaponMainFilled = true;
+            // 2H weapon blocks offhand
+            if (data.system.handedness === "2h") weaponOffFilled = true;
+          } else if (!weaponOffFilled && data.system.handedness !== "2h") {
+            equip = true;
+            data.system.equipSlot = "offhand";
+            weaponOffFilled = true;
+          }
+        } else if (type === "armor") {
+          if (!armorFilled) {
+            equip = true;
+            armorFilled = true;
+          }
+        } else if (type === "accessory") {
+          if (accCount < maxAcc) {
+            equip = true;
+            accCount++;
+          }
+        }
+
+        data.system.equipped = equip;
         return data;
       });
       if (equipData.length) await actor.createEmbeddedDocuments("Item", equipData);

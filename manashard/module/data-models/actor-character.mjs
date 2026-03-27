@@ -333,8 +333,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // Derived Stats (computed from now-modified core stats)
     // ═══════════════════════════════════════════════════════
 
-    // MP Regen per turn = SPI / 4 (rounded down)
-    this.mpRegen = Math.floor(stats.spi.value / 4);
+    // MP Regen per turn = 1 + SPI / 4 (rounded down, minimum 1)
+    this.mpRegen = 1 + Math.floor(stats.spi.value / 4);
 
     // Carrying Capacity = 10 + STR + (END / 2), rounded down
     this.carryingCapacity = 10 + stats.str.value + Math.floor(stats.end.value / 2);

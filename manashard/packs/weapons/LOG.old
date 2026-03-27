@@ -1,3 +1,5 @@
-2026/03/26-14:55:54.683 e68c Recovering log #250
-2026/03/26-14:55:54.700 e68c Delete type=0 #250
-2026/03/26-14:55:54.700 e68c Delete type=3 #249
+2026/03/26-19:37:33.159 cdc0 Recovering log #254
+2026/03/26-19:37:33.159 cdc0 Level-0 table #256: started
+2026/03/26-19:37:33.173 cdc0 Level-0 table #256: 1513 bytes OK
+2026/03/26-19:37:33.190 cdc0 Delete type=0 #254
+2026/03/26-19:37:33.190 cdc0 Delete type=3 #253
