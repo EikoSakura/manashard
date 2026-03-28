@@ -198,10 +198,17 @@
     {{!-- Loot Table --}}
     <div class="eb-section">
       <h4 class="eb-section-header">{{localize "MANASHARD.EncBuilder.LootTable"}}</h4>
-      <div class="eb-loot-table">
+      <div class="eb-loot-zone eb-drop-zone">
         {{#each lootTable}}
         <div class="eb-loot-row" data-index="{{@index}}">
-          <input type="text" name="loot-name" value="{{this.itemName}}" placeholder="{{localize 'MANASHARD.EncBuilder.ItemName'}}" />
+          {{#if this.img}}
+            <img class="eb-item-img" src="{{this.img}}" />
+          {{/if}}
+          {{#if this.uuid}}
+            <span class="eb-item-name">{{this.itemName}}</span>
+          {{else}}
+            <input type="text" name="loot-name" value="{{this.itemName}}" placeholder="{{localize 'MANASHARD.EncBuilder.ItemName'}}" />
+          {{/if}}
           <label class="eb-loot-chance">
             <input type="number" name="loot-chance" value="{{this.chance}}" min="1" max="100" />%
           </label>
@@ -212,6 +219,9 @@
           <button class="eb-remove-btn" data-action="removeLootRow" data-index="{{@index}}"><i class="fas fa-times"></i></button>
         </div>
         {{/each}}
+        {{#unless lootTable.length}}
+          <p class="eb-drop-hint"><i class="fas fa-arrow-down"></i> {{localize "MANASHARD.EncBuilder.DropLoot"}}</p>
+        {{/unless}}
         <button class="eb-btn-sm" data-action="addLootRow"><i class="fas fa-plus"></i> {{localize "MANASHARD.EncBuilder.AddLoot"}}</button>
       </div>
     </div>

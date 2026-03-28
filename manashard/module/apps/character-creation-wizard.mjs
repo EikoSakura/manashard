@@ -444,7 +444,7 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
       element: skill.system.element || null,
       mpCost: skill.system.mpCost ?? 0,
       rangeDisplay: skill.system.rangeDisplay,
-      damageType: skill.system.damageType || "",
+      damageType: skill.system.damageType || "none",
       targetType: skill.system.targetType || "single",
       unlockRequirements: skill.system.unlockRequirements || "",
       hasPrerequisites: !!(skill.system.unlockRequirements?.trim()),
@@ -602,7 +602,6 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
       category: item.system.category || "",
       special: item.system.special || "",
       might: item.system.might ?? null,
-      hit: item.system.hit ?? null,
       pdef: item.system.pdef ?? null,
       mdef: item.system.mdef ?? null,
       weight: item.system.weight ?? null

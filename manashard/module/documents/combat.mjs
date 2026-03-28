@@ -80,6 +80,7 @@ export class ManashardCombat extends Combat {
     await this.setFlag("manashard", "currentSide", firstSide);
     await this.setFlag("manashard", "actedThisRound", []);
     await this.setFlag("manashard", "actionsTaken", {});
+    await this.setFlag("manashard", "raisedHands", []);
     await this.setFlag("manashard", "awaitingSelection", true);
 
     await this.update({ round: 1, turn: 0 });
@@ -137,8 +138,9 @@ export class ManashardCombat extends Combat {
     const acted = this.getFlag("manashard", "actedThisRound") ?? [];
     if (acted.includes(combatantId)) return;
 
-    // Set this combatant as active
+    // Set this combatant as active and clear raised hands
     await this.setFlag("manashard", "awaitingSelection", false);
+    await this.setFlag("manashard", "raisedHands", []);
     const turnIdx = this.turns.findIndex(c => c.id === combatantId);
     await this.update({ turn: Math.max(0, turnIdx) });
 
@@ -224,6 +226,7 @@ export class ManashardCombat extends Combat {
     await this.setFlag("manashard", "currentSide", firstSide);
     await this.setFlag("manashard", "actedThisRound", []);
     await this.setFlag("manashard", "actionsTaken", {});
+    await this.setFlag("manashard", "raisedHands", []);
     await this.setFlag("manashard", "awaitingSelection", true);
 
     await this.update({ round: newRound, turn: 0 });
@@ -268,6 +271,7 @@ export class ManashardCombat extends Combat {
     const actionsTaken = this.getFlag("manashard", "actionsTaken") ?? {};
     const currentSide = this.getFlag("manashard", "currentSide") ?? "players";
     const awaiting = this.getFlag("manashard", "awaitingSelection") ?? false;
+    const raisedHands = new Set(this.getFlag("manashard", "raisedHands") ?? []);
 
     const players = [];
     const enemies = [];
@@ -292,9 +296,12 @@ export class ManashardCombat extends Combat {
         img: c.token?.texture?.src ?? c.actor?.img ?? "icons/svg/mystery-man.svg",
         agi,
         isDefeated: c.isDefeated,
-        isCurrent: c.id === this.combatant?.id,
+        isCurrent: !awaiting && c.id === this.combatant?.id,
         hasActed,
         isSelectable,
+        isOwner: c.isOwner,
+        isGM: game.user.isGM,
+        handRaised: raisedHands.has(c.id),
         isCharging: !!c.getFlag("manashard", "charging"),
         chargingSkillName: c.getFlag("manashard", "charging")?.skillName ?? "",
         hpPercent: (hp?.max > 0) ? Math.round(hp.value / hp.max * 100) : 100,
@@ -441,10 +448,14 @@ export class ManashardCombat extends Combat {
     // Build fresh attack params from live data
     const defSys = defenderActor?.system;
     const isHealing = skill.isHealing ?? false;
-    const damageType = skill.damageType || (skill.element ? "magical" : "physical");
+    const damageType = skill.damageType || "none";
     const isMagical = damageType === "magical";
+    const isNoneDamage = damageType === "none";
+    const noneHasHitMechanics = isNoneDamage && (skill.baseRateMode === "weapon" || (skill.baseRateMode === "fixed" && (skill.skillHit ?? 0) > 0));
+    const noneAutoHit = isNoneDamage && !noneHasHitMechanics;
     const targetIsUndead = defSys?.creatureType?.includes?.("undead") ?? false;
     const healMode = isHealing && !targetIsUndead;
+    const skipDefenses = healMode || noneAutoHit;
 
     try {
       await actor.rollSkillAttack({
@@ -452,11 +463,11 @@ export class ManashardCombat extends Combat {
         skillName: chargeData.skillName,
         chantMode: chargeData.chantMode ?? "full",
         defenderActor,
-        defenderEvasion: defSys ? (isMagical ? (defSys.meva ?? 0) : (defSys.peva ?? 0)) : 0,
-        defenderDef: isMagical ? 0 : (defSys?.pdef ?? 0),
-        defenderSpi: isMagical ? (defSys?.mdef ?? 0) : 0,
+        defenderEvasion: skipDefenses ? 0 : (defSys ? (isMagical ? (defSys.meva ?? 0) : (defSys.peva ?? 0)) : 0),
+        defenderDef: (skipDefenses || isNoneDamage) ? 0 : (isMagical ? 0 : (defSys?.pdef ?? 0)),
+        defenderSpi: (skipDefenses || isNoneDamage) ? 0 : (isMagical ? (defSys?.mdef ?? 0) : 0),
         defenderCritAvoid: 0,
-        defenderBlockChance: healMode ? 0 : (defSys?.blockChance ?? 0),
+        defenderBlockChance: (skipDefenses || isNoneDamage) ? 0 : (defSys?.blockChance ?? 0),
         targetTokenId,
         mpCost: chargeData.mpCost ?? 0,
         itemId: chargeData.skillItemId ?? null
@@ -770,5 +781,91 @@ export class ManashardCombat extends Combat {
     }
 
     return icons;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // SOCKET HELPERS (PLAYER → GM RELAY)
+  // ═══════════════════════════════════════════════════════════════
+
+  /**
+   * Request end-of-turn via socket if not GM, or execute directly.
+   */
+  async requestEndTurn() {
+    if (game.user.isGM) return this.endTurn();
+    game.socket.emit("system.manashard", {
+      type: "combatEndTurn",
+      combatId: this.id
+    });
+  }
+
+  /**
+   * Toggle raise/lower hand for a combatant. Players relay via socket;
+   * the GM writes the flag and a notification is broadcast.
+   * @param {string} combatantId
+   */
+  async requestRaiseHand(combatantId) {
+    if (game.user.isGM) return this._toggleRaisedHand(combatantId);
+    game.socket.emit("system.manashard", {
+      type: "combatRaiseHand",
+      combatId: this.id,
+      combatantId
+    });
+  }
+
+  /**
+   * GM-side: toggle a combatant's raised hand and notify all clients.
+   * @param {string} combatantId
+   */
+  async _toggleRaisedHand(combatantId) {
+    const combatant = this.combatants.get(combatantId);
+    if (!combatant || combatant.isDefeated) return;
+
+    const raised = [...(this.getFlag("manashard", "raisedHands") ?? [])];
+    const idx = raised.indexOf(combatantId);
+    const isRaising = idx === -1;
+
+    if (isRaising) {
+      raised.push(combatantId);
+    } else {
+      raised.splice(idx, 1);
+    }
+    await this.setFlag("manashard", "raisedHands", raised);
+
+    // Notify all clients
+    if (isRaising) {
+      game.socket.emit("system.manashard", {
+        type: "combatHandRaisedNotify",
+        combatantName: combatant.name
+      });
+      ui.notifications.info(`${combatant.name} wants to go next!`);
+    }
+  }
+
+  /**
+   * Register socket listener for combat relay messages.
+   * Call once from the ready hook.
+   */
+  static registerSocketListeners() {
+    game.socket.on("system.manashard", async (msg) => {
+      // GM-only handlers
+      if (game.user.isGM) {
+        if (msg.type === "combatEndTurn") {
+          const combat = game.combats.get(msg.combatId);
+          if (combat?.started) await combat.endTurn();
+        }
+
+        if (msg.type === "combatRaiseHand") {
+          const combat = game.combats.get(msg.combatId);
+          if (combat?.started && msg.combatantId) {
+            await combat._toggleRaisedHand(msg.combatantId);
+          }
+        }
+      }
+
+      // All-client handlers
+      if (msg.type === "combatHandRaisedNotify") {
+        ui.notifications.info(`${msg.combatantName} wants to go next!`);
+      }
+    });
   }
 }

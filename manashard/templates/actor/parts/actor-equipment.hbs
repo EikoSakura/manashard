@@ -12,7 +12,7 @@
           <img src="{{equippedWeapon.img}}" class="slot-img" width="40" height="40" data-action="postItemToChat" title="Post to chat" />
           <div class="slot-info">
             <span class="slot-name" data-action="editItem">{{equippedWeapon.name}}</span>
-            <span class="slot-stats">Mt {{equippedWeapon.system.might}} | Hit {{equippedWeapon.system.hit}}{{#if mainhandIs2H}} | <strong>2H</strong>{{/if}}</span>
+            <span class="slot-stats">Mt {{equippedWeapon.system.might}} | Crit {{equippedWeapon.system.crit}}{{#if mainhandIs2H}} | <strong>2H</strong>{{/if}}</span>
           </div>
           <a class="slot-unequip" data-action="toggleEquip" title="Unequip"><i class="fas fa-times"></i></a>
         </div>
@@ -185,7 +185,7 @@
         <div class="adv-tile-details">
           <div class="adv-tile-stats">
             <span class="adv-tile-stat">Mt {{this.system.might}}</span>
-            <span class="adv-tile-stat">Hit {{this.system.hit}}</span>
+            <span class="adv-tile-stat">Crit {{this.system.crit}}</span>
           </div>
         </div>
       </details>
@@ -197,15 +197,24 @@
   {{!-- ═══ INVENTORY ═══ --}}
   <div class="inventory-divider"></div>
   <div class="inventory-section">
-    <h3>Inventory
-      <a class="item-control add-item" data-action="addItem" data-type="weapon"><i class="fas fa-sword" title="Add Weapon"></i></a>
-      <a class="item-control add-item" data-action="addItem" data-type="armor"><i class="fas fa-shield-halved" title="Add Armor"></i></a>
-      <a class="item-control add-item" data-action="addItem" data-type="accessory"><i class="fas fa-ring" title="Add Accessory"></i></a>
-      <a class="item-control add-item" data-action="addItem" data-type="consumable"><i class="fas fa-flask" title="Add Consumable"></i></a>
-      {{#if hasSpatialInventory}}
-      <a class="item-control spatial-inv-btn" data-action="openSpatialInventory" title="Spatial Inventory"><i class="fas fa-box-open"></i></a>
-      {{/if}}
-    </h3>
+    <div class="inventory-header">
+      <h3>Inventory
+        <a class="item-control add-item" data-action="addItem" data-type="weapon"><i class="fas fa-sword" title="Add Weapon"></i></a>
+        <a class="item-control add-item" data-action="addItem" data-type="armor"><i class="fas fa-shield-halved" title="Add Armor"></i></a>
+        <a class="item-control add-item" data-action="addItem" data-type="accessory"><i class="fas fa-ring" title="Add Accessory"></i></a>
+        <a class="item-control add-item" data-action="addItem" data-type="consumable"><i class="fas fa-flask" title="Add Consumable"></i></a>
+        {{#if hasSpatialInventory}}
+        <a class="item-control spatial-inv-btn" data-action="openSpatialInventory" title="Spatial Inventory"><i class="fas fa-box-open"></i></a>
+        {{/if}}
+      </h3>
+      <div class="eiress-wallet">
+        <i class="fas fa-coins eiress-wallet-icon"></i>
+        <span class="eiress-wallet-label">Eiress</span>
+        <button type="button" class="eiress-wallet-btn" data-action="adjustEiress" data-delta="-1"><i class="fas fa-minus"></i></button>
+        <input type="number" name="system.eiress" value="{{system.eiress}}" min="0" data-dtype="Number" class="eiress-wallet-value" />
+        <button type="button" class="eiress-wallet-btn" data-action="adjustEiress" data-delta="1"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
     {{#if inventory.length}}
     <div class="adv-tile-grid">
       {{#each inventory}}

@@ -92,14 +92,10 @@
     {{!-- Weapon Stats — Large Editor Cells (3+3 grid) --}}
     <div class="equip-detail-section">
       <div class="equip-detail-header"><i class="fas fa-chart-bar"></i> Weapon Stats</div>
-      <div class="armor-stat-editor-grid wpn-stat-grid-3">
+      <div class="armor-stat-editor-grid wpn-stat-grid-2">
         <div class="armor-stat-editor-cell">
           <input type="number" name="system.might" value="{{system.might}}" data-dtype="Number" min="0" class="armor-stat-editor-val" />
           <div class="armor-stat-editor-label">MIGHT</div>
-        </div>
-        <div class="armor-stat-editor-cell">
-          <input type="number" name="system.hit" value="{{system.hit}}" data-dtype="Number" class="armor-stat-editor-val" />
-          <div class="armor-stat-editor-label">HIT</div>
         </div>
         <div class="armor-stat-editor-cell">
           <input type="number" name="system.crit" value="{{system.crit}}" data-dtype="Number" min="0" class="armor-stat-editor-val" />
@@ -438,7 +434,6 @@
         <div class="mana-class-field">
           <div class="mana-class-field-label">DMG TYPE</div>
           <select name="system.damageType" class="mana-class-field-select">
-            <option value="" {{#if (eq system.damageType "")}}selected{{/if}}>Auto</option>
             {{#each config.damageTypes as |label key|}}
             <option value="{{key}}" {{#if (eq key ../system.damageType)}}selected{{/if}}>{{label}}</option>
             {{/each}}

@@ -227,11 +227,11 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // --- Throw Range (default 0, granted by passives like Telekinesis) ---
     this.throwRange = 0;
 
-    // --- MOV (flat base 4, modified by rules/effects) ---
-    this.mov = 4;
+    // --- MOV (flat base 6, modified by rules/effects) ---
+    this.mov = 6;
 
-    // --- Vision (base 4 tiles, modified by rules/effects) ---
-    this.vision = 4;
+    // --- Vision (base 6 tiles, modified by rules/effects) ---
+    this.vision = 6;
 
     // --- Movement Modes (walk by default, expanded by grants) ---
     this._movementModes = new Set(["walk"]);
@@ -344,26 +344,29 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
 
     // Weapon stats
     const weaponMight = equippedWeapon?.might ?? 0;
-    const weaponHit = equippedWeapon?.hit ?? 70;
     const weaponCrit = equippedWeapon?.crit ?? 0;
     const weaponDamageType = equippedWeapon?.damageType ?? "physical";
 
-    // Damage = Weapon Might + STR (physical) or MAG (magical)
+    // Damage = Scaling Stat × 2 + Weapon Might (character power drives damage)
+    // Swords (Versatile): physical damage uses max(STR, AGI)
+    const weaponCategory = equippedWeapon?.category ?? null;
     if (weaponDamageType === "magical") {
-      this.damage = weaponMight + stats.mag.value;
+      this.damage = (stats.mag.value * 2) + weaponMight;
+    } else if (weaponCategory === "swords") {
+      this.damage = (Math.max(stats.str.value, stats.agi.value) * 2) + weaponMight;
     } else {
-      this.damage = weaponMight + stats.str.value;
+      this.damage = (stats.str.value * 2) + weaponMight;
     }
 
-    // Accuracy = (AGI * 2) + Weapon Hit
-    this.accuracy = (stats.agi.value * 2) + weaponHit;
+    // Accuracy = 80 (base hit rate) + AGI * 2
+    this.accuracy = 80 + (stats.agi.value * 2);
 
     // Critical = LUK * 2 + Weapon Crit
     this.critical = (stats.luk.value * 2) + weaponCrit;
 
-    // P.EVA = AGI * 2, M.EVA = SPI * 2
-    this.peva = stats.agi.value * 2;
-    this.meva = stats.spi.value * 2;
+    // P.EVA = AGI, M.EVA = SPI (evasion builds scale via skill bonuses)
+    this.peva = stats.agi.value;
+    this.meva = stats.spi.value;
 
     // Crit Avoid = LUK * 2
     this.critAvoid = stats.luk.value * 2;

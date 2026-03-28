@@ -42,11 +42,9 @@ import { ManashardItemSheet } from "./module/sheets/item-sheet.mjs";
 
 // Import helpers
 import { ruleSummary } from "./module/helpers/rule-engine.mjs";
-import { applyDamageFromChat, applyStealFromChat, applyPillageFromChat, applyConsumableFromChat, applyBuffEffect } from "./module/helpers/combat.mjs";
+import { applyDamageFromChat, applyStealFromChat, applyPillageFromChat, applyLootFromChat, applyConsumableFromChat, applyBuffEffect } from "./module/helpers/combat.mjs";
 import { applyItemCardEffect } from "./module/helpers/item-cards.mjs";
 import { scheduleAuraRefresh, cleanupAuras } from "./module/helpers/aura-engine.mjs";
-import { showMovementRange, clearMovementRange, isWithinMovementRange } from "./module/helpers/movement-highlight.mjs";
-import { showThreatRange, clearThreatRange } from "./module/helpers/threat-range-highlight.mjs";
 import { syncAllTokenStatuses } from "./module/helpers/status-effects.mjs";
 import { drawStatusEffectRing, preloadStatusTextures } from "./module/helpers/token-effects.mjs";
 import { registerStatCheckSocket } from "./module/helpers/stat-check.mjs";
@@ -81,7 +79,8 @@ Hooks.once("init", () => {
     scope: "world",
     config: false,
     type: Array,
-    default: []
+    default: [],
+    onChange: () => game.manashard?.partyCompPanel?.refresh()
   });
 
   // Party name (editable group name)
@@ -114,9 +113,7 @@ Hooks.once("init", () => {
     hint: "MANASHARD.Keybindings.OpenPartySheetHint",
     editable: [{ key: "KeyP" }],
     onDown: () => {
-      const existing = Object.values(foundry.applications.instances).find(
-        app => app.constructor === PartySheet
-      );
+      const existing = foundry.applications.instances.get("party-sheet");
       if (existing) existing.close();
       else new PartySheet().render(true);
       return true;
@@ -226,7 +223,7 @@ Hooks.once("init", () => {
     scope: "client",
     config: true,
     type: Boolean,
-    default: true
+    default: false
   });
 
   // Register Token Info Panel settings
@@ -289,17 +286,16 @@ Hooks.once("init", () => {
         const isGM = game.user.isGM;
 
         // For hidden trap tokens: run trap sense detection instead of the normal
-        // hidden-block. Activates for players always, and for GMs when the
-        // Trap Sense Preview toggle is on (for testing without a player login).
-        if (isHiddenTrap && (!isGM || _trapSensePreview)) {
+        // hidden-block. Only activates for players (GMs see traps via default rendering).
+        if (isHiddenTrap && !isGM) {
           this.detectionFilter = null;
 
           const trapSenseMode = CONFIG.Canvas.detectionModes.trapSense;
-          if (!trapSenseMode) return isGM ? _origTokenIsVisible.call(this) : false;
+          if (!trapSenseMode) return false;
 
           // Check if the trap is armed (detection mode also checks, but skip early)
           if (this.actor?.system?.armed === false) {
-            return isGM ? _origTokenIsVisible.call(this) : false;
+            return false;
           }
 
           let detected = false;
@@ -322,28 +318,10 @@ Hooks.once("init", () => {
             }
           }
 
-          // Fallback path (GM preview with GM Vision on / no token vision):
-          // Directly check distance from tokens that have trap sense
-          if (!detected && isGM && _trapSensePreview) {
-            const gs = canvas.grid.size;
-            for (const other of canvas.tokens.placeables) {
-              if (other.actor?.type === "trap") continue;
-              const mode = other.document.detectionModes.find(m => m.id === "trapSense");
-              if (!mode || !mode.enabled) continue;
-              const range = mode.range ?? 0;
-              const dx = other.center.x - this.center.x;
-              const dy = other.center.y - this.center.y;
-              const distTiles = Math.sqrt(dx * dx + dy * dy) / gs;
-              if (distTiles <= range) { detected = true; break; }
-            }
-          }
-
           if (detected) {
             this.detectionFilter = trapSenseMode.constructor.getDetectionFilter();
             return true;
           }
-          // GM still sees undetected traps faintly via default rendering
-          if (isGM) return _origTokenIsVisible.call(this);
           return false;
         }
 
@@ -352,11 +330,11 @@ Hooks.once("init", () => {
         const isHiddenThreat = this.document.hidden && this.actor?.type !== "trap"
           && this.document.disposition === -1;
 
-        if (isHiddenThreat && (!isGM || _sensePreview)) {
+        if (isHiddenThreat && !isGM) {
           this.detectionFilter = null;
 
           const senseMode = CONFIG.Canvas.detectionModes.sense;
-          if (!senseMode) return isGM ? _origTokenIsVisible.call(this) : false;
+          if (!senseMode) return false;
 
           let detected = false;
 
@@ -378,27 +356,10 @@ Hooks.once("init", () => {
             }
           }
 
-          // Fallback path (GM preview with GM Vision on / no token vision):
-          // Directly check distance from tokens that have Sense
-          if (!detected && isGM && _sensePreview) {
-            const gs = canvas.grid.size;
-            for (const other of canvas.tokens.placeables) {
-              if (other.document.hidden) continue;
-              const mode = other.document.detectionModes.find(m => m.id === "sense");
-              if (!mode || !mode.enabled) continue;
-              const range = mode.range ?? 0;
-              const dx = other.center.x - this.center.x;
-              const dy = other.center.y - this.center.y;
-              const distTiles = Math.sqrt(dx * dx + dy * dy) / gs;
-              if (distTiles <= range) { detected = true; break; }
-            }
-          }
-
           if (detected) {
             this.detectionFilter = senseMode.constructor.getDetectionFilter();
             return true;
           }
-          if (isGM) return _origTokenIsVisible.call(this);
           return false;
         }
 
@@ -418,6 +379,56 @@ Hooks.once("init", () => {
     if (elevation === 0 || elevation == null) return "";
     const sign = elevation > 0 ? "+" : "";
     return `${sign}${elevation} tiles`;
+  };
+
+  // Override Token bar drawing to stack both bars at the bottom of the token.
+  // HP (bar1) on top, MP (bar2) on bottom. HP uses a green→yellow→red gradient.
+  const _origDrawBar = foundry.canvas.placeables.Token.prototype._drawBar;
+  foundry.canvas.placeables.Token.prototype._drawBar = function (number, bar, data) {
+    const val = Number(data.value);
+    const max = Math.max(data.max, 1);
+    const pct = Math.clamp(val, 0, max) / max;
+
+    // Bar dimensions
+    const {width, height} = this.document.getSize();
+    const barHeight = Math.max(canvas.dimensions?.size / 12 ?? 8, 8);
+    const borderWidth = 2;
+
+    // Both bars at bottom: bar1 (number=0, HP) on top, bar2 (number=1, MP) below
+    const posY = number === 0
+      ? height - (barHeight * 2) - 1  // HP bar on top
+      : height - barHeight;            // MP bar at very bottom
+
+    // Bar color
+    let color;
+    if (number === 0) {
+      // HP bar: green→yellow→red gradient based on percentage
+      const r = pct > 0.5 ? (1 - pct) * 2 : 1;
+      const g = pct > 0.5 ? 1 : pct * 2;
+      color = new PIXI.Color([r, g, 0]);
+    } else {
+      // MP bar: blue
+      color = new PIXI.Color([0.3 * pct, 0.4 * pct, 0.5 + (pct / 2)]);
+    }
+
+    // Draw the bar
+    bar.clear();
+
+    // Background
+    bar.beginFill(0x000000, 0.5);
+    bar.lineStyle(borderWidth, 0x000000, 0.8);
+    bar.drawRoundedRect(0, posY, width, barHeight, 0);
+    bar.endFill();
+
+    // Fill
+    bar.beginFill(color, 1.0);
+    bar.lineStyle(0);
+    bar.drawRoundedRect(borderWidth, posY + borderWidth, pct * (width - borderWidth * 2), barHeight - borderWidth * 2, 0);
+    bar.endFill();
+
+    // Position
+    bar.position.set(0, 0);
+    return true;
   };
 
   // Patch DocumentDirectory._onClickEntry to guard against null documents
@@ -530,13 +541,9 @@ Hooks.on("preCreateActor", (actor, data, options, userId) => {
 Hooks.once("ready", async () => {
   console.log("Manashard | System Ready");
 
-  // Initialize Party Composition Panel singleton
+  // Initialize Party Composition Panel singleton — always visible by default
   game.manashard.partyCompPanel = new PartyCompositionPanel();
-
-  // If combat is already active (e.g., page refresh mid-combat), show the panel
-  if (game.combat?.started) {
-    game.manashard.partyCompPanel.show();
-  }
+  game.manashard.partyCompPanel.show();
 
   // --- One-time legacy data cleanup (GM only) ---
   if (game.user.isGM) {
@@ -609,8 +616,9 @@ async function _handleApplyBuff(btn) {
 // Use document-level event delegation for Apply Damage button handling.
 // This reliably works regardless of Foundry V13's chat DOM structure.
 Hooks.once("ready", () => {
-  // Register stat check socket listener for contested checks
+  // Register socket listeners
   registerStatCheckSocket();
+  ManashardCombat.registerSocketListeners();
 
   document.addEventListener("click", (event) => {
     const btn = event.target.closest(".acc-apply-damage");
@@ -630,6 +638,12 @@ Hooks.once("ready", () => {
       event.preventDefault();
       event.stopPropagation();
       applyPillageFromChat(event, pillageBtn);
+    }
+    const lootBtn = event.target.closest(".loot-apply-btn");
+    if (lootBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      applyLootFromChat(event, lootBtn);
     }
     const conBtn = event.target.closest(".con-apply-btn");
     if (conBtn) {
@@ -720,9 +734,9 @@ Hooks.on("updateCombat", (combat, changes) => {
   }
 });
 
-// Hide panel when combat ends
+// Refresh panel when combat ends (switches back to party roster view)
 Hooks.on("deleteCombat", () => {
-  game.manashard?.partyCompPanel?.hide();
+  game.manashard?.partyCompPanel?.refresh();
 });
 
 // Refresh panel when actor HP/MP changes
@@ -797,7 +811,9 @@ Hooks.on("preCreateToken", (tokenDoc, data, options, userId) => {
     if (Number.isFinite(vision)) {
       const gridDist = scene.grid?.distance ?? 1;
       const sightRange = Math.max(0, vision) * gridDist;
-      tokenDoc.updateSource({ "sight.enabled": true, "sight.range": sightRange });
+      tokenDoc.updateSource({ "sight.enabled": true, "sight.range": sightRange, displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
+    } else {
+      tokenDoc.updateSource({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
     }
     return;
   }
@@ -831,128 +847,17 @@ Hooks.on("preCreateToken", (tokenDoc, data, options, userId) => {
     tokenDoc.updateSource({
       name: `${stripped} ${letter}`,
       displayName: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+      displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
       "sight.enabled": true,
       "sight.range": sightRange
     });
   } else {
-    tokenDoc.updateSource({ name: `${stripped} ${letter}`, displayName: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
+    tokenDoc.updateSource({ name: `${stripped} ${letter}`, displayName: CONST.TOKEN_DISPLAY_MODES.ALWAYS, displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
   }
 });
 
-/* -------------------------------------------- */
-/*  Movement Range Highlight Hooks              */
-/* -------------------------------------------- */
-
-/** Check if the current scene has a visible grid. */
-function _sceneHasGrid() {
-  return (canvas.scene?.grid?.type ?? 0) !== 0;
-}
-
-Hooks.on("controlToken", (token, controlled) => {
-  if (controlled) {
-    // During combat: GM can click any token to inspect; turn-lock handles the rest
-    // Outside combat on grid maps: clicking a token shows its movement range
-    if (_sceneHasGrid()) {
-      if (game.combat?.started) {
-        if (game.user.isGM) showMovementRange(token);
-      } else {
-        showMovementRange(token);
-      }
-    }
-    if (_threatRangeActive) showThreatRange(token);
-  } else {
-    if (!game.combat?.started) clearMovementRange();
-    // GM: fall back to all-hostile overview; Player: clear
-    if (_threatRangeActive) _refreshThreatRangeForControlled();
-  }
-});
-
-// Restrict movement to within the highlighted range
-Hooks.on("preMoveToken", (tokenDoc, movement) => {
-  const waypoints = movement?.waypoints;
-  if (!waypoints?.length) return;
-  const dest = waypoints[waypoints.length - 1];
-  if (!isWithinMovementRange(tokenDoc, dest.x, dest.y)) {
-    ui.notifications.warn("That square is outside your movement range!");
-    return false;
-  }
-});
-
-// After a move completes, clear movement range (one move per turn) and refresh other overlays
-Hooks.on("moveToken", (tokenDoc) => {
-  const token = tokenDoc.object;
-  if (token?.controlled) {
-    // Clear movement highlight — movement is spent for this turn
-    if (game.combat?.started) clearMovementRange();
-  }
-  // Refresh threat range when any token moves (enemy repositioning changes threat)
-  if (_threatRangeActive) _refreshThreatRangeForControlled();
-});
-
-// When a wall/door changes, refresh movement range
-Hooks.on("updateWall", () => {
-  if (!_sceneHasGrid()) return;
-  if (game.combat?.started) {
-    const token = game.combat.combatant?.token?.object;
-    if (token) showMovementRange(token);
-  } else {
-    const controlled = canvas.tokens?.controlled?.[0];
-    if (controlled) showMovementRange(controlled);
-  }
-});
-
-// Show movement range when combat starts or turn changes; clear on combat end
-Hooks.on("updateCombat", (combat, changes) => {
-  if (!combat?.started) return;
-  if ("started" in changes || "turn" in changes || "round" in changes) {
-    const token = combat.combatant?.token?.object;
-    if (token) {
-      setTimeout(() => showMovementRange(token), 50);
-    }
-  }
-});
-
-// Clear all overlays when combat ends
-Hooks.on("deleteCombat", () => {
-  clearMovementRange();
-  _threatRangeActive = false;
-  clearThreatRange();
-});
-
-// Clear movement + refresh threat when a token is deleted
-Hooks.on("deleteToken", () => {
-  clearMovementRange();
-  if (_threatRangeActive) _refreshThreatRangeForControlled();
-});
-
-/* -------------------------------------------- */
-/*  Enemy Threat Range Overlay                  */
-/* -------------------------------------------- */
-
-let _threatRangeActive = false;
-
-/** Refresh threat overlay for the currently controlled token, or all hostiles for GM. */
-function _refreshThreatRangeForControlled() {
-  const controlled = canvas?.tokens?.controlled?.[0];
-  if (controlled) {
-    showThreatRange(controlled);
-  } else if (game.user.isGM) {
-    showThreatRange(null);
-  } else {
-    clearThreatRange();
-  }
-}
-
-// Refresh threat overlay when tokens are created
-Hooks.on("createToken", () => {
-  if (_threatRangeActive) _refreshThreatRangeForControlled();
-});
-
-// Add threat range toggle to Token Controls toolbar
 let _gmVisionActive = false;
 let _gmVisionOriginal = null;
-let _trapSensePreview = false;
-let _sensePreview = false;
 
 function _applyGmVision(active) {
   if (!canvas.ready) return;
@@ -985,13 +890,24 @@ Hooks.on("getSceneControlButtons", (controls) => {
     title: "MANASHARD.Controls.ManashardTools",
     icon: "fa-solid fa-gem",
     order: 100,
+    activeTool: "select",
     tools: {
+      select: {
+        name: "select",
+        title: "MANASHARD.Controls.ManashardTools",
+        icon: "fa-solid fa-gem",
+        onChange: () => {}
+      },
       partySheet: {
         name: "partySheet",
         title: "MANASHARD.Controls.PartySheet",
         icon: "fa-solid fa-users",
         button: true,
-        onChange: () => new PartySheet().render(true)
+        onChange: () => {
+          const existing = foundry.applications.instances.get("party-sheet");
+          if (existing) existing.close();
+          else new PartySheet().render(true);
+        }
       },
       compendiumBrowser: {
         name: "compendiumBrowser",
@@ -1020,51 +936,12 @@ Hooks.on("getSceneControlButtons", (controls) => {
           _applyGmVision(active);
         }
       },
-      trapSensePreview: {
-        name: "trapSensePreview",
-        title: "MANASHARD.Controls.TrapSensePreview",
-        icon: "fa-solid fa-triangle-exclamation",
-        toggle: true,
-        visible: isGM,
-        active: _trapSensePreview,
-        onChange: (event, active) => {
-          _trapSensePreview = active;
-          canvas.perception.update({refreshVision: true});
-        }
-      },
-      sensePreview: {
-        name: "sensePreview",
-        title: "MANASHARD.Controls.SensePreview",
-        icon: "fa-solid fa-eye-low-vision",
-        toggle: true,
-        visible: isGM,
-        active: _sensePreview,
-        onChange: (event, active) => {
-          _sensePreview = active;
-          canvas.perception.update({refreshVision: true});
-        }
-      },
-      threatRange: {
-        name: "threatRange",
-        title: "MANASHARD.Controls.ThreatRange",
-        icon: "fa-solid fa-crosshairs",
-        toggle: true,
-        active: _threatRangeActive,
-        onChange: (event, active) => {
-          _threatRangeActive = active;
-          if (active) {
-            _refreshThreatRangeForControlled();
-          } else {
-            clearThreatRange();
-          }
-        }
-      },
       partyComp: {
         name: "partyComp",
         title: "MANASHARD.Controls.PartyComp",
         icon: "fa-solid fa-heart-pulse",
         button: true,
-        onClick: () => {
+        onChange: () => {
           const panel = game.manashard?.partyCompPanel;
           if (!panel) return;
           if (panel.visible) panel.hide();
@@ -1291,7 +1168,7 @@ function _registerCreationSettings() {
     scope: "world",
     config: false,
     type: Number,
-    default: 18
+    default: 20
   });
 
   game.settings.register("manashard", "creationGrowthPool", {

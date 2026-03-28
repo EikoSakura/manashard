@@ -7,7 +7,7 @@ import { PortraitAdjuster } from "../apps/portrait-adjuster.mjs";
 import { showForecastDialog } from "../helpers/forecast-dialog.mjs";
 
 import { showStatCheckForecastDialog, resolveStatCheck, resolveContestedCheck, postStatCheckCard, requestContestedStatPick, showContestedStatPickDialog } from "../helpers/stat-check.mjs";
-import { postItemCard, postAbsorptionCard } from "../helpers/item-cards.mjs";
+import { postItemCard, postAbsorptionCard, postLevelUpCard } from "../helpers/item-cards.mjs";
 import { renderTagInput, bindTagInput } from "../apps/tag-input.mjs";
 
 /**
@@ -70,6 +70,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       cycleElementTier: ManashardActorSheet.#onCycleElementTier,
       addLootEntry: ManashardActorSheet.#onAddLootEntry,
       removeLootEntry: ManashardActorSheet.#onRemoveLootEntry,
+      sortLootTable: ManashardActorSheet.#onSortLootTable,
       postItemToChat: ManashardActorSheet.#onPostItemToChat,
       unequipOffhand: ManashardActorSheet.#onUnequipOffhand,
       unequipJob: ManashardActorSheet.#onUnequipJob,
@@ -85,7 +86,8 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       cycleStatusTier: ManashardActorSheet.#onCycleStatusTier,
       openManaciteManager: ManashardActorSheet.#onOpenManaciteManager,
       openSpatialInventory: ManashardActorSheet.#onOpenSpatialInventory,
-      stowInSpatial: ManashardActorSheet.#onStowInSpatial
+      stowInSpatial: ManashardActorSheet.#onStowInSpatial,
+      adjustEiress: ManashardActorSheet.#onAdjustEiress
     }
   };
 
@@ -1712,8 +1714,8 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     pdef:        { name: "P.DEF",      formula: "Armor + END" },
     mdef:        { name: "M.DEF",      formula: "Armor + SPI" },
     blockChance: { name: "Block",      formula: "Shield Block + END/2" },
-    mov:         { name: "Movement",   formula: "Base 4 + modifiers" },
-    vision:      { name: "Vision",     formula: "Base 4 + modifiers" },
+    mov:         { name: "Movement",   formula: "Base 6 + modifiers" },
+    vision:      { name: "Vision",     formula: "Base 6 + modifiers" },
     mpRegen:     { name: "MP Regen",   formula: "SPI / 4" },
     carry:       { name: "Carry",      formula: "5 + STR + END/2" }
   };
@@ -1892,7 +1894,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
 
     if (type === "weapon") {
       stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">Might</span><span class="ms-tt-stat-val">${sys.might ?? 0}</span></div>`;
-      stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">Hit</span><span class="ms-tt-stat-val">${sys.hit ?? 0}</span></div>`;
+      stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">Crit</span><span class="ms-tt-stat-val">${sys.crit ?? 0}</span></div>`;
       stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">Crit</span><span class="ms-tt-stat-val">${sys.crit ?? 0}</span></div>`;
       stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">Weight</span><span class="ms-tt-stat-val">${sys.weight ?? 0}</span></div>`;
 
@@ -1900,22 +1902,26 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       if (actorStats) {
         const deltas = [];
         if (sys.equipped) {
-          const baseDmg = (sys.damageType === "magical" ? actorStats.mag.value : actorStats.str.value);
-          const dmg = (sys.might ?? 0) + baseDmg;
-          deltas.push({ label: "DMG", delta: baseDmg - dmg });
-          const baseAcc = actorStats.agi.value * 2 + 70;
-          deltas.push({ label: "ACC", delta: baseAcc - (actorStats.agi.value * 2 + (sys.hit ?? 0)) });
+          const scalingStat = (sys.damageType === "magical" ? actorStats.mag.value : actorStats.str.value);
+          const unarmedDmg = scalingStat * 2;
+          const equippedDmg = (scalingStat * 2) + (sys.might ?? 0);
+          deltas.push({ label: "DMG", delta: equippedDmg - unarmedDmg });
+          // Accuracy no longer depends on weapon hit — no ACC delta for equipped weapon
+          deltas.push({ label: "ACC", delta: 0 });
           const baseCrit = actorStats.luk.value * 2;
           deltas.push({ label: "CRIT", delta: baseCrit - (baseCrit + (sys.crit ?? 0)) });
           deltas.push({ label: "WT", delta: -(sys.weight ?? 0), invertColor: true });
         } else {
           const cur = this.actor.items.find(i => i.type === "weapon" && i.system.equipped);
-          const curMight = cur?.system.might ?? 0, curHit = cur?.system.hit ?? 70, curCrit = cur?.system.crit ?? 0, curWt = cur?.system.weight ?? 0;
+          const curMight = cur?.system.might ?? 0, curCrit = cur?.system.crit ?? 0, curWt = cur?.system.weight ?? 0;
           const curType = cur?.system.damageType ?? "physical";
-          const curDmg = curMight + (curType === "magical" ? actorStats.mag.value : actorStats.str.value);
-          const newDmg = (sys.might ?? 0) + (sys.damageType === "magical" ? actorStats.mag.value : actorStats.str.value);
+          const curScaling = curType === "magical" ? actorStats.mag.value : actorStats.str.value;
+          const newScaling = sys.damageType === "magical" ? actorStats.mag.value : actorStats.str.value;
+          const curDmg = (curScaling * 2) + curMight;
+          const newDmg = (newScaling * 2) + (sys.might ?? 0);
           deltas.push({ label: "DMG", delta: newDmg - curDmg });
-          deltas.push({ label: "ACC", delta: (sys.hit ?? 0) - curHit });
+          // Accuracy no longer depends on weapon hit — no ACC delta for weapon swap
+          deltas.push({ label: "ACC", delta: 0 });
           deltas.push({ label: "CRIT", delta: (sys.crit ?? 0) - curCrit });
           deltas.push({ label: "WT", delta: (sys.weight ?? 0) - curWt, invertColor: true });
         }
@@ -2277,21 +2283,8 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     }
     await this.actor.update(updates);
 
-    // Chat message
-    const gainsList = results
-      .filter(r => r.gainAmount > 0)
-      .map(r => `<span class="success">${r.label} +${r.gainAmount}</span>`)
-      .join(", ");
-    const jobNote = jobName ? ` <em>(${jobName})</em>` : "";
-    const chatContent = [
-      `<strong>${this.actor.name}</strong> reached <strong>Level ${newLevel}</strong>!${jobNote}`,
-      gainsList || "<em>No stats increased.</em>"
-    ].join("<br>");
-
-    await ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      content: chatContent
-    });
+    // Chat card
+    await postLevelUpCard(this.actor, system.level, newLevel, results, jobName);
   }
 
   // --- Feature 1: Use Skill ---
@@ -2337,7 +2330,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     const isOffensive = (skillData.skillType === "magic" || skillData.skillType === "art")
       && ((skillData.baseRate ?? 0) > 0 || skillData.baseRateMode === "weapon");
 
-    // Barrier / healing / retaliatory skills route through forecast even with baseRate 0 (damage = scaling stat)
+    // Barrier / healing / retaliatory skills route through forecast even with baseRate 0
     const isBarrierSkill = skillData.isBarrier ?? skillData.damageType === "barrier";
     const isHealingSkill = skillData.isHealing ?? skillData.damageType === "healing";
     const isRetaliatory = skillData.isRetaliatory ?? skillData.damageType === "retaliatory";
@@ -2408,6 +2401,11 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       // Check if this is a Full chant spell (declare now, resolve next turn)
       const isFullChantCharge = chant.chargesTurn === true;
 
+      // Resolve target info for display
+      const targeted = game.user.targets.first();
+      const targetActor = targeted?.actor;
+      const targetName = targetActor?.name ?? null;
+
       const templateData = {
         actorImg: actor.img,
         actorName: actor.name,
@@ -2415,6 +2413,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
         skillType: skillData.skillType,
         isHealing: skillData.isHealing ?? false,
         targetType,
+        targetName,
         mpCost: effectiveMpCost,
         range,
         isMeleeSkill,
@@ -2460,7 +2459,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
 
           if (buffRadius > 0 && canvas?.tokens) {
             // Area buff: apply to all matching tokens within radius of caster
-            const casterToken = canvas.tokens.placeables.find(t => t.actor?.id === actor.id);
+            const casterToken = actor.token?.object ?? canvas.tokens.placeables.find(t => t.actor?.id === actor.id);
             if (casterToken) {
               let buffCount = 0;
               for (const t of canvas.tokens.placeables) {
@@ -2484,9 +2483,11 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
               }
             }
           } else {
-            // No radius: apply to self for self-target skills, or targets
+            // No radius: apply to self for self-target skills, or to targeted token for single-target
             if (targetType === "self") {
               await applyBuffEffect(actor, skillName, item.img, buffDuration, buffRules, desc);
+            } else if (targetType === "single" && targetActor) {
+              await applyBuffEffect(targetActor, skillName, item.img, buffDuration, buffRules, desc);
             }
           }
         }
@@ -2506,7 +2507,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
   static async #showSkillForecast(actor, skillData, skillName, itemId, mpCost) {
     const system = actor.system;
     const element = skillData.element || "";
-    const damageType = skillData.damageType || (element ? "magical" : "physical");
+    const damageType = skillData.damageType || "none";
     const isMagical = damageType === "magical";
     const isSpell = skillData.skillType === "magic";
     const isHealing = skillData.isHealing ?? false;
@@ -2518,8 +2519,9 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     const defSys = defActor?.system;
     const targetIsUndead = defSys?.creatureType?.includes?.("undead") ?? false;
     const isRetaliatorySk = skillData.isRetaliatory ?? skillData.damageType === "retaliatory";
+    const isNoneDamageSk = skillData.damageType === "none";
     const healMode = (isHealing && !targetIsUndead) || isBarrier;
-    const defBlockChance = (healMode || isRetaliatorySk) ? 0 : (defActor?.system?.blockChance ?? 0);
+    const defBlockChance = (healMode || isRetaliatorySk || isNoneDamageSk) ? 0 : (defActor?.system?.blockChance ?? 0);
 
     // Build casting modifier finder (needed by forecast and post-dialog)
     const castingMods = system._ruleCache?.castingModifiers ?? [];
@@ -2589,16 +2591,17 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     }
 
     // Immediate execution (Swift or Normal chant)
+    const skipAllDef = healMode || isRetaliatorySk;
     await actor.rollSkillAttack({
       skill: skillData,
       skillName,
       chantMode: result.chantMode,
       defenderActor: defActor,
-      defenderEvasion: result.eva,
-      defenderDef: isMagical ? 0 : result.def,
-      defenderSpi: isMagical ? result.def : 0,
-      defenderCritAvoid: result.critAvoid,
-      defenderBlockChance: (healMode || isRetaliatorySk) ? 0 : defBlockChance,
+      defenderEvasion: skipAllDef ? 0 : result.eva,
+      defenderDef: (skipAllDef || isNoneDamageSk) ? 0 : (isMagical ? 0 : result.def),
+      defenderSpi: (skipAllDef || isNoneDamageSk) ? 0 : (isMagical ? result.def : 0),
+      defenderCritAvoid: skipAllDef ? 0 : result.critAvoid,
+      defenderBlockChance: (skipAllDef || isNoneDamageSk) ? 0 : defBlockChance,
       targetTokenId: targeted?.id ?? null,
       mpCost: effectiveMpCost,
       itemId
@@ -2718,6 +2721,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
    */
   static async #showStealForecast(actor, skillData, skillName, itemId, mpCost) {
     const system = actor.system;
+    const luk = system.stats?.luk?.value ?? 0;
     // Use scaling stat for fixed-mode accuracy instead of AGI
     const ssKey = skillData.scalingStat ?? "auto";
     const damageType = skillData.damageType ?? "physical";
@@ -2858,7 +2862,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       actorName: actor.name,
       targetName: defName,
       targetTokenId: targeted?.id ?? "",
-      thiefTokenId: canvas.tokens?.placeables.find(t => t.actor?.id === actor.id)?.id ?? "",
+      thiefTokenId: (actor.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === actor.id))?.id ?? "",
       skillName,
       ...stealResult
     };
@@ -2981,6 +2985,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       if (!created) return;
       const lootTable = foundry.utils.deepClone(this.actor.system.lootTable ?? []);
       lootTable.push({ itemId: created.id, chance: 50, stolen: false });
+      lootTable.sort((a, b) => a.chance - b.chance);
       await this.actor.update({ "system.lootTable": lootTable });
     }
   }
@@ -2993,6 +2998,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     if (!created) return;
     const lootTable = foundry.utils.deepClone(this.actor.system.lootTable ?? []);
     lootTable.push({ itemId: created.id, chance: 50, stolen: false });
+    lootTable.sort((a, b) => a.chance - b.chance);
     await this.actor.update({ "system.lootTable": lootTable });
     // Open the item sheet so user can configure it
     created.sheet.render(true);
@@ -3010,6 +3016,13 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       const item = this.actor.items.get(removed.itemId);
       if (item) await item.delete();
     }
+  }
+
+  static async #onSortLootTable(event, target) {
+    const lootTable = foundry.utils.deepClone(this.actor.system.lootTable ?? []);
+    if (lootTable.length < 2) return;
+    lootTable.sort((a, b) => a.chance - b.chance);
+    await this.actor.update({ "system.lootTable": lootTable });
   }
 
   /**
@@ -3161,6 +3174,12 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     // Auto-unequip if equipped
     if (item.system.equipped) await item.update({ "system.equipped": false });
     await item.setFlag("manashard", "spatialStorage", true);
+  }
+
+  static async #onAdjustEiress(event, target) {
+    const delta = parseInt(target.dataset.delta) || 0;
+    const current = this.actor.system.eiress ?? 0;
+    await this.actor.update({ "system.eiress": Math.max(0, current + delta) });
   }
 
 }

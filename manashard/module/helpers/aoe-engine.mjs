@@ -6,7 +6,6 @@
  *   Line   — Straight line from caster toward target, N tiles long
  *   Cross  — Plus (+) pattern centered on target, configurable arm length
  *
- * Uses the same grid highlight API as movement-highlight.mjs and threat-range-highlight.mjs.
  */
 
 import { gridDistance } from "./combat.mjs";

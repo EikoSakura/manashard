@@ -79,13 +79,15 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
 
   /* ─── Singleton ───────────────────────────────────────────── */
 
-  static #instance = null;
+
 
   static open() {
-    if (!EncounterBuilder.#instance) {
-      EncounterBuilder.#instance = new EncounterBuilder();
+    const existing = foundry.applications.instances.get("encounter-builder");
+    if (existing) {
+      existing.close();
+      return;
     }
-    EncounterBuilder.#instance.render(true);
+    new EncounterBuilder().render(true);
   }
 
   /* ─── Constructor ─────────────────────────────────────────── */
@@ -100,7 +102,6 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
 
   _onClose() {
     super._onClose?.();
-    EncounterBuilder.#instance = null;
   }
 
   _onRender(context, options) {
@@ -116,6 +117,7 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     // Wire drag-and-drop manually on each drop zone
     this.#wireDropZone(".eb-equipment-zone", (data) => this.#handleEquipmentDrop(data));
     this.#wireDropZone(".eb-skills-zone", (data) => this.#handleSkillDrop(data));
+    this.#wireDropZone(".eb-loot-zone", (data) => this.#handleLootDrop(data));
 
     // Per-zone drop zones in mission planner
     this.element?.querySelectorAll(".eb-zone-drop")?.forEach(zone => {
@@ -191,8 +193,46 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
   async #handleSkillDrop(data) {
     if (data.type !== "Item") return;
     const item = await fromUuid(data.uuid);
-    if (!item || item.type !== "manacite" || item.system.manaciteType !== "skill") {
-      ui.notifications.warn("Only Skill Manacite can be added here.");
+    if (!item || item.type !== "manacite") {
+      ui.notifications.warn(game.i18n.localize("MANASHARD.EncBuilder.WarnOnlyManacite"));
+      return;
+    }
+
+    // Job Manacite → extract granted skills from its Grant rules
+    if (item.system.manaciteType === "job") {
+      const grantRules = (item.system.rules ?? []).filter(r =>
+        (r.key === "Grant" && r.subtype === "item") || r.key === "GrantItem"
+      );
+      let added = 0;
+      for (const rule of grantRules) {
+        // For choice grants, resolve all options; for fixed grants, use the single UUID
+        const uuids = rule.choiceMode && rule.choices?.length
+          ? rule.choices.map(c => c.uuid).filter(Boolean)
+          : [rule.uuid];
+        for (const uuid of uuids) {
+          if (!uuid) continue;
+          const skill = await fromUuid(uuid);
+          if (!skill || skill.type !== "manacite" || skill.system.manaciteType !== "skill") continue;
+          if (this.#threatState.skills.some(s => s.uuid === uuid)) continue;
+          this.#threatState.skills.push({
+            uuid, name: skill.name, img: skill.img,
+            system: skill.system.toObject ? skill.system.toObject() : { ...skill.system }
+          });
+          added++;
+        }
+      }
+      if (added > 0) {
+        ui.notifications.info(game.i18n.format("MANASHARD.EncBuilder.JobSkillsAdded", { count: added, job: item.name }));
+        this.#renderPreservingScroll();
+      } else {
+        ui.notifications.warn(game.i18n.format("MANASHARD.EncBuilder.JobNoSkills", { job: item.name }));
+      }
+      return;
+    }
+
+    // Skill Manacite → add directly
+    if (item.system.manaciteType !== "skill") {
+      ui.notifications.warn(game.i18n.localize("MANASHARD.EncBuilder.WarnOnlyManacite"));
       return;
     }
     if (this.#threatState.skills.some(e => e.uuid === data.uuid)) {
@@ -202,6 +242,21 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     this.#threatState.skills.push({
       uuid: data.uuid, name: item.name, img: item.img,
       system: item.system.toObject ? item.system.toObject() : { ...item.system }
+    });
+    this.#renderPreservingScroll();
+  }
+
+  async #handleLootDrop(data) {
+    if (data.type !== "Item") return;
+    const item = await fromUuid(data.uuid);
+    if (!item) return;
+    if (this.#threatState.lootTable.some(l => l.uuid === data.uuid)) {
+      ui.notifications.info(`${item.name} is already in the loot table.`);
+      return;
+    }
+    this.#threatState.lootTable.push({
+      uuid: data.uuid, itemName: item.name, img: item.img,
+      itemId: "", chance: 50, stolen: false
     });
     this.#renderPreservingScroll();
   }
@@ -512,17 +567,23 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       stats[stat] = Math.max(1, Math.round(caps[stat] * ratio));
     }
 
+    // Role stat modifier — Minions are fodder, Standards are baseline
+    const roleMod = CONFIG.MANASHARD.roleStatMod[role] ?? 1.0;
+    for (const stat of coreStats) {
+      stats[stat] = Math.max(1, Math.round(stats[stat] * roleMod));
+    }
+
     // INT and CHM default to 0 unless in archetype sets
-    stats.int = secondarySet.has("int") ? Math.round(caps.int * SECONDARY) : 0;
-    stats.chm = secondarySet.has("chm") ? Math.round(caps.chm * SECONDARY) : 0;
+    stats.int = secondarySet.has("int") ? Math.max(1, Math.round(caps.int * SECONDARY * roleMod)) : 0;
+    stats.chm = secondarySet.has("chm") ? Math.max(1, Math.round(caps.chm * SECONDARY * roleMod)) : 0;
 
-    // HP/MP from rank cap × archetype modifier
-    stats.hp = Math.max(1, Math.round(caps.hp * arch.hpMod));
-    stats.mp = Math.max(0, Math.round(caps.mp * arch.mpMod));
+    // HP from rank cap × archetype modifier × role HP modifier
+    const roleHpMod = CONFIG.MANASHARD.roleHpMod[role] ?? 1.0;
+    stats.hp = Math.max(1, Math.round(caps.hp * arch.hpMod * roleHpMod));
 
-    // Role HP modifier
-    const roleHpMod = { minion: 0.5, standard: 1.0, elite: 1.2, boss: 1.5, legendary: 2.0 };
-    stats.hp = Math.max(1, Math.round(stats.hp * (roleHpMod[role] ?? 1.0)));
+    // MP from rank cap × archetype modifier × role MP modifier
+    const roleMpMod = CONFIG.MANASHARD.roleMpMod[role] ?? 1.0;
+    stats.mp = Math.max(0, Math.round(caps.mp * arch.mpMod * roleMpMod));
 
     return stats;
   }
@@ -538,15 +599,17 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     const offhand = s.equipment.filter(e => e.type === "weapon")[1] ?? null;
 
     const weaponMight = weapon?.system?.might ?? 0;
-    const weaponHit = weapon?.system?.hit ?? 70;
     const weaponCrit = weapon?.system?.crit ?? 0;
     const weaponDamageType = weapon?.system?.damageType ?? "physical";
 
-    const damage = weaponMight + (weaponDamageType === "magical" ? stats.mag : stats.str);
-    const accuracy = (stats.agi * 2) + weaponHit;
+    // Swords (Versatile): physical damage uses max(STR, AGI)
+    const wpnCat = weapon?.system?.category;
+    const physScaling = (wpnCat === "swords") ? Math.max(stats.str, stats.agi) : stats.str;
+    const damage = (weaponDamageType === "magical" ? stats.mag * 2 : physScaling * 2) + weaponMight;
+    const accuracy = 80 + (stats.agi * 2);
     const critical = (stats.luk * 2) + weaponCrit;
-    const peva = stats.agi * 2;
-    const meva = stats.spi * 2;
+    const peva = stats.agi;
+    const meva = stats.spi;
     const critAvoid = stats.luk * 2;
     const pdef = (armor?.system?.pdef ?? 0) + stats.end;
     const mdef = (armor?.system?.mdef ?? 0) + stats.spi;
@@ -559,7 +622,7 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     const reach = Math.max(s.size, weapon?.system?.maxRange ?? 1);
-    const vision = s.size >= 4 ? 5 : 4;
+    const vision = s.size >= 4 ? 7 : 6;
     const actionsPerTurn = CONFIG.MANASHARD.enemyRoleActions[s.role] ?? 1;
     const threatLevel = this.#calculateThreatLevel(s.level, s.rank, s.role);
 
@@ -612,8 +675,8 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       rank: "f",
       role: "standard",
       archetype: "balanced",
-      stats: { hp: 20, mp: 20, str: 5, agi: 4, mag: 1, end: 3, spi: 1, luk: 2, int: 0, chm: 0 },
-      mov: 5,
+      stats: { hp: 15, mp: 4, str: 3, agi: 3, mag: 1, end: 2, spi: 1, luk: 1, int: 0, chm: 0 },
+      mov: 6,
       movementModes: ["walk"],
       creatureType: ["humanoid"],
       elementalProfile: { fire: "neutral", ice: "neutral", water: "neutral", lightning: "neutral", wind: "neutral", earth: "neutral", light: "neutral", dark: "neutral" },
@@ -969,7 +1032,7 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
         creatureType: s.creatureType,
         elementalProfile: { ...s.elementalProfile },
         statusResistances: { ...s.statusResistances },
-        lootTable: s.lootTable.map(l => ({ itemId: l.itemId || "", chance: l.chance, stolen: l.stolen })),
+        lootTable: [],  // Populated after loot items are embedded below
         stats: {
           hp: { value: s.stats.hp, max: s.stats.hp, barrier: 0 },
           mp: { value: s.stats.mp, max: s.stats.mp },
@@ -990,11 +1053,10 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       actor = game.actors.get(s.existingActorId);
       if (actor) {
         await actor.update(actorData);
-        // Only delete items the encounter builder manages (equipment & skill manacite)
-        const managedTypes = new Set(["weapon", "armor", "accessory", "manacite"]);
-        const managedIds = actor.items.filter(i => managedTypes.has(i.type)).map(i => i.id);
-        if (managedIds.length) {
-          await actor.deleteEmbeddedDocuments("Item", managedIds);
+        // Delete all embedded items — the builder will recreate equipment, skills, and loot
+        const allItemIds = actor.items.map(i => i.id);
+        if (allItemIds.length) {
+          await actor.deleteEmbeddedDocuments("Item", allItemIds);
         }
       }
     }
@@ -1015,6 +1077,29 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     }
     if (itemCreates.length) {
       await actor.createEmbeddedDocuments("Item", itemCreates);
+    }
+
+    // Create loot embedded items from UUIDs and build loot table with their IDs
+    const lootTable = [];
+    for (const lootEntry of s.lootTable) {
+      if (lootEntry.uuid) {
+        // Resolve source item and create an embedded copy for loot
+        const source = await fromUuid(lootEntry.uuid);
+        if (source) {
+          const itemData = source.toObject();
+          delete itemData._id;
+          const [created] = await actor.createEmbeddedDocuments("Item", [itemData], { _lootOnly: true });
+          if (created) {
+            lootTable.push({ itemId: created.id, chance: lootEntry.chance, stolen: lootEntry.stolen });
+            continue;
+          }
+        }
+      }
+      // Fallback: keep the entry as-is (manual entries without UUID)
+      lootTable.push({ itemId: lootEntry.itemId || "", chance: lootEntry.chance, stolen: lootEntry.stolen });
+    }
+    if (lootTable.length) {
+      await actor.update({ "system.lootTable": lootTable });
     }
 
     ui.notifications.info(game.i18n.format("MANASHARD.EncBuilder.ThreatSaved", { name: actor.name }));
@@ -1074,18 +1159,35 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       statusResistances: { ...sys.statusResistances },
       equipment: [],
       skills: [],
-      lootTable: sys.lootTable.map(l => ({ ...l })),
+      lootTable: [],  // Populated below after resolving embedded items
       crystallizeInstantly: sys.crystallizeInstantly
     };
 
-    // Load embedded items as equipment/skills
+    // Build a set of loot item IDs for filtering
+    const lootItemIds = new Set(sys.lootTable.map(l => l.itemId).filter(Boolean));
+
+    // Load embedded items as equipment/skills (skip loot-only items)
     for (const item of actor.items) {
+      if (lootItemIds.has(item.id)) continue;  // Loot items handled separately
       const entry = { uuid: item.uuid, name: item.name, img: item.img, type: item.type, system: item.system.toObject ? item.system.toObject() : { ...item.system } };
       if (["weapon", "armor", "accessory"].includes(item.type)) {
         this.#threatState.equipment.push(entry);
       } else if (item.type === "manacite") {
         this.#threatState.skills.push(entry);
       }
+    }
+
+    // Resolve loot entries with enriched data (name, img) from embedded items
+    for (const lootEntry of sys.lootTable) {
+      const item = lootEntry.itemId ? actor.items.get(lootEntry.itemId) : null;
+      this.#threatState.lootTable.push({
+        itemId: lootEntry.itemId || "",
+        uuid: item?.uuid ?? "",
+        itemName: item?.name ?? "",
+        img: item?.img ?? "",
+        chance: lootEntry.chance,
+        stolen: lootEntry.stolen
+      });
     }
 
     this.#renderPreservingScroll();

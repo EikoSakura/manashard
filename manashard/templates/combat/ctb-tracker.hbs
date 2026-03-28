@@ -69,7 +69,7 @@
           <div class="ctb-hero-bar">
             <span class="ctb-hero-bar-label hp-label">HP</span>
             <div class="ctb-hero-bar-track">
-              <div class="ctb-hero-bar-fill hp-fill" style="width: {{heroCard.hpPercent}}%"></div>
+              <div class="ctb-hero-bar-fill hp-fill" style="width: {{heroCard.hpPercent}}%; background: {{{heroCard.hpColor}}}"></div>
               {{#if heroCard.hpBarrier}}
               <div class="ctb-hero-bar-fill barrier-fill" style="right: {{heroCard.hpBarrierRight}}%; width: {{heroCard.hpBarrierPercent}}%"></div>
               {{/if}}
@@ -141,9 +141,19 @@
               {{else if isCurrent}}<i class="fas fa-chevron-right" title="Acting"></i>
               {{else if hasActed}}<i class="fas fa-check" title="Acted"></i>
               {{else if isSelectable}}
-                <button type="button" class="ctb-btn ctb-btn--go" data-action="selectCombatant" data-combatant-id="{{id}}" title="Select">
-                  GO
+                {{#if isGM}}
+                <button type="button" class="ctb-btn ctb-btn--go {{#if handRaised}}ctb-hand-raised{{/if}}" data-action="selectCombatant" data-combatant-id="{{id}}" title="Select">
+                  {{#if handRaised}}<i class="fas fa-hand-paper"></i> {{/if}}GO
                 </button>
+                {{else if isOwner}}
+                <button type="button" class="ctb-btn ctb-btn--hand {{#if handRaised}}ctb-hand-raised{{/if}}" data-action="raiseHand" data-combatant-id="{{id}}" title="{{#if handRaised}}Lower hand{{else}}Request to go next{{/if}}">
+                  <i class="fas fa-hand-paper"></i>
+                </button>
+                {{else}}
+                  {{#if handRaised}}<i class="fas fa-hand-paper ctb-hand-raised-icon" title="Wants to go next"></i>
+                  {{else}}<i class="fas fa-clock" title="Pending"></i>
+                  {{/if}}
+                {{/if}}
               {{else}}<i class="fas fa-clock" title="Pending"></i>
               {{/if}}
             </div>
@@ -189,9 +199,19 @@
               {{else if isCurrent}}<i class="fas fa-chevron-right" title="Acting"></i>
               {{else if hasActed}}<i class="fas fa-check" title="Acted"></i>
               {{else if isSelectable}}
-                <button type="button" class="ctb-btn ctb-btn--go" data-action="selectCombatant" data-combatant-id="{{id}}" title="Select">
-                  GO
+                {{#if isGM}}
+                <button type="button" class="ctb-btn ctb-btn--go {{#if handRaised}}ctb-hand-raised{{/if}}" data-action="selectCombatant" data-combatant-id="{{id}}" title="Select">
+                  {{#if handRaised}}<i class="fas fa-hand-paper"></i> {{/if}}GO
                 </button>
+                {{else if isOwner}}
+                <button type="button" class="ctb-btn ctb-btn--hand {{#if handRaised}}ctb-hand-raised{{/if}}" data-action="raiseHand" data-combatant-id="{{id}}" title="{{#if handRaised}}Lower hand{{else}}Request to go next{{/if}}">
+                  <i class="fas fa-hand-paper"></i>
+                </button>
+                {{else}}
+                  {{#if handRaised}}<i class="fas fa-hand-paper ctb-hand-raised-icon" title="Wants to go next"></i>
+                  {{else}}<i class="fas fa-clock" title="Pending"></i>
+                  {{/if}}
+                {{/if}}
               {{else}}<i class="fas fa-clock" title="Pending"></i>
               {{/if}}
             </div>

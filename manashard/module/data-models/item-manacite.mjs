@@ -78,6 +78,11 @@ export class ManaciteData extends foundry.abstract.TypeDataModel {
     }
     delete source.isHealing;
 
+    // Migrate empty/blank damageType (old "Auto") → "none"
+    if (source.damageType === "" || source.damageType === undefined || source.damageType === null) {
+      source.damageType = "none";
+    }
+
     // Migrate legacy range string → minRange/maxRange
     if (typeof source.range === "string" && source.range.trim()) {
       const dash = source.range.trim().match(/^(\d+)\s*-\s*(\d+)$/);
@@ -92,7 +97,6 @@ export class ManaciteData extends foundry.abstract.TypeDataModel {
     }
     delete source.range;
 
-    // Remove legacy levelBonuses (skill levels no longer exist)
     delete source.levelBonuses;
 
     // Migrate legacy Job fields → prerequisites array
@@ -174,9 +178,9 @@ export class ManaciteData extends foundry.abstract.TypeDataModel {
       baseRate: new NumberField({ required: false, integer: true, min: 0, initial: 0 }),
 
       /**
-       * Base hit rate for fixed-mode skills (replaces weapon hit in accuracy formula).
-       * 0 = fall back to equipped weapon's hit. Typical values: 80-95.
-       * Only used when baseRateMode is "fixed".
+       * Skill-specific accuracy bonus for fixed-mode skills.
+       * Added to the base 80 + scaling stat × 2 accuracy formula.
+       * 0 = fall back to equipped weapon's accuracy. Only used when baseRateMode is "fixed".
        */
       skillHit: new NumberField({ required: false, integer: true, min: 0, initial: 0 }),
 
@@ -199,8 +203,8 @@ export class ManaciteData extends foundry.abstract.TypeDataModel {
 
       /** Combat classification. */
       damageType: new StringField({
-        required: false, blank: true, initial: "",
-        choices: ["", "physical", "magical", "elemental", "healing", "barrier", "retaliatory"]
+        required: true, initial: "none",
+        choices: ["none", "physical", "magical", "elemental", "healing", "barrier", "retaliatory"]
       }),
 
       /** Retaliation mode — only relevant when damageType is "retaliatory". */

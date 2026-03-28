@@ -564,11 +564,12 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
 
       // Damage formula context
       context.isWeaponMode = item.system.baseRateMode === "weapon";
-      const el = item.system.element || "";
-      const dt = item.system.damageType || (el ? "magical" : "physical");
+      const dt = item.system.damageType || "none";
       const ss = item.system.scalingStat ?? "auto";
-      if (ss === "auto") {
-        context.scalingStatLabel = dt === "magical" ? "MAG" : "STR";
+      if (dt === "none") {
+        context.scalingStatLabel = null;
+      } else if (ss === "auto") {
+        context.scalingStatLabel = (dt === "magical" || dt === "healing" || dt === "barrier" || dt === "retaliatory") ? "MAG" : "STR";
       } else if (ss === "none") {
         context.scalingStatLabel = null;
       } else {
@@ -581,10 +582,9 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
       context.effectiveSkillHit = item.system.skillHit ?? 0;
 
       // Damage mode label for tooltip display
-      const dmgMode = item.system.damageType || "";
-      if (dmgMode === "physical") context.manaDmgModeLabel = "Physical";
-      else if (dmgMode === "magical") context.manaDmgModeLabel = "Magic";
-      else context.manaDmgModeLabel = "Auto";
+      const dmgMode = item.system.damageType || "none";
+      const dmgModeLabels = { physical: "Physical", magical: "Magic", elemental: "Elemental", healing: "Healing", barrier: "Barrier", none: "None", retaliatory: "Retaliatory" };
+      context.manaDmgModeLabel = dmgModeLabels[dmgMode] ?? dmgMode;
 
       // Target label for tooltip display
       const tt = item.system.targetType ?? "single";

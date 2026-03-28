@@ -74,7 +74,7 @@ export class CreationConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static async #onSubmit(event, form, formData) {
     const data = formData.object;
-    await game.settings.set("manashard", "creationStatPool", Number(data.statPool) || 18);
+    await game.settings.set("manashard", "creationStatPool", Number(data.statPool) || 20);
     await game.settings.set("manashard", "creationGrowthPool", Number(data.growthPool) || 280);
     await game.settings.set("manashard", "creationGrowthBaseline", Number(data.growthBaseline) || 5);
     await game.settings.set("manashard", "creationStartingEiress", Number(data.startingEiress) || 500);

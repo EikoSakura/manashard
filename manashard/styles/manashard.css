@@ -1,45 +1,45 @@
 /* ===========================
    MANASHARD - Foundry VTT System
-   Dark Fantasy / JRPG Theme
-   Inspired by Fire Emblem & Log Horizon
+   Adventure Anime / Isekai JRPG Theme
+   Inspired by Fire Emblem, Log Horizon & Reincarnated as a Sword
    =========================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Cinzel:wght@400;600;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
 
 :root {
-  --manashard-bg-dark: #060a0d;
-  --manashard-bg-mid: #0b1216;
-  --manashard-bg-light: #0e171d;
-  --manashard-bg-input: #0a0f13;
-  --manashard-text: #e0f0ea;
-  --manashard-text-dim: #7a9a8e;
-  --manashard-border: #1a2a32;
-  --manashard-accent: #00e4a0;
-  --manashard-accent-light: #00ffb3;
-  --manashard-accent-glow: rgba(0, 228, 160, 0.4);
-  --manashard-hp: #22cc66;
-  --manashard-hp-bg: #0a2218;
-  --manashard-mp: #3388ee;
-  --manashard-mp-bg: #0a1528;
-  --manashard-success: #22cc66;
+  --manashard-bg-dark: #1a1520;
+  --manashard-bg-mid: #211b2a;
+  --manashard-bg-light: #2a2335;
+  --manashard-bg-input: #16111e;
+  --manashard-text: #ede4d4;
+  --manashard-text-dim: #b8a898;
+  --manashard-border: #3d3250;
+  --manashard-accent: #d4a030;
+  --manashard-accent-light: #e8b84b;
+  --manashard-accent-glow: rgba(212, 160, 48, 0.35);
+  --manashard-hp: #2ecc71;
+  --manashard-hp-bg: #0e2a18;
+  --manashard-mp: #5599ee;
+  --manashard-mp-bg: #0e1830;
+  --manashard-success: #2ecc71;
   --manashard-failure: #ff6644;
   --manashard-critical: #ffcc22;
   --manashard-gold: #f1c40f;
 
-  /* New LH design tokens */
-  --manashard-bg-panel-inner: #0a0f13;
-  --manashard-bg-panel-hover: #0e171d;
-  --manashard-border-glow: #00e4a0;
-  --manashard-border-glow-dim: #00e4a044;
-  --manashard-border-glow-bright: #00ffb3;
-  --manashard-text-label: #4a7a6a;
-  --manashard-text-muted: #3d5a50;
+  /* Design tokens */
+  --manashard-bg-panel-inner: #16111e;
+  --manashard-bg-panel-hover: #2a2335;
+  --manashard-border-glow: #d4a030;
+  --manashard-border-glow-dim: rgba(212, 160, 48, 0.27);
+  --manashard-border-glow-bright: #e8b84b;
+  --manashard-text-label: #9a8b7a;
+  --manashard-text-muted: #7d6f60;
   --manashard-text-bright: #ffffff;
-  --manashard-glow-spread: 0 0 12px #00e4a033, 0 0 4px #00e4a022;
-  --manashard-glow-strong: 0 0 20px #00e4a055, 0 0 6px #00e4a044;
+  --manashard-glow-spread: 0 0 6px rgba(212, 160, 48, 0.2), 0 0 2px rgba(212, 160, 48, 0.13);
+  --manashard-glow-strong: 0 0 10px rgba(212, 160, 48, 0.33), 0 0 3px rgba(212, 160, 48, 0.27);
   --manashard-corner-size: 8px;
-  --manashard-hp-border: #18884a;
-  --manashard-mp-border: #1a5599;
+  --manashard-hp-border: #1e8a4e;
+  --manashard-mp-border: #2a5599;
 
   /* Rank colors (F–S) */
   --manashard-rank-f: #888888;
@@ -71,8 +71,8 @@
   --manashard-beguile: #ec4899;
 
   /* Fonts */
-  --manashard-font-heading: "Rajdhani", "Cinzel", sans-serif;
-  --manashard-font-body: "Exo 2", "Alegreya Sans", sans-serif;
+  --manashard-font-heading: "Cinzel", "Rajdhani", serif;
+  --manashard-font-body: "Alegreya Sans", "Exo 2", sans-serif;
   --manashard-font-mono: "Share Tech Mono", monospace;
 }
 
@@ -116,7 +116,7 @@
   border-radius: 2px;
   box-shadow:
     inset 0 0 30px rgba(0, 0, 0, 0.5),
-    0 0 12px var(--manashard-accent-glow);
+    0 0 8px var(--manashard-accent-glow);
 }
 
 /* Corner accent — top-left */
@@ -127,8 +127,8 @@
   left: -2px;
   width: 16px;
   height: 16px;
-  border-top: 3px solid var(--manashard-accent-light);
-  border-left: 3px solid var(--manashard-accent-light);
+  border-top: 2px solid var(--manashard-accent-light);
+  border-left: 2px solid var(--manashard-accent-light);
   pointer-events: none;
   z-index: 1;
 }
@@ -141,8 +141,8 @@
   right: -2px;
   width: 16px;
   height: 16px;
-  border-bottom: 3px solid var(--manashard-accent-light);
-  border-right: 3px solid var(--manashard-accent-light);
+  border-bottom: 2px solid var(--manashard-accent-light);
+  border-right: 2px solid var(--manashard-accent-light);
   pointer-events: none;
   z-index: 1;
 }
@@ -159,7 +159,7 @@
 .manashard .hdr-diamond-outer {
   width: 82px;
   height: 82px;
-  filter: drop-shadow(0 0 10px var(--manashard-accent-glow));
+  filter: drop-shadow(0 0 7px var(--manashard-accent-glow));
 }
 
 .manashard .hdr-diamond-frame {
@@ -243,7 +243,7 @@
   -webkit-appearance: none;
   width: 20px !important;
   min-width: 20px !important;
-  text-shadow: 0 0 6px var(--manashard-accent-glow);
+  text-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 .manashard .hdr-rank-select:focus { box-shadow: none !important; outline: none; }
 .manashard .hdr-rank-select option { background: var(--manashard-bg-dark); color: var(--manashard-text); }
@@ -284,7 +284,7 @@
   font-size: 10px;
   color: var(--manashard-text-dim);
   padding: 0 0 1px;
-  border-bottom: 1px solid rgba(108, 92, 231, 0.15);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.15);
   margin-bottom: 2px;
 }
 
@@ -298,7 +298,7 @@
   letter-spacing: 0.5px;
   transition: color 0.15s;
 }
-.manashard .hdr-species-val:hover { color: #fff; text-shadow: 0 0 6px var(--manashard-accent-glow); }
+.manashard .hdr-species-val:hover { color: #fff; text-shadow: 0 0 4px var(--manashard-accent-glow); }
 .manashard .hdr-species-val.dim { color: var(--manashard-text-dim); cursor: default; }
 
 /* Job + Level row — BIG, centerpiece identity */
@@ -318,7 +318,7 @@
   cursor: pointer;
   letter-spacing: 1px;
   transition: color 0.15s, text-shadow 0.15s;
-  text-shadow: 0 0 8px var(--manashard-accent-glow);
+  text-shadow: 0 0 6px var(--manashard-accent-glow);
 }
 .manashard .hdr-job-name:hover { color: var(--manashard-accent-light); }
 .manashard .hdr-job-name.dim { color: var(--manashard-text-dim); font-size: 14px; }
@@ -330,7 +330,7 @@
   color: #fff;
   letter-spacing: 0.5px;
   flex-shrink: 0;
-  text-shadow: 0 0 6px var(--manashard-accent-glow);
+  text-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 
 .manashard .hdr-level-input {
@@ -344,7 +344,7 @@
   border-radius: 0 !important;
   padding: 0 !important;
   text-align: left;
-  text-shadow: 0 0 6px var(--manashard-accent-glow);
+  text-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 .manashard .hdr-level-input:focus { box-shadow: none !important; }
 
@@ -397,7 +397,7 @@
   background: rgba(0, 0, 0, 0.7);
   border-radius: 1px;
   overflow: hidden;
-  border: 1px solid rgba(108, 92, 231, 0.25);
+  border: 1px solid rgba(212, 160, 48, 0.25);
   position: relative;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
   margin-bottom: 3px;
@@ -501,7 +501,7 @@
   justify-content: flex-start;
   gap: 0;
   padding-top: 3px;
-  border-top: 1px solid rgba(108, 92, 231, 0.2);
+  border-top: 1px solid rgba(212, 160, 48, 0.2);
   margin-top: 1px;
 }
 
@@ -527,7 +527,7 @@
   font-weight: 600 !important;
   background: transparent !important;
   border: none !important;
-  border-bottom: 1px solid rgba(108, 92, 231, 0.15) !important;
+  border-bottom: 1px solid rgba(212, 160, 48, 0.15) !important;
   border-radius: 0 !important;
   color: var(--manashard-text) !important;
   padding: 0 2px !important;
@@ -546,7 +546,7 @@
 .manashard .hdr-detail-divider {
   width: 1px;
   height: 14px;
-  background: linear-gradient(180deg, transparent, rgba(108, 92, 231, 0.3), transparent);
+  background: linear-gradient(180deg, transparent, rgba(212, 160, 48, 0.3), transparent);
   flex-shrink: 0;
 }
 
@@ -566,7 +566,7 @@
   border: 1px solid var(--manashard-accent);
   border-radius: 2px;
   padding: 1px 10px;
-  box-shadow: 0 0 6px var(--manashard-accent-glow);
+  box-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 
 .manashard .portrait-level-badge .level-label {
@@ -620,7 +620,7 @@
 .manashard .detail-cell input[type="number"] {
   width: 40px;
   background: rgba(0, 0, 0, 0.5);
-  border-color: rgba(108, 92, 231, 0.2);
+  border-color: rgba(212, 160, 48, 0.2);
 }
 
 .manashard .rank-select {
@@ -629,7 +629,7 @@
   font-weight: bold;
   color: var(--manashard-accent-light) !important;
   background: rgba(0, 0, 0, 0.5) !important;
-  border-color: rgba(108, 92, 231, 0.2) !important;
+  border-color: rgba(212, 160, 48, 0.2) !important;
 }
 
 .manashard .exp-group,
@@ -812,7 +812,7 @@
 .manashard select:focus {
   border-color: var(--manashard-accent);
   outline: none;
-  box-shadow: 0 0 4px var(--manashard-accent-glow);
+  box-shadow: 0 0 3px var(--manashard-accent-glow);
 }
 
 /* ===========================
@@ -823,7 +823,7 @@
   gap: 2px;
   padding: 4px 6px;
   margin: 0;
-  border: 1px solid rgba(108, 92, 231, 0.25);
+  border: 1px solid rgba(212, 160, 48, 0.25);
   background: rgba(0, 0, 0, 0.6);
   flex-shrink: 0;
 }
@@ -854,16 +854,16 @@
 
 .manashard .sheet-tabs .tab:hover {
   color: var(--manashard-text);
-  background: rgba(108, 92, 231, 0.15);
-  border-color: rgba(108, 92, 231, 0.3);
+  background: rgba(212, 160, 48, 0.15);
+  border-color: rgba(212, 160, 48, 0.3);
 }
 
 .manashard .sheet-tabs .tab.active {
   color: #fff;
-  background: rgba(108, 92, 231, 0.3);
+  background: rgba(212, 160, 48, 0.3);
   border-color: var(--manashard-accent);
-  box-shadow: 0 0 8px var(--manashard-accent-glow);
-  text-shadow: 0 0 8px var(--manashard-accent-glow);
+  box-shadow: 0 0 6px var(--manashard-accent-glow);
+  text-shadow: 0 0 6px var(--manashard-accent-glow);
 }
 
 /* Tab content sections */
@@ -900,7 +900,7 @@
   padding: 4px 6px;
   margin-bottom: 6px;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 3px;
 }
 
@@ -912,7 +912,7 @@
   padding: 6px;
   margin-bottom: 6px;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.2);
   border-radius: 4px;
 }
 
@@ -1003,7 +1003,7 @@
   color: var(--manashard-accent-light);
   background: rgba(0, 0, 0, 0.5);
   border-left: 3px solid var(--manashard-accent);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
 }
 
 /* Combat Card Grid — paperdoll-style cards for weapons/skills */
@@ -1016,18 +1016,18 @@
 .manashard .combat-card {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid var(--manashard-accent);
-  box-shadow: 0 0 8px var(--manashard-accent-glow);
+  box-shadow: 0 0 6px var(--manashard-accent-glow);
   padding: 4px 6px 6px;
   transition: box-shadow 0.15s;
 }
 
 .manashard .combat-card:hover {
-  box-shadow: 0 0 14px var(--manashard-accent-glow);
+  box-shadow: 0 0 10px var(--manashard-accent-glow);
 }
 
 .manashard .combat-card.empty-card {
   border-style: dashed;
-  border-color: rgba(108, 92, 231, 0.3);
+  border-color: rgba(212, 160, 48, 0.3);
   box-shadow: none;
 }
 
@@ -1049,7 +1049,7 @@
 }
 
 .manashard .combat-card-img {
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -1177,13 +1177,13 @@
   gap: 8px;
   padding: 6px 8px;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 4px;
 }
 
 .manashard .combat-weapon-img {
   border-radius: 4px;
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   cursor: pointer;
 }
 
@@ -1235,7 +1235,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #fff;
-  border: 1px solid rgba(108, 92, 231, 0.4);
+  border: 1px solid rgba(212, 160, 48, 0.4);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1254,13 +1254,13 @@
 }
 
 .manashard .combat-action-button.cast-button {
-  background: rgba(108, 92, 231, 0.3);
-  border-color: rgba(108, 92, 231, 0.5);
+  background: rgba(212, 160, 48, 0.3);
+  border-color: rgba(212, 160, 48, 0.5);
 }
 
 .manashard .combat-action-button.cast-button:hover {
-  background: rgba(108, 92, 231, 0.5);
-  box-shadow: 0 0 8px rgba(108, 92, 231, 0.4);
+  background: rgba(212, 160, 48, 0.5);
+  box-shadow: 0 0 6px rgba(212, 160, 48, 0.4);
 }
 
 .manashard .combat-action-button.activate-button {
@@ -1299,7 +1299,7 @@
   letter-spacing: 0.5px;
   color: var(--manashard-text-dim);
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(108, 92, 231, 0.1);
+  border: 1px solid rgba(212, 160, 48, 0.1);
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.15s;
@@ -1307,7 +1307,7 @@
 
 .manashard .combat-passives-collapsible summary:hover {
   color: var(--manashard-text);
-  background: rgba(108, 92, 231, 0.08);
+  background: rgba(212, 160, 48, 0.08);
 }
 
 .manashard .combat-passives-list {
@@ -1343,7 +1343,7 @@
   padding: 6px 8px;
   margin-bottom: 3px;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 4px;
 }
 
@@ -1374,7 +1374,7 @@
 .manashard .combat-skill-desc {
   margin-top: 3px;
   padding-top: 3px;
-  border-top: 1px solid rgba(108, 92, 231, 0.1);
+  border-top: 1px solid rgba(212, 160, 48, 0.1);
   font-size: 10px;
   color: var(--manashard-text-dim);
   line-height: 1.3;
@@ -1528,7 +1528,7 @@
   color: var(--manashard-accent-light);
   background: rgba(0, 0, 0, 0.5);
   border-left: 3px solid var(--manashard-accent);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
 }
 
 .manashard .stats-panel h3:first-child {
@@ -1573,7 +1573,7 @@
   color: var(--manashard-accent-light);
   background: rgba(0, 0, 0, 0.5);
   border-left: 3px solid var(--manashard-accent);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
 }
 
 .manashard .profile-section h3 i {
@@ -1590,7 +1590,7 @@
 .manashard .passive-entry {
   padding: 4px 10px;
   background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(108, 92, 231, 0.08);
+  border: 1px solid rgba(212, 160, 48, 0.08);
 }
 
 .manashard .passive-header {
@@ -1642,7 +1642,7 @@
   justify-content: space-between;
   padding: 4px 10px;
   background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(108, 92, 231, 0.08);
+  border: 1px solid rgba(212, 160, 48, 0.08);
 }
 
 .manashard .mastered-name {
@@ -1700,8 +1700,8 @@
   font-size: 9px;
   font-weight: 600;
   color: var(--manashard-accent-light);
-  background: rgba(108, 92, 231, 0.15);
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  background: rgba(212, 160, 48, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   padding: 1px 8px;
   letter-spacing: 0.5px;
 }
@@ -1718,7 +1718,7 @@
   flex-direction: column;
   gap: 1px;
   background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(108, 92, 231, 0.1);
+  border: 1px solid rgba(212, 160, 48, 0.1);
 }
 
 .manashard .stat-row {
@@ -1731,7 +1731,7 @@
 }
 
 .manashard .stat-row:hover {
-  background: rgba(108, 92, 231, 0.12);
+  background: rgba(212, 160, 48, 0.12);
   box-shadow: inset 3px 0 0 var(--manashard-accent);
 }
 
@@ -1744,13 +1744,13 @@
   letter-spacing: 1px;
   width: 30px;
   flex-shrink: 0;
-  text-shadow: 0 0 6px var(--manashard-accent-glow);
+  text-shadow: 0 0 4px var(--manashard-accent-glow);
   cursor: pointer;
 }
 
 .manashard .stat-abbr:hover {
   color: #fff;
-  text-shadow: 0 0 10px var(--manashard-accent-glow);
+  text-shadow: 0 0 7px var(--manashard-accent-glow);
 }
 
 /* Mini bar behind each stat for visual proportion */
@@ -1768,7 +1768,7 @@
   background: linear-gradient(90deg, var(--manashard-accent), var(--manashard-accent-light));
   border-radius: 1px;
   transition: width 0.3s ease;
-  box-shadow: 0 0 4px var(--manashard-accent-glow);
+  box-shadow: 0 0 3px var(--manashard-accent-glow);
 }
 
 .manashard .stat-bar-fill.at-cap {
@@ -1789,7 +1789,7 @@
   color: #fff;
   background: transparent !important;
   border: none !important;
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2) !important;
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2) !important;
   font-family: var(--manashard-font-heading);
   padding: 1px 2px !important;
 }
@@ -1812,7 +1812,7 @@
   font-size: 10px;
   text-align: center;
   background: rgba(0, 0, 0, 0.3) !important;
-  border-color: rgba(108, 92, 231, 0.12) !important;
+  border-color: rgba(212, 160, 48, 0.12) !important;
   padding: 1px 2px !important;
   color: var(--manashard-text-dim);
 }
@@ -1839,7 +1839,7 @@
   color: var(--manashard-accent-light);
   background: rgba(0, 0, 0, 0.5);
   border-left: 3px solid var(--manashard-accent);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
 }
 
 /* Derived row: 3 groups side-by-side */
@@ -1894,12 +1894,12 @@
   align-items: center;
   padding: 5px 4px 4px;
   background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(108, 92, 231, 0.1);
+  border: 1px solid rgba(212, 160, 48, 0.1);
   transition: border-color 0.15s;
 }
 
 .manashard .derived-cell:hover {
-  border-color: rgba(108, 92, 231, 0.35);
+  border-color: rgba(212, 160, 48, 0.35);
 }
 
 .manashard .derived-label {
@@ -1945,7 +1945,7 @@
   text-align: center;
   margin-top: 8px;
   padding-top: 6px;
-  border-top: 1px solid rgba(108, 92, 231, 0.1);
+  border-top: 1px solid rgba(212, 160, 48, 0.1);
 }
 
 .manashard .roll-button {
@@ -1963,13 +1963,13 @@
   letter-spacing: 1.5px;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 0 6px var(--manashard-accent-glow);
-  text-shadow: 0 0 8px var(--manashard-accent-glow);
+  box-shadow: 0 0 4px var(--manashard-accent-glow);
+  text-shadow: 0 0 6px var(--manashard-accent-glow);
 }
 
 .manashard .roll-button:hover {
-  background: rgba(108, 92, 231, 0.3);
-  box-shadow: 0 0 14px var(--manashard-accent-glow);
+  background: rgba(212, 160, 48, 0.3);
+  box-shadow: 0 0 10px var(--manashard-accent-glow);
   border-color: var(--manashard-accent-light);
 }
 
@@ -1985,7 +1985,7 @@
   flex-direction: column;
   gap: 1px;
   background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(108, 92, 231, 0.1);
+  border: 1px solid rgba(212, 160, 48, 0.1);
 }
 
 .manashard .elemental-entry {
@@ -2025,7 +2025,7 @@
 .manashard .elemental-entry.element-dark { border-left: 3px solid var(--manashard-dark); }
 
 .manashard .elemental-entry:hover {
-  background: rgba(108, 92, 231, 0.12);
+  background: rgba(212, 160, 48, 0.12);
 }
 
 .manashard .element-label {
@@ -2089,16 +2089,16 @@
   align-items: center;
   gap: 6px;
   padding: 4px 8px;
-  border-bottom: 1px solid rgba(108, 92, 231, 0.08);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.08);
   transition: background 0.15s;
 }
 
 .manashard .item:hover {
-  background: rgba(108, 92, 231, 0.08);
+  background: rgba(212, 160, 48, 0.08);
 }
 
 .manashard .item-image {
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.2);
   flex-shrink: 0;
 }
 
@@ -2128,7 +2128,7 @@
 
 .manashard .item-controls a:hover {
   color: var(--manashard-accent-light);
-  text-shadow: 0 0 6px var(--manashard-accent-glow);
+  text-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 
 .manashard .add-item {
@@ -2139,7 +2139,7 @@
 
 .manashard .add-item:hover {
   color: #fff;
-  text-shadow: 0 0 6px var(--manashard-accent-glow);
+  text-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 
 /* Equipped summary */
@@ -2149,7 +2149,7 @@
   gap: 2px;
   background: rgba(0, 0, 0, 0.4);
   padding: 6px 0;
-  border: 1px solid rgba(108, 92, 231, 0.1);
+  border: 1px solid rgba(212, 160, 48, 0.1);
 }
 
 .manashard .equipped-slot {
@@ -2189,7 +2189,7 @@
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid var(--manashard-accent);
   margin-bottom: 4px;
-  box-shadow: 0 0 6px var(--manashard-accent-glow);
+  box-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 
 .manashard .job-info,
@@ -2215,7 +2215,7 @@
 
 .manashard .job-skills {
   padding: 4px 0 4px 12px;
-  border-left: 1px solid rgba(108, 92, 231, 0.2);
+  border-left: 1px solid rgba(212, 160, 48, 0.2);
   margin-left: 8px;
 }
 
@@ -2255,7 +2255,7 @@
   font-size: 11px;
   color: var(--manashard-text-dim);
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(108, 92, 231, 0.1);
+  border: 1px solid rgba(212, 160, 48, 0.1);
 }
 
 .manashard .mastery-input {
@@ -2269,7 +2269,7 @@
   color: var(--manashard-text-dim);
   font-style: italic;
   background: rgba(0, 0, 0, 0.2);
-  border: 1px dashed rgba(108, 92, 231, 0.15);
+  border: 1px dashed rgba(212, 160, 48, 0.15);
 }
 
 /* Rank colors */
@@ -2300,7 +2300,7 @@
   padding: 8px;
   margin-bottom: 6px;
   background: var(--manashard-bg-panel-inner, rgba(0, 0, 0, 0.2));
-  border: 1px solid var(--manashard-border, rgba(108, 92, 231, 0.15));
+  border: 1px solid var(--manashard-border, rgba(212, 160, 48, 0.15));
   border-radius: 4px;
 }
 
@@ -2320,9 +2320,9 @@
 
 .manashard .bio-field input {
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 3px;
-  color: var(--manashard-text-primary, #e0e0e0);
+  color: var(--manashard-text-primary, #ede4d4);
   font-family: var(--manashard-font-body);
   font-size: 12px;
   padding: 4px 6px;
@@ -2334,7 +2334,7 @@
 }
 
 .manashard .bio-field input:focus {
-  border-color: rgba(108, 92, 231, 0.4);
+  border-color: rgba(212, 160, 48, 0.4);
   outline: none;
 }
 
@@ -2360,7 +2360,7 @@
   min-height: 200px;
   flex: 1;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   display: flex;
   flex-direction: column;
 }
@@ -2369,7 +2369,7 @@
    Item Sheet
    =========================== */
 .manashard.item.sheet {
-  background: #070809;
+  background: #16111e;
   color: #e4e8ee;
   font-family: var(--manashard-font-body);
   font-size: 13px;
@@ -2379,7 +2379,7 @@
   --item-accent-dim: rgba(136, 153, 170, 0.25);
   --item-accent-bright: #aabbcc;
   --item-accent-glow: rgba(136, 153, 170, 0.3);
-  --item-bg-deep: #070809;
+  --item-bg-deep: #16111e;
   --item-bg-panel: #0d0f12;
   --item-bg-panel-inner: #0a0c0f;
   --item-border: #1e2230;
@@ -2390,7 +2390,7 @@
 }
 
 .manashard.item.sheet .window-content {
-  background: #070809;
+  background: #16111e;
   padding: 8px;
   display: flex;
   flex-direction: column;
@@ -2836,8 +2836,8 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   letter-spacing: 1px;
   color: var(--manashard-accent-light);
   padding: 5px 10px;
-  background: rgba(108, 92, 231, 0.1);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.1);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.15);
 }
 
 .manashard .equip-detail-header i {
@@ -2911,7 +2911,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 
 .manashard .equip-stat-input:focus {
   border-color: var(--manashard-accent);
-  box-shadow: 0 0 4px var(--manashard-accent-glow);
+  box-shadow: 0 0 3px var(--manashard-accent-glow);
   outline: none;
 }
 
@@ -2929,7 +2929,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 /* Description Card — translucent panel with accent border */
 .manashard .desc-card {
   background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(108, 92, 231, 0.25);
+  border: 1px solid rgba(212, 160, 48, 0.25);
   border-radius: 2px;
   padding: 10px 12px;
   margin-bottom: 8px;
@@ -2972,7 +2972,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   gap: 6px;
   padding-bottom: 8px;
   margin-bottom: 8px;
-  border-bottom: 1px solid rgba(108, 92, 231, 0.15);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.15);
   flex-wrap: wrap;
 }
 
@@ -2987,7 +2987,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   padding: 2px 8px;
   border-radius: 2px;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(108, 92, 231, 0.2);
+  background: rgba(212, 160, 48, 0.2);
   color: var(--manashard-accent-light);
 }
 
@@ -3024,7 +3024,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   font-weight: 700;
   color: #fff;
   background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   border-radius: 2px;
   padding: 2px 8px;
   margin-left: auto;
@@ -3090,7 +3090,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 
 .manashard .desc-tag-row.qualities-row {
   padding-top: 6px;
-  border-top: 1px solid rgba(108, 92, 231, 0.12);
+  border-top: 1px solid rgba(212, 160, 48, 0.12);
 }
 
 .manashard .desc-weapon-tag {
@@ -3100,8 +3100,8 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   font-weight: 600;
   text-transform: capitalize;
   color: var(--manashard-text);
-  background: rgba(108, 92, 231, 0.12);
-  border: 1px solid rgba(108, 92, 231, 0.25);
+  background: rgba(212, 160, 48, 0.12);
+  border: 1px solid rgba(212, 160, 48, 0.25);
   border-radius: 2px;
 }
 
@@ -3162,28 +3162,28 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   border-radius: 4px;
-  background: rgba(108, 92, 231, 0.1);
-  color: var(--manashard-text, #e0e0e0);
+  background: rgba(212, 160, 48, 0.1);
+  color: var(--manashard-text, #ede4d4);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
 .sr-status-btn:hover {
-  background: rgba(108, 92, 231, 0.25);
-  border-color: rgba(108, 92, 231, 0.5);
+  background: rgba(212, 160, 48, 0.25);
+  border-color: rgba(212, 160, 48, 0.5);
 }
 .sr-status-btn.active {
-  background: rgba(108, 92, 231, 0.4);
-  border-color: var(--manashard-accent, #6c5ce7);
-  box-shadow: 0 0 4px rgba(108, 92, 231, 0.4);
+  background: rgba(212, 160, 48, 0.4);
+  border-color: var(--manashard-accent, #d4a030);
+  box-shadow: 0 0 3px rgba(212, 160, 48, 0.4);
 }
 
 /* Weapon access section in Job description */
 .manashard .desc-weapon-access {
   margin-bottom: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(108, 92, 231, 0.12);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.12);
 }
 
 .manashard .desc-section-label {
@@ -3249,7 +3249,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   gap: 12px;
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid rgba(108, 92, 231, 0.12);
+  border-top: 1px solid rgba(212, 160, 48, 0.12);
 }
 
 .manashard .desc-mastery-item {
@@ -3300,7 +3300,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   color: var(--manashard-text-dim);
   line-height: 1.5;
   padding: 8px 10px;
-  border-top: 1px solid rgba(108, 92, 231, 0.12);
+  border-top: 1px solid rgba(212, 160, 48, 0.12);
   margin-top: 4px;
 }
 
@@ -3406,7 +3406,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   align-items: center;
   gap: 6px;
   padding-top: 6px;
-  border-top: 1px solid rgba(108, 92, 231, 0.15);
+  border-top: 1px solid rgba(212, 160, 48, 0.15);
 }
 
 .manashard .weapon-access-icon {
@@ -3418,7 +3418,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 .manashard .weapon-access-input {
   flex: 1;
   background: rgba(0, 0, 0, 0.5) !important;
-  border-color: rgba(108, 92, 231, 0.2) !important;
+  border-color: rgba(212, 160, 48, 0.2) !important;
   font-size: 11px !important;
 }
 
@@ -3465,8 +3465,8 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   text-transform: uppercase;
   letter-spacing: 0.3px;
   color: var(--manashard-accent-light);
-  background: rgba(108, 92, 231, 0.15);
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  background: rgba(212, 160, 48, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   border-radius: 2px;
   cursor: default;
 }
@@ -3482,7 +3482,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 /* Section panels — FE Engage translucent card style */
 .manashard .job-section-panel {
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.2);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -3493,8 +3493,8 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   align-items: center;
   gap: 8px;
   padding: 5px 10px;
-  background: rgba(108, 92, 231, 0.12);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.25);
+  background: rgba(212, 160, 48, 0.12);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.25);
 }
 
 .manashard .job-section-title {
@@ -3536,9 +3536,9 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 }
 
 .manashard .skill-type-icon.qualities {
-  background: rgba(108, 92, 231, 0.2);
+  background: rgba(212, 160, 48, 0.2);
   color: var(--manashard-accent-light);
-  border: 1px solid rgba(108, 92, 231, 0.4);
+  border: 1px solid rgba(212, 160, 48, 0.4);
 }
 
 .manashard .skill-type-icon.desc {
@@ -3572,14 +3572,14 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   font-weight: 700 !important;
   color: #fff !important;
   background: rgba(0, 0, 0, 0.5) !important;
-  border: 1px solid rgba(108, 92, 231, 0.3) !important;
+  border: 1px solid rgba(212, 160, 48, 0.3) !important;
   padding: 5px 10px !important;
   letter-spacing: 1px;
 }
 
 .manashard .skill-name-input:focus {
   border-color: var(--manashard-accent) !important;
-  box-shadow: 0 0 8px var(--manashard-accent-glow) !important;
+  box-shadow: 0 0 6px var(--manashard-accent-glow) !important;
 }
 
 /* Skill stat badges row */
@@ -3644,7 +3644,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 
 /* Skill description area */
 .manashard .job-skill-desc {
-  border-top: 1px solid rgba(108, 92, 231, 0.12);
+  border-top: 1px solid rgba(212, 160, 48, 0.12);
   padding-top: 6px;
 }
 
@@ -3706,7 +3706,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   width: 56px !important;
   text-align: center;
   background: rgba(0, 0, 0, 0.5) !important;
-  border-color: rgba(108, 92, 231, 0.2) !important;
+  border-color: rgba(212, 160, 48, 0.2) !important;
   font-weight: 700 !important;
   font-size: 13px !important;
   padding: 4px 6px !important;
@@ -3726,7 +3726,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   align-items: center;
   gap: 8px;
   padding-top: 8px;
-  border-top: 1px solid rgba(108, 92, 231, 0.12);
+  border-top: 1px solid rgba(212, 160, 48, 0.12);
 }
 
 .manashard .unlock-requirements-row .detail-label {
@@ -3740,7 +3740,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 .manashard .unlock-input {
   flex: 1;
   background: rgba(0, 0, 0, 0.5) !important;
-  border-color: rgba(108, 92, 231, 0.2) !important;
+  border-color: rgba(212, 160, 48, 0.2) !important;
   font-size: 12px !important;
   padding: 4px 8px !important;
   min-height: 28px;
@@ -3754,7 +3754,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 .manashard .qualities-edit-input {
   width: 100%;
   background: rgba(0, 0, 0, 0.5) !important;
-  border-color: rgba(108, 92, 231, 0.2) !important;
+  border-color: rgba(212, 160, 48, 0.2) !important;
   font-size: 11px !important;
 }
 
@@ -3812,19 +3812,19 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   min-height: 32px;
   padding: 4px 8px;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 2px;
   cursor: text;
   transition: border-color 0.2s;
 }
 
 .manashard .job-tag-area:hover {
-  border-color: rgba(108, 92, 231, 0.35);
+  border-color: rgba(212, 160, 48, 0.35);
 }
 
 .manashard .job-tag-area:focus-within {
   border-color: var(--manashard-accent);
-  box-shadow: 0 0 4px var(--manashard-accent-glow);
+  box-shadow: 0 0 3px var(--manashard-accent-glow);
 }
 
 .manashard .job-tag {
@@ -3836,8 +3836,8 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   font-weight: 600;
   text-transform: capitalize;
   color: var(--manashard-text);
-  background: rgba(108, 92, 231, 0.2);
-  border: 1px solid rgba(108, 92, 231, 0.35);
+  background: rgba(212, 160, 48, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.35);
   border-radius: 2px;
   letter-spacing: 0.3px;
 }
@@ -3868,7 +3868,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   font-size: 12px;
   min-height: 30px;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.2);
   border-radius: 2px;
   color: var(--manashard-text-dim);
   cursor: pointer;
@@ -3876,8 +3876,8 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 }
 
 .manashard .job-tag-select option {
-  background: #1a1a2e;
-  color: #e0e0e0;
+  background: #1a1520;
+  color: #ede4d4;
 }
 
 .manashard .job-tag-select option:disabled {
@@ -3886,13 +3886,13 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 
 .manashard .job-tag-select:hover {
   border-color: var(--manashard-accent);
-  background: rgba(108, 92, 231, 0.08);
+  background: rgba(212, 160, 48, 0.08);
   color: var(--manashard-text);
 }
 
 .manashard .job-tag-select:focus {
   border-color: var(--manashard-accent);
-  box-shadow: 0 0 4px var(--manashard-accent-glow);
+  box-shadow: 0 0 3px var(--manashard-accent-glow);
   outline: none;
 }
 
@@ -3915,7 +3915,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   min-height: 0;
   height: 22px;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px dashed rgba(108, 92, 231, 0.3);
+  border: 1px dashed rgba(212, 160, 48, 0.3);
   border-radius: 2px;
   color: var(--manashard-text-dim);
   cursor: pointer;
@@ -3923,8 +3923,8 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 }
 
 .manashard .job-tag-inline-select option {
-  background: #1a1a2e;
-  color: #e0e0e0;
+  background: #1a1520;
+  color: #ede4d4;
 }
 
 .manashard .job-tag-inline-select option:disabled {
@@ -3933,13 +3933,13 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 
 .manashard .job-tag-inline-select:hover {
   border-color: var(--manashard-accent);
-  background: rgba(108, 92, 231, 0.08);
+  background: rgba(212, 160, 48, 0.08);
   color: var(--manashard-text);
 }
 
 .manashard .job-tag-inline-select:focus {
   border-color: var(--manashard-accent);
-  box-shadow: 0 0 4px var(--manashard-accent-glow);
+  box-shadow: 0 0 3px var(--manashard-accent-glow);
   outline: none;
 }
 
@@ -3986,19 +3986,19 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 
 .manashard .job-base-stat-input:hover {
   background: rgba(0, 0, 0, 0.3) !important;
-  border-color: rgba(108, 92, 231, 0.2) !important;
+  border-color: rgba(212, 160, 48, 0.2) !important;
 }
 
 .manashard .job-base-stat-input:focus {
   background: rgba(0, 0, 0, 0.5) !important;
   border-color: var(--manashard-accent) !important;
-  box-shadow: 0 0 4px var(--manashard-accent-glow);
+  box-shadow: 0 0 3px var(--manashard-accent-glow);
 }
 
 /* ─── Description Tab — Base Stats Read-Only ─── */
 .manashard .desc-base-stats {
   padding: 6px 0;
-  border-bottom: 1px solid rgba(108, 92, 231, 0.12);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.12);
   margin-bottom: 6px;
 }
 
@@ -4063,7 +4063,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 
 .manashard .prereq-drop-zone.drag-over {
   border-color: var(--manashard-accent) !important;
-  box-shadow: 0 0 12px var(--manashard-accent-glow), inset 0 0 20px rgba(108, 92, 231, 0.1);
+  box-shadow: 0 0 6px var(--manashard-accent-glow), inset 0 0 14px rgba(212, 160, 48, 0.1);
 }
 
 .manashard .job-drop-hint {
@@ -4131,12 +4131,12 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 .manashard .job-sheet-body select:hover,
 .manashard .job-config-panel select:hover {
   border-color: var(--manashard-accent);
-  background: rgba(108, 92, 231, 0.08);
+  background: rgba(212, 160, 48, 0.08);
 }
 
 /* Force dropdown options to use dark text so they're readable on the native white background */
 .manashard select option {
-  color: #1a1a2e;
+  color: #1a1520;
   background: #fff;
 }
 
@@ -4195,7 +4195,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 
 .manashard .job-skill-slot.filled:hover {
   background: rgba(0, 0, 0, 0.6);
-  box-shadow: 0 0 8px var(--manashard-accent-glow);
+  box-shadow: 0 0 6px var(--manashard-accent-glow);
 }
 
 .manashard .job-skill-slot.filled.active-border {
@@ -4210,7 +4210,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   width: 32px;
   height: 32px;
   border-radius: 2px;
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   object-fit: cover;
   flex-shrink: 0;
 }
@@ -4286,14 +4286,14 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   justify-content: center;
   gap: 4px;
   padding: 16px 8px;
-  border: 1px dashed rgba(108, 92, 231, 0.25);
+  border: 1px dashed rgba(212, 160, 48, 0.25);
   border-radius: 2px;
   background: rgba(0, 0, 0, 0.2);
 }
 
 .manashard .skill-slot-empty-icon {
   font-size: 18px;
-  color: rgba(108, 92, 231, 0.35);
+  color: rgba(212, 160, 48, 0.35);
 }
 
 .manashard .skill-slot-empty-text {
@@ -4313,15 +4313,15 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 }
 
 .manashard .desc-skill-clickable:hover {
-  background: rgba(108, 92, 231, 0.08);
-  box-shadow: 0 0 8px var(--manashard-accent-glow);
+  background: rgba(212, 160, 48, 0.08);
+  box-shadow: 0 0 6px var(--manashard-accent-glow);
 }
 
 .manashard .desc-skill-img {
   width: 24px;
   height: 24px;
   border-radius: 2px;
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   object-fit: cover;
   margin-right: 4px;
 }
@@ -4342,7 +4342,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
   gap: 8px;
   padding: 6px 10px;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 2px;
 }
 
@@ -4387,7 +4387,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 .manashard .job-desc-editor-section {
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid rgba(108, 92, 231, 0.15);
+  border-top: 1px solid rgba(212, 160, 48, 0.15);
 }
 
 .manashard .job-desc-editor-section .editor,
@@ -4430,7 +4430,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 
 .manashard .description-field {
   margin-top: 12px;
-  border-top: 1px solid rgba(108, 92, 231, 0.2);
+  border-top: 1px solid rgba(212, 160, 48, 0.2);
   padding-top: 8px;
 }
 
@@ -4448,7 +4448,7 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 .manashard prose-mirror {
   --min-height: 200px;
   background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 4px;
   color: var(--manashard-text);
 }
@@ -4456,8 +4456,8 @@ body.game .app.manashard.item.sheet prose-mirror > button.toggle:hover {
 /* Toggle button — override Foundry's `display: none` */
 body.game .app.manashard prose-mirror > button.toggle {
   display: block;
-  background: rgba(108, 92, 231, 0.25);
-  border: 1px solid rgba(108, 92, 231, 0.35);
+  background: rgba(212, 160, 48, 0.25);
+  border: 1px solid rgba(212, 160, 48, 0.35);
   border-radius: 4px;
   color: var(--manashard-accent-light);
   cursor: pointer;
@@ -4467,21 +4467,21 @@ body.game .app.manashard prose-mirror > button.toggle {
 
 body.game .app.manashard prose-mirror > button.toggle:hover {
   opacity: 1;
-  background: rgba(108, 92, 231, 0.5);
+  background: rgba(212, 160, 48, 0.5);
 }
 
 /* Active editing state — glow border */
 .manashard prose-mirror.active,
 .manashard prose-mirror[open],
 .manashard prose-mirror:focus-within {
-  border-color: rgba(108, 92, 231, 0.5);
-  box-shadow: 0 0 6px rgba(108, 92, 231, 0.15);
+  border-color: rgba(212, 160, 48, 0.5);
+  box-shadow: 0 0 4px rgba(212, 160, 48, 0.15);
 }
 
 /* Toolbar theming */
 .manashard prose-mirror menu {
   background: rgba(15, 12, 30, 0.85);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
 }
 
 /* Editor content — only color overrides, no position/layout changes */
@@ -4516,7 +4516,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard ::-webkit-scrollbar-thumb {
-  background: rgba(108, 92, 231, 0.3);
+  background: rgba(212, 160, 48, 0.3);
   border-radius: 3px;
 }
 
@@ -4568,19 +4568,19 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .paperdoll-slot {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid var(--manashard-accent);
-  box-shadow: 0 0 8px var(--manashard-accent-glow);
+  box-shadow: 0 0 6px var(--manashard-accent-glow);
   transition: box-shadow 0.2s;
   width: 100%;
   min-width: 0;
 }
 
 .manashard .paperdoll-slot:hover {
-  box-shadow: 0 0 14px var(--manashard-accent-glow);
+  box-shadow: 0 0 10px var(--manashard-accent-glow);
 }
 
 .manashard .paperdoll-slot.empty-slot {
   border-style: dashed;
-  border-color: rgba(108, 92, 231, 0.3);
+  border-color: rgba(212, 160, 48, 0.3);
   box-shadow: none;
 }
 
@@ -4593,8 +4593,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .manashard .paperdoll-slot.drop-target-highlight {
   border-color: var(--manashard-accent-light);
-  box-shadow: 0 0 18px var(--manashard-accent-glow);
-  background: rgba(108, 92, 231, 0.1);
+  box-shadow: 0 0 12px var(--manashard-accent-glow);
+  background: rgba(212, 160, 48, 0.1);
 }
 
 /* Grid positions via data-slot attribute */
@@ -4629,13 +4629,13 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .slot-img {
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   flex-shrink: 0;
   cursor: pointer;
 }
 .manashard .slot-img:hover {
   border-color: var(--manashard-accent);
-  box-shadow: 0 0 4px rgba(0, 228, 160, 0.3);
+  box-shadow: 0 0 3px rgba(212, 160, 48, 0.25);
 }
 
 .manashard .slot-info {
@@ -4652,7 +4652,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-weight: 700;
   color: #fff;
   cursor: pointer;
-  text-shadow: 0 0 6px var(--manashard-accent-glow);
+  text-shadow: 0 0 4px var(--manashard-accent-glow);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4735,13 +4735,13 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .natural-weapon-card {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid var(--manashard-accent);
-  box-shadow: 0 0 8px var(--manashard-accent-glow);
+  box-shadow: 0 0 6px var(--manashard-accent-glow);
   transition: box-shadow 0.2s;
   min-width: 0;
 }
 
 .manashard .natural-weapon-card:hover {
-  box-shadow: 0 0 14px var(--manashard-accent-glow);
+  box-shadow: 0 0 10px var(--manashard-accent-glow);
 }
 
 .manashard .nw-label {
@@ -4762,7 +4762,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .nw-img {
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -4802,7 +4802,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(108, 92, 231, 0.2);
+  background: rgba(212, 160, 48, 0.2);
   border: 1px solid var(--manashard-accent);
   color: var(--manashard-accent-light);
   cursor: pointer;
@@ -4812,6 +4812,71 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .nw-attack-btn:hover {
   background: var(--manashard-accent);
   color: #fff;
+}
+
+/* --- Inventory Header with Eiress Wallet --- */
+.manashard .inventory-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.manashard .eiress-wallet {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(241, 196, 15, 0.06);
+  border: 1px solid rgba(241, 196, 15, 0.15);
+}
+.manashard .eiress-wallet-icon {
+  font-size: 10px;
+  color: var(--manashard-gold);
+}
+.manashard .eiress-wallet-label {
+  font-family: var(--manashard-font-heading);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--manashard-gold);
+}
+.manashard .eiress-wallet-value {
+  width: 48px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(241, 196, 15, 0.2);
+  color: var(--manashard-text);
+  font-family: var(--manashard-font-mono);
+  font-size: 11px;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+.manashard .eiress-wallet-value::-webkit-inner-spin-button,
+.manashard .eiress-wallet-value::-webkit-outer-spin-button { -webkit-appearance: none; }
+.manashard .eiress-wallet-value:focus {
+  outline: none;
+  border-bottom-color: var(--manashard-gold);
+}
+.manashard .eiress-wallet-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid rgba(241, 196, 15, 0.2);
+  border-radius: 3px;
+  background: rgba(241, 196, 15, 0.05);
+  color: var(--manashard-gold);
+  font-size: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.manashard .eiress-wallet-btn:hover {
+  background: rgba(241, 196, 15, 0.15);
+  border-color: rgba(241, 196, 15, 0.4);
 }
 
 /* --- Merged Inventory Grid --- */
@@ -4840,7 +4905,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 4px;
   padding: 3px 4px;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   transition: all 0.15s;
   cursor: grab;
   min-width: 0;
@@ -4848,7 +4913,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .manashard .inventory-grid-card:hover {
   border-color: var(--manashard-accent);
-  box-shadow: 0 0 6px var(--manashard-accent-glow);
+  box-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 
 .manashard .inventory-grid-card.granted-item {
@@ -4856,13 +4921,13 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .grid-item-img {
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.2);
   flex-shrink: 0;
   cursor: pointer;
 }
 .manashard .grid-item-img:hover {
   border-color: var(--manashard-accent);
-  box-shadow: 0 0 4px rgba(0, 228, 160, 0.3);
+  box-shadow: 0 0 3px rgba(212, 160, 48, 0.25);
 }
 
 .manashard .grid-item-info {
@@ -4929,7 +4994,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--manashard-accent) 20%, var(--manashard-accent-light) 50%, var(--manashard-accent) 80%, transparent);
   margin: 8px 0;
-  box-shadow: 0 0 6px var(--manashard-accent-glow);
+  box-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 
 /* ===========================
@@ -4938,7 +5003,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .stat-comparison-tooltip {
   background: rgba(0, 0, 0, 0.95);
   border: 1px solid var(--manashard-accent);
-  box-shadow: 0 0 12px var(--manashard-accent-glow);
+  box-shadow: 0 0 8px var(--manashard-accent-glow);
   padding: 6px 10px;
   min-width: 120px;
   pointer-events: none;
@@ -4985,7 +5050,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 12px;
   padding: 8px;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.35) 0%, rgba(22, 33, 62, 0.5) 100%);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 8px;
 }
 
@@ -5003,7 +5068,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   width: 100%;
   height: 100%;
   border-radius: 8px;
-  border: 2px solid rgba(108, 92, 231, 0.4);
+  border: 2px solid rgba(212, 160, 48, 0.4);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
   overflow: hidden;
 }
@@ -5018,7 +5083,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   overflow-y: auto;
   max-height: 240px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(108, 92, 231, 0.3) transparent;
+  scrollbar-color: rgba(212, 160, 48, 0.3) transparent;
 }
 
 .manashard .job-details-header {
@@ -5027,7 +5092,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   justify-content: space-between;
   gap: 8px;
   padding-bottom: 4px;
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
 }
 
 .manashard .job-details-name {
@@ -5035,7 +5100,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-size: 15px;
   font-weight: 700;
   color: #fff;
-  text-shadow: 0 0 8px var(--manashard-accent-glow);
+  text-shadow: 0 0 6px var(--manashard-accent-glow);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -5054,7 +5119,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.2);
   border-radius: 4px;
   color: var(--manashard-text-dim);
   font-size: 11px;
@@ -5064,8 +5129,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .manashard .job-detail-action:hover {
   color: var(--manashard-accent-light);
-  border-color: rgba(108, 92, 231, 0.5);
-  background: rgba(108, 92, 231, 0.1);
+  border-color: rgba(212, 160, 48, 0.5);
+  background: rgba(212, 160, 48, 0.1);
 }
 
 .manashard .job-detail-action.danger:hover {
@@ -5082,7 +5147,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .manashard .job-details-panel .mastery-bars {
   padding: 4px 0;
-  border-top: 1px solid rgba(108, 92, 231, 0.1);
+  border-top: 1px solid rgba(212, 160, 48, 0.1);
 }
 
 .manashard .job-details-panel .mastery-bar-label {
@@ -5098,25 +5163,25 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 6px;
   padding: 28px 16px;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(22, 33, 62, 0.25) 100%);
-  border: 2px dashed rgba(108, 92, 231, 0.2);
+  border: 2px dashed rgba(212, 160, 48, 0.2);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .manashard .job-empty-state:hover {
-  border-color: rgba(108, 92, 231, 0.45);
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 0%, rgba(108, 92, 231, 0.08) 100%);
+  border-color: rgba(212, 160, 48, 0.45);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 0%, rgba(212, 160, 48, 0.08) 100%);
 }
 
 .manashard .job-empty-icon {
   font-size: 28px;
-  color: rgba(108, 92, 231, 0.35);
+  color: rgba(212, 160, 48, 0.35);
   transition: color 0.2s;
 }
 
 .manashard .job-empty-state:hover .job-empty-icon {
-  color: rgba(108, 92, 231, 0.6);
+  color: rgba(212, 160, 48, 0.6);
 }
 
 .manashard .job-empty-text {
@@ -5293,8 +5358,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .job-detail-tag {
   font-size: 9px;
   padding: 1px 6px;
-  background: rgba(108, 92, 231, 0.08);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.08);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   color: var(--manashard-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -5337,8 +5402,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .job-tag {
   font-size: 9px;
   padding: 1px 6px;
-  background: rgba(108, 92, 231, 0.08);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.08);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   color: var(--manashard-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -5355,7 +5420,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
    =========================== */
 .manashard .skill-ability-card {
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   margin: 4px 8px;
   padding: 6px 8px;
 }
@@ -5376,7 +5441,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .skill-card-img {
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.2);
   flex-shrink: 0;
 }
 
@@ -5483,7 +5548,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  border-top: 1px solid rgba(108, 92, 231, 0.1);
+  border-top: 1px solid rgba(212, 160, 48, 0.1);
 }
 
 .manashard .mastery-bar-row {
@@ -5533,7 +5598,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-size: 10px;
   padding: 1px 2px !important;
   background: rgba(0, 0, 0, 0.4) !important;
-  border-color: rgba(108, 92, 231, 0.15) !important;
+  border-color: rgba(212, 160, 48, 0.15) !important;
 }
 
 /* ===========================
@@ -5546,18 +5611,18 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   padding: 5px 10px;
   background: rgba(0, 0, 0, 0.5);
   border-left: 3px solid var(--manashard-accent);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
   margin-bottom: 4px;
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .manashard .species-banner:hover {
-  background: rgba(108, 92, 231, 0.12);
+  background: rgba(212, 160, 48, 0.12);
 }
 
 .manashard .species-banner-img {
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   flex-shrink: 0;
 }
 
@@ -5680,7 +5745,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 /* Level-Up Dialog */
 .manashard.level-up-dialog {
   font-family: "Alegreya Sans", sans-serif;
-  color: #e0e0e0;
+  color: #ede4d4;
 }
 
 .manashard .level-up-header {
@@ -5730,7 +5795,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   flex-direction: column;
   gap: 1px;
   background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   margin-bottom: 8px;
 }
 
@@ -5744,7 +5809,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .level-up-row.level-up-header-row {
-  background: rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.15);
   font-family: "Cinzel", serif;
   font-size: 8px;
   font-weight: 700;
@@ -5822,10 +5887,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .skill-chat-card {
   border-radius: 8px;
   overflow: hidden;
-  background: linear-gradient(180deg, #0f1923 0%, #1a2332 100%);
+  background: linear-gradient(180deg, #1a1520 0%, #211b2a 100%);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
   font-family: "Alegreya Sans", sans-serif;
-  color: #e0e0e0;
+  color: #ede4d4;
 }
 
 /* ─── Header Bar (Arcane accent) ─── */
@@ -5833,9 +5898,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #1e1740 70%, #2d1b69 100%);
-  border-bottom: 2px solid rgba(108, 92, 231, 0.3);
+  padding: 6px 10px;
+  background: linear-gradient(135deg, #1a1520 0%, #211b2a 70%, #2a2335 100%);
+  border-bottom: 2px solid rgba(212, 160, 48, 0.3);
   position: relative;
 }
 
@@ -5846,14 +5911,14 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   left: 0;
   width: 60px;
   height: 2px;
-  background: linear-gradient(90deg, #6c5ce7, transparent);
+  background: linear-gradient(90deg, #d4a030, transparent);
 }
 
 .skill-chat-card .scc-portrait-frame {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  background: linear-gradient(135deg, #6c5ce7, #a29bfe, #6c5ce7);
+  background: linear-gradient(135deg, #d4a030, #e8b84b, #d4a030);
   position: relative;
   flex-shrink: 0;
 }
@@ -5888,7 +5953,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .skill-chat-card .scc-actor-name {
   font-family: "Cinzel", serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
@@ -5896,11 +5961,11 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .skill-chat-card .scc-action {
   font-size: 11px;
-  color: #8899aa;
+  color: #b8a898;
 }
 
 .skill-chat-card .scc-action strong {
-  color: #c4b5fd;
+  color: #e8b84b;
 }
 
 .skill-chat-card .scc-element {
@@ -5917,7 +5982,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .skill-chat-card .scc-type-row {
   display: flex;
   gap: 4px;
-  padding: 6px 12px 0;
+  padding: 4px 10px 0;
 }
 
 .skill-chat-card .scc-type-badge {
@@ -5975,18 +6040,18 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .skill-chat-card .scc-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 8px 12px;
+  gap: 4px;
+  padding: 6px 10px;
 }
 
 .skill-chat-card .scc-stat-pip {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  padding: 3px 8px;
+  gap: 3px;
+  font-size: 10px;
+  padding: 2px 6px;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 4px;
 }
 
@@ -5995,17 +6060,17 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #667788;
+  color: #9a8b7a;
 }
 
 .skill-chat-card .scc-stat-value {
   font-weight: 700;
-  color: #e0e0e0;
+  color: #ede4d4;
 }
 
 .skill-chat-card .scc-stat-value small {
   font-size: 9px;
-  color: #667788;
+  color: #9a8b7a;
   font-weight: 400;
 }
 
@@ -6035,13 +6100,12 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ─── Description ─── */
 .skill-chat-card .scc-desc {
-  font-size: 12px;
+  font-size: 11.5px;
   color: #aabbcc;
-  line-height: 1.5;
-  padding: 0 12px 10px;
-  border-top: 1px solid rgba(108, 92, 231, 0.1);
+  line-height: 1.4;
+  padding: 6px 10px 8px;
+  border-top: 1px solid rgba(212, 160, 48, 0.1);
   margin-top: 0;
-  padding-top: 8px;
 }
 
 /* Skill Use button on cards */
@@ -6055,7 +6119,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .manashard .skill-use-button:hover {
   color: #fff;
-  text-shadow: 0 0 8px var(--manashard-accent-glow);
+  text-shadow: 0 0 6px var(--manashard-accent-glow);
 }
 
 /* ===========================
@@ -6082,7 +6146,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-size: 10px !important;
   padding: 1px 4px !important;
   background: rgba(0, 0, 0, 0.5) !important;
-  border-color: rgba(108, 92, 231, 0.2) !important;
+  border-color: rgba(212, 160, 48, 0.2) !important;
   color: var(--manashard-text) !important;
   width: auto !important;
 }
@@ -6215,7 +6279,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   border-radius: 1px;
   transition: width 0.3s ease;
   background: linear-gradient(90deg, var(--manashard-accent), var(--manashard-accent-light));
-  box-shadow: 0 0 4px var(--manashard-accent-glow);
+  box-shadow: 0 0 3px var(--manashard-accent-glow);
   max-width: 100%;
 }
 
@@ -6259,7 +6323,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   grid-template-columns: 1fr auto 1fr;
   gap: 0;
   font-family: "Alegreya Sans", sans-serif;
-  color: #e0e0e0;
+  color: #ede4d4;
   min-width: 520px;
 }
 
@@ -6355,7 +6419,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .combat-forecast .cf-weapon-row i {
   font-size: 10px;
-  color: #667788;
+  color: #9a8b7a;
 }
 
 .combat-forecast .cf-weapon-name {
@@ -6613,8 +6677,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .drop-target-highlight {
   outline: 2px dashed var(--manashard-accent-light) !important;
   outline-offset: -2px;
-  background: rgba(108, 92, 231, 0.12) !important;
-  box-shadow: inset 0 0 16px var(--manashard-accent-glow) !important;
+  background: rgba(212, 160, 48, 0.12) !important;
+  box-shadow: inset 0 0 11px var(--manashard-accent-glow) !important;
   transition: outline 0.15s, background 0.15s, box-shadow 0.15s;
 }
 
@@ -6819,7 +6883,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .modifier-tooltip .mt-base {
   color: var(--manashard-text-dim);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
   padding-bottom: 3px;
   margin-bottom: 3px;
 }
@@ -6851,7 +6915,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .modifier-tooltip .mt-total {
-  border-top: 1px solid rgba(108, 92, 231, 0.2);
+  border-top: 1px solid rgba(212, 160, 48, 0.2);
   padding-top: 3px;
   margin-top: 3px;
   font-weight: bold;
@@ -6904,7 +6968,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .growth-tooltip .gt-total {
-  border-top: 1px solid rgba(108, 92, 231, 0.2);
+  border-top: 1px solid rgba(212, 160, 48, 0.2);
   padding-top: 3px;
   margin-top: 3px;
   display: flex;
@@ -6921,7 +6985,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .manashard .rules-editor {
   margin-top: 12px;
-  border-top: 1px solid rgba(108, 92, 231, 0.15);
+  border-top: 1px solid rgba(212, 160, 48, 0.15);
   padding-top: 8px;
 }
 
@@ -6939,7 +7003,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .add-rule-btn {
-  background: rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.15);
   border: 1px solid var(--manashard-accent);
   color: var(--manashard-accent-light);
   padding: 2px 8px;
@@ -6951,7 +7015,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .add-rule-btn:hover {
-  background: rgba(108, 92, 231, 0.3);
+  background: rgba(212, 160, 48, 0.3);
 }
 
 .manashard .rules-list {
@@ -6962,14 +7026,14 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .manashard .rule-entry {
   background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(108, 92, 231, 0.12);
+  border: 1px solid rgba(212, 160, 48, 0.12);
   border-radius: 4px;
   padding: 5px 10px;
   transition: border-color 0.15s;
 }
 
 .manashard .rule-entry:hover {
-  border-color: rgba(108, 92, 231, 0.3);
+  border-color: rgba(212, 160, 48, 0.3);
 }
 
 .manashard .rule-header {
@@ -7140,7 +7204,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   padding: 3px 6px;
   font-size: 12px;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.2);
   border-radius: 3px;
   color: var(--manashard-text);
 }
@@ -7164,7 +7228,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 4px;
   padding: 3px 6px;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(212, 160, 48, 0.2);
   border-radius: 3px;
   cursor: text;
   min-height: 28px;
@@ -7232,7 +7296,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   right: 0;
   z-index: 1000;
   background: #1a1528;
-  border: 1px solid rgba(108, 92, 231, 0.4);
+  border: 1px solid rgba(212, 160, 48, 0.4);
   border-top: none;
   border-radius: 0 0 4px 4px;
   max-height: 160px;
@@ -7252,7 +7316,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .tag-autocomplete-item:hover {
-  background: rgba(108, 92, 231, 0.3);
+  background: rgba(212, 160, 48, 0.3);
   color: #fff;
 }
 
@@ -7284,7 +7348,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .rule-editor-dialog .re-type-fields {
-  border-top: 1px solid rgba(108, 92, 231, 0.1);
+  border-top: 1px solid rgba(212, 160, 48, 0.1);
   padding-top: 6px;
   display: flex;
   flex-direction: column;
@@ -7293,7 +7357,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .rule-editor-dialog .re-preview {
   background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(108, 92, 231, 0.1);
+  border: 1px solid rgba(212, 160, 48, 0.1);
   border-radius: 3px;
   padding: 4px 8px;
   font-size: 11px;
@@ -7319,7 +7383,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   justify-content: center;
   gap: 8px;
   padding: 12px;
-  border: 2px dashed rgba(108, 92, 231, 0.25);
+  border: 2px dashed rgba(212, 160, 48, 0.25);
   border-radius: 4px;
   background: rgba(0, 0, 0, 0.15);
   color: var(--manashard-text-dim);
@@ -7334,7 +7398,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .rule-editor-dialog .re-grant-drop-zone.drag-over {
   border-color: var(--manashard-accent);
-  background: rgba(108, 92, 231, 0.08);
+  background: rgba(212, 160, 48, 0.08);
   color: var(--manashard-accent-light);
 }
 
@@ -7349,7 +7413,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .rule-editor-dialog .re-grant-filled {
   border-style: solid;
-  border-color: rgba(108, 92, 231, 0.3);
+  border-color: rgba(212, 160, 48, 0.3);
   background: rgba(0, 0, 0, 0.25);
   justify-content: flex-start;
   text-transform: none;
@@ -7425,7 +7489,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   display: flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.3);
   border-radius: 4px;
   background: rgba(0, 0, 0, 0.25);
   padding: 4px 8px;
@@ -7473,7 +7537,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .rule-editor-dialog .re-grant-custom-drop.drag-over {
   border-color: var(--manashard-accent);
-  background: rgba(108, 92, 231, 0.08);
+  background: rgba(212, 160, 48, 0.08);
   color: var(--manashard-accent-light);
 }
 
@@ -7611,7 +7675,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .desc-stat-bar-fill {
   height: 100%;
   max-width: 100%;
-  background: linear-gradient(90deg, rgba(108, 92, 231, 0.5), rgba(108, 92, 231, 0.8));
+  background: linear-gradient(90deg, rgba(212, 160, 48, 0.5), rgba(212, 160, 48, 0.8));
   border-radius: 2px;
   transition: width 0.4s ease;
 }
@@ -7734,7 +7798,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   top: 0;
   bottom: 0;
   width: 40px;
-  background: linear-gradient(135deg, transparent 40%, rgba(108, 92, 231, 0.15) 40%, rgba(108, 92, 231, 0.05) 100%);
+  background: linear-gradient(135deg, transparent 40%, rgba(212, 160, 48, 0.15) 40%, rgba(212, 160, 48, 0.05) 100%);
   pointer-events: none;
 }
 
@@ -7742,8 +7806,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* Empty slot pulsing border */
 @keyframes slot-pulse {
-  0%, 100% { border-color: rgba(108, 92, 231, 0.15); }
-  50% { border-color: rgba(108, 92, 231, 0.4); }
+  0%, 100% { border-color: rgba(212, 160, 48, 0.15); }
+  50% { border-color: rgba(212, 160, 48, 0.4); }
 }
 
 .manashard .job-skill-slot.empty {
@@ -7874,7 +7938,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .skill-header-type-badge.active { background: var(--manashard-success); color: #fff; }
 .manashard .skill-header-type-badge.passive { background: var(--manashard-mp); color: #fff; }
 
-.manashard .skill-header-type-badge.utility { background: var(--manashard-gold); color: #1a1a2e; }
+.manashard .skill-header-type-badge.utility { background: var(--manashard-gold); color: #1a1520; }
 .manashard .skill-header-type-badge.spell { background: #9b59b6; color: #fff; }
 
 /* Skill Header Fields */
@@ -8027,7 +8091,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  background: rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.15);
   color: var(--manashard-accent-light);
   font-size: 12px;
   flex-shrink: 0;
@@ -8086,8 +8150,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
-  background: rgba(108, 92, 231, 0.08);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.08);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 4px;
 }
 
@@ -8117,8 +8181,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .skill-desc-info-tag {
   font-size: 11px;
   padding: 4px 10px;
-  background: rgba(108, 92, 231, 0.08);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.08);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 4px;
   color: var(--manashard-text-dim);
 }
@@ -8190,8 +8254,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   letter-spacing: 1px;
   color: var(--manashard-accent-light);
   padding: 5px 10px;
-  background: rgba(108, 92, 231, 0.1);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.1);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.15);
 }
 
 .manashard .skill-detail-section-header i {
@@ -8354,40 +8418,6 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   padding: 4px 0;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SP DISPLAY (Character Sheet)
-   ═══════════════════════════════════════════════════════════════ */
-
-.manashard .sp-display {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.manashard .sp-display .lh-detail-label {
-  color: #44ccff;
-}
-
-/* Level-Up Button in Library */
-.manashard .library-levelup-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 2px 6px;
-  font-size: 0.7em;
-  border-radius: 3px;
-  background: rgba(68, 204, 255, 0.1);
-  color: #44ccff;
-  border: 1px solid rgba(68, 204, 255, 0.3);
-  white-space: nowrap;
-}
-.manashard .library-levelup-btn:hover {
-  background: rgba(68, 204, 255, 0.25);
-}
-.manashard .library-levelup-btn.disabled {
-  opacity: 0.3;
-  pointer-events: none;
-}
 
 /* ═══════════════════════════════════════════════════════════════
    MANACITE SKILL SHEET — Diamond Icon MMO Tooltip
@@ -8395,7 +8425,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ── Manacite-specific colors ── */
 .manashard.manacite-skill-sheet {
-  --mana-skill: #00e4a0;
+  --mana-skill: #d4a030;
   --mana-passive: #bbaa66;
   --mana-support: #44ccff;
   --skill-physical: #cc9977;
@@ -8457,7 +8487,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .mana-skill-header-info .name-banner input {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 20px;
   color: #ffffff;
@@ -8555,7 +8585,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .mana-tt-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-size: 18px;
   font-weight: 700;
   line-height: 1.1;
@@ -8922,7 +8952,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .mana-tt-effect-block[data-category="special"] .mana-tt-effect-icon { color: #9a6ad6; }
 
 .manashard .mana-tt-effect-name {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-weight: 500;
   font-size: 12px;
   color: rgba(200, 210, 220, 0.9);
@@ -9418,14 +9448,14 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
    ═══════════════════════════════════════════════════════════════ */
 
 .attack-chat-card {
-  --acc-accent: var(--manashard-teal, #00e4a0);
-  --acc-bg-panel: #151b23;
-  --acc-bg-surface: #1c2430;
-  --acc-bg-deep: #0d1117;
-  --acc-border: #2a3444;
-  --acc-text: #e0e6ed;
-  --acc-text-secondary: #8899aa;
-  --acc-text-dim: #556677;
+  --acc-accent: var(--manashard-accent, #d4a030);
+  --acc-bg-panel: #1e1828;
+  --acc-bg-surface: #261f30;
+  --acc-bg-deep: #16111e;
+  --acc-border: #3d3250;
+  --acc-text: #ede4d4;
+  --acc-text-secondary: #b8a898;
+  --acc-text-dim: #9a8b7a;
   --acc-hit: #44cc66;
   --acc-miss: #cc4444;
   --acc-crit: #ffcc22;
@@ -9445,24 +9475,14 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .attack-chat-card.acc-hostile {
   --acc-accent: #e04040;
 }
-.attack-chat-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,228,160,0.012) 2px, rgba(0,228,160,0.012) 4px);
-  pointer-events: none;
-  z-index: 1;
-}
-.attack-chat-card.acc-hostile::after {
-  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(224,64,64,0.012) 2px, rgba(224,64,64,0.012) 4px);
-}
+/* Scanline overlay removed for cleaner look */
 
 /* ─── Header (shared: attack, charge, status-removal) ─── */
 :is(.attack-chat-card, .charge-card, .status-removal-card) .acc-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px 10px;
+  gap: 10px;
+  padding: 8px 12px;
   background: linear-gradient(135deg, var(--acc-bg-surface) 0%, var(--acc-bg-panel) 100%);
   border-bottom: 1px solid var(--acc-border);
   position: relative;
@@ -9477,28 +9497,28 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* Diamond portrait (shared) */
 :is(.attack-chat-card, .charge-card, .status-removal-card) .acc-portrait-frame {
-  width: 46px;
-  height: 46px;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
   position: relative;
 }
 :is(.attack-chat-card, .charge-card, .status-removal-card) .acc-portrait-diamond {
-  width: 40px;
-  height: 40px;
+  width: 28px;
+  height: 28px;
   position: absolute;
   top: 3px; left: 3px;
   transform: rotate(45deg);
   overflow: hidden;
-  border: 1.5px solid var(--acc-accent);
-  box-shadow: 0 0 6px color-mix(in srgb, var(--acc-accent) 30%, transparent);
+  border: 1px solid var(--acc-accent);
+  box-shadow: 0 0 4px color-mix(in srgb, var(--acc-accent) 20%, transparent);
 }
 :is(.attack-chat-card, .charge-card, .status-removal-card) .acc-portrait {
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   max-width: none;
   transform: rotate(-45deg);
   position: absolute;
-  top: -8px; left: -8px;
+  top: -6px; left: -6px;
   object-fit: cover;
   object-position: top center;
   display: block;
@@ -9513,7 +9533,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 :is(.attack-chat-card, .charge-card, .status-removal-card) .acc-actor-name {
   font-family: "Cinzel", serif;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.1;
   color: var(--acc-accent);
   white-space: nowrap;
@@ -9521,7 +9541,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   text-overflow: ellipsis;
 }
 :is(.attack-chat-card, .charge-card, .status-removal-card) .acc-action-line {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--acc-text-secondary);
   margin-top: 2px;
 }
@@ -9547,28 +9567,28 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 /* ─── Target Line (shared: attack, charge, status-removal) ─── */
-:is(.attack-chat-card, .charge-card, .status-removal-card) .acc-target-line {
+:is(.attack-chat-card, .charge-card, .status-removal-card, .skill-chat-card) .acc-target-line {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 4px 12px;
   background: var(--acc-bg-deep);
   font-size: 11px;
   color: var(--acc-text-dim);
   border-bottom: 1px solid var(--acc-border);
 }
-:is(.attack-chat-card, .charge-card, .status-removal-card) .acc-target-arrow { font-size: 10px; }
-:is(.attack-chat-card, .charge-card, .status-removal-card) .acc-target-label {
+:is(.attack-chat-card, .charge-card, .status-removal-card, .skill-chat-card) .acc-target-arrow { font-size: 10px; }
+:is(.attack-chat-card, .charge-card, .status-removal-card, .skill-chat-card) .acc-target-label {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--acc-text-dim);
 }
-:is(.attack-chat-card, .charge-card, .status-removal-card) .acc-target-name {
+:is(.attack-chat-card, .charge-card, .status-removal-card, .skill-chat-card) .acc-target-name {
   font-family: "Cinzel", serif;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.5px;
   color: var(--acc-text-secondary);
 }
@@ -9600,21 +9620,12 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .attack-chat-card .acc-roll-row {
   display: flex;
   align-items: center;
-  padding: 10px 14px;
+  padding: 6px 12px;
   gap: 8px;
   position: relative;
   border-bottom: 1px solid var(--acc-border);
 }
-.attack-chat-card .acc-roll-row::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-}
-.attack-chat-card .acc-roll-hit::before { background: var(--acc-hit); }
-.attack-chat-card .acc-roll-miss::before { background: var(--acc-miss); }
-.attack-chat-card .acc-roll-crit::before { background: var(--acc-crit); }
-.attack-chat-card .acc-roll-block::before { background: var(--acc-block); }
+/* Left border bars removed for flatter look */
 
 .attack-chat-card .acc-roll-icon {
   font-size: 14px;
@@ -9627,7 +9638,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-family: "Cinzel", serif;
   font-weight: 500;
   font-size: 10px;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--acc-text-dim);
   flex-shrink: 0;
@@ -9639,7 +9650,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   margin-left: auto;
 }
 .attack-chat-card .acc-roll-result {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1;
 }
@@ -9662,10 +9673,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .attack-chat-card .acc-outcome-badge {
   font-family: "Cinzel", serif;
   font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 1.5px;
+  font-size: 10px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: 2px;
   flex-shrink: 0;
   margin-left: 8px;
@@ -9698,15 +9709,15 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ─── Miss Zone ─── */
 .attack-chat-card .acc-miss-zone {
-  padding: 18px 14px;
+  padding: 10px 12px;
   text-align: center;
   border-bottom: 1px solid var(--acc-border);
 }
 .attack-chat-card .acc-miss-text {
   font-family: "Cinzel", serif;
   font-weight: 600;
-  font-size: 18px;
-  letter-spacing: 3px;
+  font-size: 14px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--acc-miss);
   opacity: 0.6;
@@ -9714,37 +9725,13 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ─── Damage Zone ─── */
 .attack-chat-card .acc-damage-zone {
-  padding: 14px 14px 12px;
+  padding: 10px 12px;
   text-align: center;
   position: relative;
   border-bottom: 1px solid var(--acc-border);
 }
-/* Corner bracket decorations */
-.attack-chat-card .acc-damage-zone::before,
-.attack-chat-card .acc-damage-zone::after {
-  content: '';
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-color: var(--acc-text-dim);
-  border-style: solid;
-  opacity: 0.4;
-}
-.attack-chat-card .acc-damage-zone::before { top: 8px; left: 10px; border-width: 1.5px 0 0 1.5px; }
-.attack-chat-card .acc-damage-zone::after { top: 8px; right: 10px; border-width: 1.5px 1.5px 0 0; }
+/* Corner bracket decorations removed for cleaner look */
 .attack-chat-card .acc-damage-inner { position: relative; }
-.attack-chat-card .acc-damage-inner::before,
-.attack-chat-card .acc-damage-inner::after {
-  content: '';
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-color: var(--acc-text-dim);
-  border-style: solid;
-  opacity: 0.4;
-}
-.attack-chat-card .acc-damage-inner::before { bottom: -4px; left: -4px; border-width: 0 0 1.5px 1.5px; }
-.attack-chat-card .acc-damage-inner::after { bottom: -4px; right: -4px; border-width: 0 1.5px 1.5px 0; }
 
 .attack-chat-card .acc-damage-label {
   font-family: "Cinzel", serif;
@@ -9758,10 +9745,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .attack-chat-card .acc-damage-value {
   font-family: "Cinzel", serif;
   font-weight: 700;
-  font-size: 42px;
+  font-size: 30px;
   line-height: 1;
   color: var(--acc-text);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 .attack-chat-card .acc-crit-damage .acc-damage-value {
   color: var(--acc-crit);
@@ -9800,21 +9787,21 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 /* Damage type + element badges (shared: attack, charge) */
 :is(.attack-chat-card, .charge-card) .acc-damage-badges {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   justify-content: center;
 }
 :is(.attack-chat-card, .charge-card) .acc-badge {
-  font-size: 9.5px;
+  font-size: 8.5px;
   letter-spacing: 0.5px;
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 2px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 :is(.attack-chat-card, .charge-card) .acc-badge-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -9836,6 +9823,12 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   color: #c8dcff;
 }
 .attack-chat-card .acc-badge-barrier .acc-badge-dot { background: #c8dcff; }
+.attack-chat-card .acc-badge-none {
+  background: rgba(128,128,128,0.1);
+  border: 1px solid rgba(128,128,128,0.3);
+  color: #999;
+}
+.attack-chat-card .acc-badge-none .acc-badge-dot { background: #999; }
 
 /* Element badge colors (shared: attack, charge) */
 :is(.attack-chat-card, .charge-card) .acc-badge-elem { border: 1px solid; }
@@ -9863,8 +9856,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 14px;
-  font-size: 10.5px;
+  padding: 3px 12px;
+  font-size: 10px;
   color: var(--acc-text-secondary);
   border-bottom: 1px solid var(--acc-border);
 }
@@ -9877,25 +9870,25 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .attack-chat-card .acc-element-tier {
   display: block;
   text-align: center;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
-  padding: 4px 14px;
+  padding: 3px 12px;
   border-bottom: 1px solid var(--acc-border);
 }
 .attack-chat-card .tier-weak { color: #2ecc71; background: rgba(46,204,113,0.08); }
 .attack-chat-card .tier-resist { color: #e67e22; background: rgba(230,126,34,0.08); }
 .attack-chat-card .tier-immune { color: #c0392b; background: rgba(192,57,43,0.08); }
-.attack-chat-card .tier-absorb { color: #00bcd4; background: rgba(0,188,212,0.08); }
+.attack-chat-card .tier-absorb { color: #d4a030; background: rgba(212,160,48,0.07); }
 
 /* ─── Status Inflictions ─── */
 .attack-chat-card .acc-status-inflict {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
-  padding: 4px 14px;
+  font-size: 10px;
+  padding: 3px 12px;
   color: #e67e22;
   border-bottom: 1px solid var(--acc-border);
 }
@@ -9905,7 +9898,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   align-items: center;
   gap: 6px;
   font-size: 10px;
-  padding: 3px 14px;
+  padding: 3px 12px;
   color: var(--acc-text-dim);
   border-bottom: 1px solid var(--acc-border);
 }
@@ -9913,16 +9906,16 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ─── Apply Button ─── */
 .attack-chat-card .acc-apply-row {
-  padding: 8px 10px;
+  padding: 6px 8px;
 }
 .attack-chat-card .acc-apply-damage {
   width: 100%;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid;
   border-radius: 2px;
   font-family: "Cinzel", serif;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
@@ -10038,7 +10031,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ─── Inspect Hint ─── */
 .attack-chat-card .acc-inspect-hint {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   gap: 6px;
@@ -10070,14 +10063,14 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
    ═══════════════════════════════════════════════════════════════ */
 
 .aoe-chat-card {
-  --acc-accent: var(--manashard-teal, #00e4a0);
-  --acc-bg-panel: #151b23;
-  --acc-bg-surface: #1c2430;
-  --acc-bg-deep: #0d1117;
-  --acc-border: #2a3444;
-  --acc-text: #e0e6ed;
-  --acc-text-secondary: #8899aa;
-  --acc-text-dim: #556677;
+  --acc-accent: var(--manashard-accent, #d4a030);
+  --acc-bg-panel: #1e1828;
+  --acc-bg-surface: #261f30;
+  --acc-bg-deep: #16111e;
+  --acc-border: #3d3250;
+  --acc-text: #ede4d4;
+  --acc-text-secondary: #b8a898;
+  --acc-text-dim: #9a8b7a;
   --acc-hit: #44cc66;
   --acc-miss: #cc4444;
   --acc-crit: #ffcc22;
@@ -10317,7 +10310,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .aoe-chat-card .tier-weak { color: #2ecc71; background: rgba(46,204,113,0.08); }
 .aoe-chat-card .tier-resist { color: #e67e22; background: rgba(230,126,34,0.08); }
 .aoe-chat-card .tier-immune { color: #c0392b; background: rgba(192,57,43,0.08); }
-.aoe-chat-card .tier-absorb { color: #00bcd4; background: rgba(0,188,212,0.08); }
+.aoe-chat-card .tier-absorb { color: #d4a030; background: rgba(212,160,48,0.07); }
 
 .aoe-chat-card .acc-modifier-note { font-size: 10px; color: var(--acc-text-secondary); padding: 1px 0; display: flex; align-items: center; gap: 4px; }
 .aoe-chat-card .acc-modifier-note i { font-size: 10px; opacity: 0.7; }
@@ -10357,14 +10350,14 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
    ═══════════════════════════════════════════════════════════════ */
 
 .stat-check-card {
-  --sc-bg-deep: #0d1117;
-  --sc-bg-panel: #151b23;
-  --sc-bg-surface: #1c2430;
-  --sc-border: #2a3444;
-  --sc-border-mid: #3a4858;
-  --sc-text-primary: #e0e6ed;
-  --sc-text-secondary: #8899aa;
-  --sc-text-dim: #556677;
+  --sc-bg-deep: #16111e;
+  --sc-bg-panel: #1e1828;
+  --sc-bg-surface: #261f30;
+  --sc-border: #3d3250;
+  --sc-border-mid: #4d4268;
+  --sc-text-primary: #ede4d4;
+  --sc-text-secondary: #b8a898;
+  --sc-text-dim: #9a8b7a;
   --sc-pass: #44cc66;
   --sc-fail: #cc4444;
 
@@ -10383,7 +10376,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   background: repeating-linear-gradient(
     0deg,
     transparent 0px, transparent 2px,
-    rgba(0,228,160,0.012) 2px, rgba(0,228,160,0.012) 4px
+    rgba(212,160,48,0.012) 2px, rgba(212,160,48,0.012) 4px
   );
   pointer-events: none;
   z-index: 1;
@@ -10435,18 +10428,18 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .stat-check-card .sc-header-info { flex: 1; min-width: 0; }
 .stat-check-card .sc-actor-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 16px;
   line-height: 1.1;
-  color: #00e4a0;
+  color: #d4a030;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .stat-check-card .sc-opponent-name { color: var(--sc-text-primary); }
 .stat-check-card .sc-action-line {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 11.5px;
   font-weight: 400;
   color: var(--sc-text-secondary);
@@ -10455,7 +10448,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .stat-check-card .sc-stat-badge {
   flex-shrink: 0;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 1.5px;
@@ -10483,7 +10476,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   opacity: 0.6;
 }
 .stat-check-card .sc-context-text {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 11px;
   color: var(--sc-text-dim);
   font-style: italic;
@@ -10517,7 +10510,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .stat-check-card .sc-roll-fail .sc-roll-icon { color: var(--sc-fail); }
 
 .stat-check-card .sc-roll-stat-label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 11px;
   letter-spacing: 1.5px;
@@ -10554,7 +10547,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .stat-check-card .sc-outcome-badge {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 1.5px;
@@ -10586,7 +10579,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   background: var(--sc-bg-deep);
 }
 .stat-check-card .sc-vs-text {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 3px;
@@ -10601,7 +10594,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   justify-content: center;
   gap: 8px;
   padding: 8px 14px;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 13px;
   letter-spacing: 1px;
@@ -10635,7 +10628,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   padding: 8px 12px;
   background: var(--sc-bg-surface);
   border-bottom: 1px solid var(--sc-border);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 11px;
   letter-spacing: 1.5px;
@@ -10650,7 +10643,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 .stat-check-card .sc-formula-section:last-child { border-bottom: none; }
 .stat-check-card .sc-formula-section-label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 500;
   font-size: 9.5px;
   letter-spacing: 1.5px;
@@ -10725,7 +10718,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 12px;
   margin-bottom: 16px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--sc-border, #2a3444);
+  border-bottom: 1px solid var(--sc-border, #3d3250);
 }
 .stat-check-forecast .scf-portrait-wrap {
   width: 48px;
@@ -10733,7 +10726,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   border-radius: 4px;
   overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid rgba(0,228,160,0.3);
+  border: 1px solid rgba(212,160,48,0.25);
 }
 .stat-check-forecast .scf-portrait {
   width: 100%;
@@ -10741,10 +10734,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   object-fit: cover;
 }
 .stat-check-forecast .scf-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 18px;
-  color: #00e4a0;
+  color: #d4a030;
 }
 
 .stat-check-forecast .scf-fields {
@@ -10759,12 +10752,12 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 4px;
 }
 .stat-check-forecast .scf-label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--sc-text-secondary, #8899aa);
+  color: var(--sc-text-secondary, #b8a898);
 }
 .stat-check-forecast .scf-optional {
   font-weight: 400;
@@ -10776,16 +10769,16 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .stat-check-forecast .scf-stat-select,
 .stat-check-forecast .scf-difficulty-select,
 .stat-check-forecast .scf-context-input {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 14px;
   padding: 7px 10px;
-  border: 1px solid var(--sc-border, #2a3444);
+  border: 1px solid var(--sc-border, #3d3250);
   border-radius: 4px;
-  background: var(--sc-bg-deep, #0d1117);
-  color: var(--sc-text-primary, #e0e6ed);
+  background: var(--sc-bg-deep, #16111e);
+  color: var(--sc-text-primary, #ede4d4);
 }
 .stat-check-forecast .scf-context-input::placeholder {
-  color: var(--sc-text-dim, #556677);
+  color: var(--sc-text-dim, #9a8b7a);
   font-style: italic;
 }
 
@@ -10794,29 +10787,29 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   align-items: baseline;
   gap: 10px;
   padding: 10px 14px;
-  background: var(--sc-bg-deep, #0d1117);
-  border: 1px solid var(--sc-border, #2a3444);
+  background: var(--sc-bg-deep, #16111e);
+  border: 1px solid var(--sc-border, #3d3250);
   border-radius: 4px;
   margin-bottom: 10px;
 }
 .stat-check-forecast .scf-preview-label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--sc-text-dim, #556677);
+  color: var(--sc-text-dim, #9a8b7a);
 }
 .stat-check-forecast .scf-preview-value {
   font-family: 'Share Tech Mono', monospace;
   font-size: 26px;
   font-weight: 700;
-  color: #00e4a0;
+  color: #d4a030;
 }
 .stat-check-forecast .scf-preview-formula {
   font-family: 'Share Tech Mono', monospace;
   font-size: 12px;
-  color: var(--sc-text-dim, #556677);
+  color: var(--sc-text-dim, #9a8b7a);
   margin-left: auto;
 }
 
@@ -10828,7 +10821,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   background: rgba(221,170,34,0.08);
   border: 1px solid rgba(221,170,34,0.25);
   border-radius: 3px;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 12px;
   color: #ddaa22;
 }
@@ -10849,7 +10842,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 13px;
   padding: 7px 10px;
   border-radius: 4px;
@@ -10899,18 +10892,18 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   padding: 8px 4px;
 }
 .stat-check-contest-pick p {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 13px;
-  color: var(--sc-text-primary, #e0e6ed);
+  color: var(--sc-text-primary, #ede4d4);
   margin-bottom: 8px;
 }
 .stat-check-contest-pick .scf-contest-context {
   padding: 6px 10px;
-  background: var(--sc-bg-deep, #0d1117);
+  background: var(--sc-bg-deep, #16111e);
   border-radius: 3px;
   margin-bottom: 10px;
   font-size: 12px;
-  color: var(--sc-text-dim, #556677);
+  color: var(--sc-text-dim, #9a8b7a);
 }
 .stat-check-contest-pick .scf-field {
   display: flex;
@@ -10918,21 +10911,21 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 4px;
 }
 .stat-check-contest-pick .scf-field label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 11px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--sc-text-secondary, #8899aa);
+  color: var(--sc-text-secondary, #b8a898);
 }
 .stat-check-contest-pick .scf-contest-stat-select {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 13px;
   padding: 5px 8px;
-  border: 1px solid var(--sc-border, #2a3444);
+  border: 1px solid var(--sc-border, #3d3250);
   border-radius: 3px;
-  background: var(--sc-bg-deep, #0d1117);
-  color: var(--sc-text-primary, #e0e6ed);
+  background: var(--sc-bg-deep, #16111e);
+  color: var(--sc-text-primary, #ede4d4);
 }
 
 
@@ -11018,7 +11011,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .steal-forecast .sf-loot-name {
-  color: var(--manashard-text, #e0e0e0);
+  color: var(--manashard-text, #ede4d4);
 }
 
 .steal-forecast .sf-loot-chance {
@@ -11089,6 +11082,155 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   color: #2ecc71;
 }
 
+/* ─── Loot Result Chat Card ─── */
+
+.loot-card .acc-target-loot {
+  background: linear-gradient(135deg, #d4a017 0%, #f1c40f 100%);
+  color: #2c3e50;
+  font-size: 13px;
+  width: 28px; height: 28px;
+}
+
+.loot-eiress-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(241, 196, 15, 0.1);
+  border: 1px solid rgba(241, 196, 15, 0.2);
+  border-radius: 4px;
+  margin: 6px 8px;
+}
+
+.loot-eiress-icon {
+  color: #f1c40f;
+  font-size: 14px;
+}
+
+.loot-eiress-amount {
+  font-weight: 600;
+  color: #f1c40f;
+  font-size: 13px;
+}
+
+.loot-eiress-breakdown {
+  color: #95a5a6;
+  font-size: 11px;
+  margin-left: auto;
+}
+
+.loot-section {
+  margin: 6px 8px;
+}
+
+.loot-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #95a5a6;
+}
+
+.loot-section-header i {
+  font-size: 10px;
+}
+
+.loot-member-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  margin: 2px 0;
+  font-size: 12px;
+}
+
+.loot-member-portrait {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+.loot-member-name {
+  font-weight: 600;
+  color: #ecf0f1;
+  min-width: 60px;
+}
+
+.loot-win-row {
+  background: rgba(46, 204, 113, 0.08);
+}
+
+.loot-item-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.loot-item-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.loot-miss-row {
+  opacity: 0.5;
+}
+
+.loot-miss-text {
+  font-style: italic;
+  color: #7f8c8d;
+}
+
+.loot-member-row .acc-roll-dice {
+  margin-left: auto;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.loot-card .loot-apply-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #d4a017 0%, #f1c40f 100%);
+  color: #2c3e50;
+  border: 1px solid rgba(241, 196, 15, 0.4);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.15s ease;
+}
+
+.loot-card .loot-apply-btn:hover {
+  background: linear-gradient(135deg, #f1c40f 0%, #f9d62e 100%);
+  box-shadow: 0 2px 8px rgba(212, 160, 23, 0.3);
+}
+
+.loot-card .loot-apply-btn.applied,
+.loot-card .loot-apply-btn:disabled {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  border-color: rgba(52, 73, 94, 0.5);
+  color: #7f8c8d;
+  cursor: default;
+}
+
+.loot-card .loot-apply-btn.applied i {
+  color: #2ecc71;
+}
+
 /* ─── Trigger Chat Card ─── */
 
 .trigger-card .acc-target-trigger {
@@ -11131,9 +11273,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .combat-forecast .cf-element-badge.absorbed {
-  color: #00bcd4;
-  background: rgba(0, 188, 212, 0.15);
-  border: 1px solid rgba(0, 188, 212, 0.3);
+  color: #d4a030;
+  background: rgba(212, 160, 48, 0.13);
+  border: 1px solid rgba(212, 160, 48, 0.25);
 }
 
 /* Damage type indicator */
@@ -11173,16 +11315,16 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .combat-forecast .cf-chant-btn:hover {
-  background: rgba(108, 92, 231, 0.15);
-  border-color: rgba(108, 92, 231, 0.3);
+  background: rgba(212, 160, 48, 0.15);
+  border-color: rgba(212, 160, 48, 0.3);
   color: #bbb;
 }
 
 .combat-forecast .cf-chant-btn.active {
-  background: rgba(108, 92, 231, 0.25);
-  border-color: rgba(108, 92, 231, 0.5);
+  background: rgba(212, 160, 48, 0.25);
+  border-color: rgba(212, 160, 48, 0.5);
   color: #fff;
-  box-shadow: 0 0 8px rgba(108, 92, 231, 0.3);
+  box-shadow: 0 0 6px rgba(212, 160, 48, 0.3);
 }
 
 .combat-forecast .cf-chant-btn.chant-swift.active {
@@ -11701,6 +11843,53 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   background: #27ae60;
 }
 
+.ctb-btn--go.ctb-hand-raised {
+  background: #e67e22;
+  animation: ctb-hand-pulse 1.5s ease-in-out infinite;
+}
+
+.ctb-btn--go.ctb-hand-raised:hover {
+  background: #d35400;
+}
+
+/* ─── Raise Hand Button (Player) ─── */
+
+.ctb-btn--hand {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  color: #888;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.ctb-btn--hand:hover {
+  color: #e67e22;
+  background: rgba(230, 126, 34, 0.15);
+}
+
+.ctb-btn--hand.ctb-hand-raised {
+  color: #e67e22;
+  background: rgba(230, 126, 34, 0.2);
+  animation: ctb-hand-pulse 1.5s ease-in-out infinite;
+}
+
+.ctb-hand-raised-icon {
+  color: #e67e22;
+  animation: ctb-hand-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ctb-hand-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 /* ─── Selection Prompt ─── */
 .ctb-selection-prompt {
   display: flex;
@@ -11783,7 +11972,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   flex: 1;
   text-align: center;
   font-weight: 600;
-  background: rgba(108, 92, 231, 0.2);
+  background: rgba(212, 160, 48, 0.2);
   border-color: var(--manashard-accent);
   color: var(--manashard-accent-light);
 }
@@ -11854,9 +12043,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* Active combatant (current turn) */
 .ctb-timeline-entry--active {
-  background: rgba(108, 92, 231, 0.15);
+  background: rgba(212, 160, 48, 0.15);
   border: 1px solid var(--manashard-accent);
-  box-shadow: 0 0 8px var(--manashard-accent-glow);
+  box-shadow: 0 0 6px var(--manashard-accent-glow);
 }
 
 .ctb-timeline-entry--active .ctb-entry-name {
@@ -11976,7 +12165,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   background: var(--manashard-accent);
   border-color: var(--manashard-accent);
   color: #fff;
-  box-shadow: 0 0 6px var(--manashard-accent-glow);
+  box-shadow: 0 0 4px var(--manashard-accent-glow);
 }
 
 .ctb-action-btn:hover i {
@@ -12353,7 +12542,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 4px;
   padding: 0 12px 6px;
   font-size: 11px;
-  color: #667788;
+  color: #9a8b7a;
 }
 
 .attack-chat-card .acc-target-line .acc-target-arrow {
@@ -12390,8 +12579,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 12px;
-  font-size: 18px;
+  padding: 8px 12px;
+  font-size: 14px;
   font-weight: 900;
   font-family: var(--manashard-font-heading);
   text-transform: uppercase;
@@ -12408,7 +12597,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* Enhanced crit damage */
 .attack-chat-card .acc-crit-damage .acc-damage-value {
-  font-size: 2.4em;
+  font-size: 34px;
   animation: damageSlam 0.4s ease-out;
   background: linear-gradient(90deg, #f39c12, #f1c40f, #f39c12);
   background-size: 200% auto;
@@ -12724,7 +12913,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 6px;
   padding: 4px 12px 6px;
   font-size: 11px;
-  color: #667788;
+  color: #9a8b7a;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -12801,10 +12990,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
-  background: linear-gradient(135deg, rgba(108, 92, 231, 0.15) 0%, rgba(108, 92, 231, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(212, 160, 48, 0.15) 0%, rgba(212, 160, 48, 0.08) 100%);
   border: 1px solid var(--manashard-accent);
   border-radius: 6px;
-  box-shadow: 0 0 12px var(--manashard-accent-glow);
+  box-shadow: 0 0 8px var(--manashard-accent-glow);
   animation: slideInUp 0.2s ease-out;
 }
 
@@ -12815,7 +13004,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   border-radius: 6px;
   overflow: hidden;
   border: 2px solid var(--manashard-accent);
-  box-shadow: 0 0 8px var(--manashard-accent-glow);
+  box-shadow: 0 0 6px var(--manashard-accent-glow);
 }
 
 .ctb-hero-portrait img {
@@ -13221,7 +13410,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-size: 9px;
   vertical-align: middle;
 }
-.ctb-role-badge.role-minion { color: #667788; }
+.ctb-role-badge.role-minion { color: #9a8b7a; }
 .ctb-role-badge.role-standard { color: #99aabb; }
 .ctb-role-badge.role-elite { color: #4488ee; }
 .ctb-role-badge.role-boss { color: #f1c40f; }
@@ -13324,13 +13513,13 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .manashard.objective-card {
   --acc-accent: #8899aa;
-  --acc-bg-panel: #151b23;
-  --acc-bg-surface: #1c2430;
-  --acc-bg-deep: #0d1117;
-  --acc-border: #2a3444;
-  --acc-text: #e0e6ed;
-  --acc-text-secondary: #8899aa;
-  --acc-text-dim: #556677;
+  --acc-bg-panel: #1e1828;
+  --acc-bg-surface: #261f30;
+  --acc-bg-deep: #16111e;
+  --acc-border: #3d3250;
+  --acc-text: #ede4d4;
+  --acc-text-secondary: #b8a898;
+  --acc-text-dim: #9a8b7a;
 
   border-radius: 3px;
   overflow: hidden;
@@ -13656,7 +13845,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   flex-direction: column;
   gap: 6px;
   padding: 8px;
-  background: rgba(108, 92, 231, 0.06);
+  background: rgba(212, 160, 48, 0.06);
   border: 1px solid var(--manashard-border);
   border-radius: 5px;
   margin-bottom: 6px;
@@ -13886,14 +14075,14 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
    ═══════════════════════════════════════════════════════════════ */
 
 .manashard.charge-card {
-  --acc-accent: var(--manashard-teal, #00e4a0);
-  --acc-bg-panel: #151b23;
-  --acc-bg-surface: #1c2430;
-  --acc-bg-deep: #0d1117;
-  --acc-border: #2a3444;
-  --acc-text: #e0e6ed;
-  --acc-text-secondary: #8899aa;
-  --acc-text-dim: #556677;
+  --acc-accent: var(--manashard-accent, #d4a030);
+  --acc-bg-panel: #1e1828;
+  --acc-bg-surface: #261f30;
+  --acc-bg-deep: #16111e;
+  --acc-border: #3d3250;
+  --acc-text: #ede4d4;
+  --acc-text-secondary: #b8a898;
+  --acc-text-dim: #9a8b7a;
 
   border-radius: 3px;
   overflow: hidden;
@@ -13909,7 +14098,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   content: '';
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,228,160,0.012) 2px, rgba(0,228,160,0.012) 4px);
+  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(212,160,48,0.012) 2px, rgba(212,160,48,0.012) 4px);
   pointer-events: none;
   z-index: 1;
 }
@@ -14315,13 +14504,13 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .manashard.status-removal-card {
   --acc-accent: #8899aa;
-  --acc-bg-panel: #151b23;
-  --acc-bg-surface: #1c2430;
-  --acc-bg-deep: #0d1117;
-  --acc-border: #2a3444;
-  --acc-text: #e0e6ed;
-  --acc-text-secondary: #8899aa;
-  --acc-text-dim: #556677;
+  --acc-bg-panel: #1e1828;
+  --acc-bg-surface: #261f30;
+  --acc-bg-deep: #16111e;
+  --acc-border: #3d3250;
+  --acc-text: #ede4d4;
+  --acc-text-secondary: #b8a898;
+  --acc-text-dim: #9a8b7a;
 
   border-radius: 3px;
   overflow: hidden;
@@ -14577,7 +14766,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard.species-sheet .job-sheet-body select:hover,
 .manashard.species-sheet .job-config-panel select:hover {
   border-color: var(--manashard-accent);
-  background: rgba(108, 92, 231, 0.08);
+  background: rgba(212, 160, 48, 0.08);
 }
 
 .manashard.species-sheet .job-sheet-body input[type="number"],
@@ -14686,7 +14875,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 8px;
   padding: 6px 10px;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(212, 160, 48, 0.15);
   border-radius: 4px;
   margin-bottom: 4px;
 }
@@ -14735,7 +14924,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   letter-spacing: 1px;
   color: var(--manashard-accent-light);
   border-left: 3px solid var(--manashard-accent);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
   background: rgba(0, 0, 0, 0.5);
 }
 
@@ -14743,7 +14932,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-family: var(--manashard-font-body);
   font-size: 9px;
   font-weight: 700;
-  background: rgba(108, 92, 231, 0.25);
+  background: rgba(212, 160, 48, 0.25);
   color: var(--manashard-accent-light);
   padding: 1px 6px;
   border-radius: 8px;
@@ -14852,7 +15041,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   justify-content: space-between;
   padding: 5px 10px;
   border-left: 3px solid var(--manashard-accent);
-  border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+  border-bottom: 1px solid rgba(212, 160, 48, 0.2);
   background: rgba(0, 0, 0, 0.5);
   margin-bottom: 4px;
 }
@@ -14879,7 +15068,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .jewel-case-tray {
-  background: linear-gradient(135deg, #1a0a2e 0%, #0d1117 100%);
+  background: linear-gradient(135deg, #1a0a2e 0%, #16111e 100%);
   border: 1px solid rgba(255, 215, 0, 0.12);
   border-radius: 8px;
   padding: 12px;
@@ -15176,9 +15365,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* Free (signature) skill in card grid */
 .manashard .skill-grid-card.loadout-slot-free {
-  border-color: rgba(0, 228, 160, 0.3);
-  border-left: 3px solid rgba(0, 228, 160, 0.6);
-  background: rgba(0, 228, 160, 0.04);
+  border-color: rgba(212, 160, 48, 0.25);
+  border-left: 3px solid rgba(212, 160, 48, 0.5);
+  background: rgba(212, 160, 48, 0.04);
 }
 .manashard .skill-grid-card.loadout-slot-free .remove-button {
   display: none;
@@ -15186,8 +15375,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* In-loadout indicator for library cards */
 .manashard .skill-grid-card.in-loadout {
-  border-color: rgba(0, 228, 160, 0.2);
-  background: rgba(0, 228, 160, 0.03);
+  border-color: rgba(212, 160, 48, 0.18);
+  background: rgba(212, 160, 48, 0.03);
 }
 
 
@@ -15424,7 +15613,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   padding: 5px 10px;
   font-size: 12px;
   font-weight: 600;
-  font-family: "Rajdhani", "Exo 2", sans-serif;
+  font-family: "Cinzel", "Alegreya Sans", serif;
   text-transform: uppercase;
   letter-spacing: 0.03em;
   color: #fff;
@@ -15705,7 +15894,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   align-items: center;
   gap: 6px;
   padding: 6px 8px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 70%, #0f3460 100%);
+  background: linear-gradient(135deg, #1a1520 0%, #211b2a 70%, #2a2335 100%);
   border-bottom: 1px solid rgba(77, 166, 255, 0.15);
   cursor: grab;
   user-select: none;
@@ -15732,7 +15921,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .party-comp-panel .pcp-round {
   font-size: 10px;
   font-weight: 600;
-  color: #667788;
+  color: #9a8b7a;
   background: rgba(255, 255, 255, 0.06);
   padding: 1px 5px;
   border-radius: 3px;
@@ -15741,7 +15930,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .party-comp-panel .pcp-btn {
   background: none;
   border: none;
-  color: #667788;
+  color: #9a8b7a;
   font-size: 10px;
   cursor: pointer;
   padding: 2px 4px;
@@ -16033,7 +16222,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,228,160,0.007) 2px, rgba(0,228,160,0.007) 4px);
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(212,160,48,0.007) 2px, rgba(212,160,48,0.007) 4px);
   pointer-events: none;
   z-index: 100;
 }
@@ -16051,13 +16240,13 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   background: var(--manashard-bg-dark);
   border-right: 1px solid var(--manashard-border);
   scrollbar-width: thin;
-  scrollbar-color: rgba(0,228,160,0.2) transparent;
+  scrollbar-color: rgba(212,160,48,0.18) transparent;
   min-width: 0;
 }
 
 .lh-sidebar::-webkit-scrollbar { width: 4px; }
 .lh-sidebar::-webkit-scrollbar-track { background: transparent; }
-.lh-sidebar::-webkit-scrollbar-thumb { background: rgba(0,228,160,0.2); border-radius: 2px; }
+.lh-sidebar::-webkit-scrollbar-thumb { background: rgba(212,160,48,0.18); border-radius: 2px; }
 
 /* ============ HEADER BAR (thin top bar) ============ */
 .manashard.actor.sheet.adv-layout .lh-header-hidden {
@@ -16127,12 +16316,12 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   background: var(--manashard-bg-mid);
   border-top: 1px solid var(--manashard-border);
   scrollbar-width: thin;
-  scrollbar-color: rgba(0,228,160,0.2) transparent;
+  scrollbar-color: rgba(212,160,48,0.18) transparent;
 }
 
 .manashard.actor.sheet.adv-layout .tab-content::-webkit-scrollbar { width: 4px; }
 .manashard.actor.sheet.adv-layout .tab-content::-webkit-scrollbar-track { background: transparent; }
-.manashard.actor.sheet.adv-layout .tab-content::-webkit-scrollbar-thumb { background: rgba(0,228,160,0.2); border-radius: 2px; }
+.manashard.actor.sheet.adv-layout .tab-content::-webkit-scrollbar-thumb { background: rgba(212,160,48,0.18); border-radius: 2px; }
 
 /* ============ PANEL SYSTEM ============ */
 .ms-panel {
@@ -16216,7 +16405,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 8px rgba(0,228,160,0.15);
+  box-shadow: 0 0 6px rgba(212,160,48,0.13);
   overflow: hidden;
 }
 .lh-class-diamond-inner {
@@ -16252,7 +16441,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   border: 2px solid var(--manashard-border-glow);
   background: var(--manashard-bg-panel-inner);
   overflow: hidden;
-  box-shadow: 0 0 16px rgba(0,228,160,0.15), inset 0 0 20px rgba(0,228,160,0.05);
+  box-shadow: 0 0 11px rgba(212,160,48,0.13), inset 0 0 14px rgba(212,160,48,0.05);
 }
 
 .lh-diamond-frame::before {
@@ -16759,7 +16948,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 .lh-cm-cell.highlight {
   border-color: var(--manashard-border-glow-dim);
-  background: rgba(0,228,160,0.03);
+  background: rgba(212,160,48,0.03);
 }
 
 .lh-cm-val {
@@ -16851,7 +17040,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .lh-status-badge.active {
   color: var(--manashard-border-glow);
   border-color: var(--manashard-border-glow-dim);
-  background: rgba(0,228,160,0.05);
+  background: rgba(212,160,48,0.05);
 }
 .lh-status-badge.inactive:hover {
   border-color: var(--manashard-text-muted);
@@ -16919,7 +17108,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   text-transform: uppercase;
   padding: 1px 4px;
   border: 1px solid var(--manashard-border-glow-dim);
-  background: rgba(0,228,160,0.05);
+  background: rgba(212,160,48,0.05);
 }
 
 .lh-rule-label {
@@ -17013,8 +17202,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 .manashard.actor.sheet.adv-layout .loadout-slot--filled {
   border-color: var(--manashard-border-glow);
-  background: rgba(0,228,160,0.08);
-  box-shadow: 0 0 6px rgba(0,228,160,0.2);
+  background: rgba(212,160,48,0.07);
+  box-shadow: 0 0 4px rgba(212,160,48,0.18);
 }
 
 /* Inventory grid */
@@ -17145,7 +17334,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 .manashard.actor.sheet.adv-layout .combat-card-action:hover {
   color: var(--manashard-border-glow-bright);
-  text-shadow: 0 0 8px rgba(0,228,160,0.4);
+  text-shadow: 0 0 8px rgba(212,160,48,0.35);
 }
 
 /* Combat status badges */
@@ -17155,7 +17344,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   letter-spacing: 1px;
   padding: 2px 8px;
   border: 1px solid var(--manashard-border-glow-dim);
-  background: rgba(0,228,160,0.05);
+  background: rgba(212,160,48,0.05);
   color: var(--manashard-border-glow);
 }
 
@@ -18000,6 +18189,17 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   background: rgba(255,204,34,0.06);
 }
 
+.hu-loot-sort-btn {
+  color: var(--hu-text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  margin-left: 6px;
+  font-size: 11px;
+  transition: color 0.2s;
+}
+.hu-loot-sort-btn:hover {
+  color: var(--hu-glow);
+}
 .hu-loot-remove-btn {
   color: var(--hu-text-muted);
   cursor: pointer;
@@ -18097,9 +18297,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ============ CONTEXT MENU ============ */
 .ms-context-menu {
-  background: var(--manashard-bg-mid, #0b1216);
-  border: 1px solid var(--manashard-border, #1a2a32);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.6), 0 0 8px rgba(0,228,160,0.1);
+  background: var(--manashard-bg-mid, #211b2a);
+  border: 1px solid var(--manashard-border, #3d3250);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6), 0 0 6px rgba(212,160,48,0.09);
   min-width: 140px;
   padding: 4px 0;
   font-family: var(--manashard-font-body, 'Exo 2', sans-serif);
@@ -18110,14 +18310,14 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   align-items: center;
   gap: 8px;
   padding: 6px 14px;
-  color: var(--manashard-text, #e0f0ea);
+  color: var(--manashard-text, #ede4d4);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
   text-decoration: none;
 }
 .ms-ctx-option:hover {
-  background: var(--manashard-bg-panel-hover, #162228);
-  color: var(--manashard-border-glow, #00e4a0);
+  background: var(--manashard-bg-panel-hover, #2a2335);
+  color: var(--manashard-border-glow, #d4a030);
 }
 .ms-ctx-option i { width: 14px; text-align: center; }
 .ms-ctx-danger:hover {
@@ -18127,15 +18327,15 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ============ INFO TOOLTIP ============ */
 .ms-info-tooltip {
-  background: #0b1216;
-  border: 1px solid #1a2a32;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.7), 0 0 10px rgba(0,228,160,0.08);
+  background: #211b2a;
+  border: 1px solid #3d3250;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.7), 0 0 7px rgba(212,160,48,0.07);
   padding: 10px 12px;
   min-width: 160px;
   max-width: 340px;
   pointer-events: none;
   position: relative;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
 }
 /* Corner brackets */
 .ms-info-tooltip::before, .ms-info-tooltip::after {
@@ -18143,7 +18343,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   position: absolute;
   width: 8px;
   height: 8px;
-  border-color: #00e4a0;
+  border-color: #d4a030;
   border-style: solid;
   pointer-events: none;
 }
@@ -18161,7 +18361,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   width: 32px;
   height: 32px;
   object-fit: cover;
-  border: 1px solid #1a2a32;
+  border: 1px solid #3d3250;
   flex-shrink: 0;
 }
 .ms-tt-title-col {
@@ -18171,10 +18371,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   min-width: 0;
 }
 .ms-tt-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-size: 14px;
   font-weight: 700;
-  color: #e0f0ea;
+  color: #ede4d4;
   line-height: 1.1;
   white-space: nowrap;
   overflow: hidden;
@@ -18182,14 +18382,14 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 .ms-tt-type {
   font-size: 9px;
-  color: #7a9a8e;
+  color: #b8a898;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 .ms-tt-formula {
   font-family: 'Share Tech Mono', monospace;
   font-size: 10px;
-  color: #00e4a0;
+  color: #d4a030;
   letter-spacing: 0.5px;
   opacity: 0.8;
 }
@@ -18200,7 +18400,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   flex-direction: column;
   gap: 2px;
   padding: 6px 0;
-  border-top: 1px solid rgba(26,42,50,0.6);
+  border-top: 1px solid rgba(61,50,80,0.6);
 }
 .ms-tt-stat {
   display: flex;
@@ -18209,19 +18409,19 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 12px;
 }
 .ms-tt-stat-lbl {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-size: 10px;
-  color: #7a9a8e;
+  color: #b8a898;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 .ms-tt-stat-val {
   font-family: 'Share Tech Mono', monospace;
   font-size: 12px;
-  color: #e0f0ea;
+  color: #ede4d4;
   font-weight: 600;
 }
-.ms-tt-stat-val.ms-tt-bright { color: #00ffb3; }
+.ms-tt-stat-val.ms-tt-bright { color: #e8b84b; }
 .ms-tt-stat-val.ms-tt-positive { color: #22cc66; }
 .ms-tt-stat-val.ms-tt-negative { color: #e74c3c; }
 
@@ -18238,10 +18438,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 /* Description */
 .ms-tt-desc {
   font-size: 11px;
-  color: #7a9a8e;
+  color: #b8a898;
   line-height: 1.4;
   padding-top: 4px;
-  border-top: 1px solid rgba(26,42,50,0.6);
+  border-top: 1px solid rgba(61,50,80,0.6);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -18251,7 +18451,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 /* Source badge */
 .ms-tt-source {
   font-size: 9px;
-  color: #00e4a0;
+  color: #d4a030;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-top: 4px;
@@ -18269,7 +18469,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .ms-tt-socket-name {
   font-family: 'Share Tech Mono', monospace;
   font-size: 10px;
-  color: #00e4a0;
+  color: #d4a030;
   padding-left: 8px;
 }
 
@@ -18573,9 +18773,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .acc-tt-slot-diamond.filled {
-  border-color: #00e4a0;
-  background: rgba(0, 228, 160, 0.08);
-  box-shadow: 0 0 5px rgba(0, 228, 160, 0.2);
+  border-color: #d4a030;
+  background: rgba(212, 160, 48, 0.07);
+  box-shadow: 0 0 4px rgba(212, 160, 48, 0.18);
 }
 
 .manashard .acc-tt-slot-label {
@@ -18585,7 +18785,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .acc-tt-slot-label.filled {
-  color: #00e4a0;
+  color: #d4a030;
 }
 
 .manashard .acc-tt-slot-label.empty {
@@ -18772,7 +18972,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   --acc-accent-bright: #aabbcc;
   --acc-stat-bonus: #4ecdc4;
   --acc-passive-text: #bbaa66;
-  --acc-effect-glow: #00e4a0;
+  --acc-effect-glow: #d4a030;
   --armor-cat-cloth: #66ddaa;
   --armor-cat-light: #4488ee;
   --armor-cat-heavy: #ee8844;
@@ -19734,8 +19934,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 6px;
   width: 100%;
   padding: 8px;
-  background: rgba(0, 228, 160, 0.08);
-  border: 1px solid rgba(0, 228, 160, 0.25);
+  background: rgba(212, 160, 48, 0.07);
+  border: 1px solid rgba(212, 160, 48, 0.22);
   color: var(--manashard-accent);
   font-family: var(--manashard-font-mono);
   font-size: 11px;
@@ -19747,9 +19947,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .manashard .con-tt-use-btn:hover {
-  background: rgba(0, 228, 160, 0.15);
-  border-color: rgba(0, 228, 160, 0.5);
-  box-shadow: 0 0 8px rgba(0, 228, 160, 0.15);
+  background: rgba(212, 160, 48, 0.13);
+  border-color: rgba(212, 160, 48, 0.45);
+  box-shadow: 0 0 6px rgba(212, 160, 48, 0.13);
 }
 
 .manashard .con-tt-use-btn:disabled {
@@ -19880,21 +20080,21 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
    ═══════════════════════════════════════════════════════════════ */
 
 .item-chat-card {
-  --ic-bg-panel: #151b23;
-  --ic-bg-surface: #1c2430;
-  --ic-bg-deep: #0d1117;
-  --ic-border: #2a3444;
-  --ic-border-mid: #3a4858;
-  --ic-text-primary: #e0e6ed;
-  --ic-text-secondary: #8899aa;
-  --ic-text-dim: #556677;
+  --ic-bg-panel: #1e1828;
+  --ic-bg-surface: #261f30;
+  --ic-bg-deep: #16111e;
+  --ic-border: #3d3250;
+  --ic-border-mid: #4d4268;
+  --ic-text-primary: #ede4d4;
+  --ic-text-secondary: #b8a898;
+  --ic-text-dim: #9a8b7a;
   width: 100%;
   background: var(--ic-bg-panel);
   border: 1px solid var(--ic-border);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
 }
 
 /* Top rarity stripe */
@@ -19907,36 +20107,24 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   z-index: 2;
 }
 
-/* Scanline overlay */
-.item-chat-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0px, transparent 2px,
-    rgba(136,153,170,0.008) 2px, rgba(136,153,170,0.008) 4px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
+/* Scanline overlay removed for cleaner look */
 
 /* ─── Header ─── */
 .item-chat-card .ic-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px 10px;
+  gap: 10px;
+  padding: 10px 12px 8px;
   background: linear-gradient(135deg, var(--ic-bg-surface) 0%, var(--ic-bg-panel) 100%);
   border-bottom: 1px solid var(--ic-border);
 }
 
 /* Icon frame — square default */
 .item-chat-card .ic-icon-frame {
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
   flex-shrink: 0;
-  border: 1.5px solid var(--ic-rarity);
+  border: 1px solid var(--ic-rarity);
   box-shadow: 0 0 8px color-mix(in srgb, var(--ic-rarity) 25%, transparent);
   background: var(--ic-bg-deep);
   display: flex;
@@ -19956,9 +20144,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 /* Diamond frame for manacite */
 .item-chat-card .ic-icon-frame.diamond {
   transform: rotate(45deg);
-  width: 40px;
-  height: 40px;
-  margin: 4px;
+  width: 32px;
+  height: 32px;
+  margin: 3px;
 }
 .item-chat-card .ic-icon-frame.diamond .ic-diamond-inner {
   transform: rotate(-45deg);
@@ -19975,9 +20163,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   min-width: 0;
 }
 .item-chat-card .ic-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.1;
   white-space: nowrap;
   overflow: hidden;
@@ -19991,7 +20179,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   flex-wrap: wrap;
 }
 .item-chat-card .ic-rarity-badge {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 1px;
@@ -20013,7 +20201,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ─── Stats Zone ─── */
 .item-chat-card .ic-stats {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--ic-border);
   display: flex;
   flex-wrap: wrap;
@@ -20110,7 +20298,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   opacity: 0.7;
 }
 .item-chat-card .ic-effect-text {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 11.5px;
   color: var(--ic-text-secondary);
   line-height: 1.4;
@@ -20122,39 +20310,15 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ─── Description ─── */
 .item-chat-card .ic-description {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--ic-border);
   position: relative;
 }
-/* Corner brackets */
-.item-chat-card .ic-description::before,
-.item-chat-card .ic-description::after {
-  content: '';
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-color: var(--ic-text-dim);
-  border-style: solid;
-  opacity: 0.3;
-}
-.item-chat-card .ic-description::before { top: 6px; left: 8px; border-width: 1.5px 0 0 1.5px; }
-.item-chat-card .ic-description::after  { top: 6px; right: 8px; border-width: 1.5px 1.5px 0 0; }
+/* Corner brackets removed for cleaner look */
 .item-chat-card .ic-desc-inner { position: relative; }
-.item-chat-card .ic-desc-inner::before,
-.item-chat-card .ic-desc-inner::after {
-  content: '';
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-color: var(--ic-text-dim);
-  border-style: solid;
-  opacity: 0.3;
-}
-.item-chat-card .ic-desc-inner::before { bottom: -4px; left: -6px; border-width: 0 0 1.5px 1.5px; }
-.item-chat-card .ic-desc-inner::after  { bottom: -4px; right: -6px; border-width: 0 1.5px 1.5px 0; }
 
 .item-chat-card .ic-flavor {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 11.5px;
   font-style: italic;
   color: var(--ic-text-dim);
@@ -20163,19 +20327,19 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* ─── Apply Button ─── */
 .item-chat-card .ic-apply-row {
-  padding: 8px 14px;
+  padding: 6px 10px;
   border-bottom: 1px solid var(--ic-border);
 }
 .item-chat-card .item-card-apply {
   width: 100%;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border: 1px solid var(--ic-border-mid);
   border-radius: 3px;
   background: linear-gradient(180deg, var(--ic-bg-surface) 0%, var(--ic-bg-panel) 100%);
   color: var(--ic-text-primary);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
@@ -20186,7 +20350,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   gap: 6px;
 }
 .item-chat-card .item-card-apply:hover {
-  background: linear-gradient(180deg, #263040 0%, var(--ic-bg-surface) 100%);
+  background: linear-gradient(180deg, #302840 0%, var(--ic-bg-surface) 100%);
   border-color: var(--ic-rarity);
   color: var(--ic-rarity);
   box-shadow: 0 0 8px color-mix(in srgb, var(--ic-rarity) 20%, transparent);
@@ -20204,10 +20368,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   color: #44cc66;
 }
 
-/* ─── Footer ─── */
+/* ─── Footer (hidden — redundant with Foundry chat header) ─── */
 .item-chat-card .ic-footer {
+  display: none;
   padding: 6px 14px;
-  display: flex;
   align-items: center;
   gap: 6px;
 }
@@ -20219,10 +20383,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   opacity: 0.6;
 }
 .item-chat-card .ic-footer-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 500;
   font-size: 11px;
-  color: #00e4a0;
+  color: #d4a030;
   letter-spacing: 0.5px;
 }
 
@@ -20291,9 +20455,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-size: 9px;
   padding: 1px 5px;
   border-radius: 2px;
-  background: rgba(0, 228, 160, 0.15);
+  background: rgba(212, 160, 48, 0.13);
   color: var(--manashard-accent);
-  border: 1px solid rgba(0, 228, 160, 0.3);
+  border: 1px solid rgba(212, 160, 48, 0.25);
   font-weight: bold;
   letter-spacing: 0.5px;
 }
@@ -20399,8 +20563,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 .manashard .skill-loadout-zone.drop-target-highlight {
   border-color: var(--manashard-accent);
-  background: rgba(0, 228, 160, 0.05);
-  box-shadow: inset 0 0 12px rgba(0, 228, 160, 0.1);
+  background: rgba(212, 160, 48, 0.05);
+  box-shadow: inset 0 0 8px rgba(212, 160, 48, 0.09);
 }
 .manashard .loadout-slot .remove-button {
   color: var(--manashard-text-dim);
@@ -20428,9 +20592,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* Free (signature) skill card in loadout */
 .manashard .loadout-slot.loadout-slot-free {
-  border-color: rgba(0, 228, 160, 0.35);
-  border-left: 3px solid rgba(0, 228, 160, 0.6);
-  background: rgba(0, 228, 160, 0.04);
+  border-color: rgba(212, 160, 48, 0.30);
+  border-left: 3px solid rgba(212, 160, 48, 0.5);
+  background: rgba(212, 160, 48, 0.04);
 }
 .manashard .loadout-slot.loadout-slot-free .skill-grid-card-name .loadout-free-badge {
   margin-left: 4px;
@@ -20464,8 +20628,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   border-color: var(--manashard-accent);
 }
 .manashard .library-skill-card.in-loadout {
-  border-color: rgba(0, 228, 160, 0.4);
-  background: rgba(0, 228, 160, 0.05);
+  border-color: rgba(212, 160, 48, 0.35);
+  background: rgba(212, 160, 48, 0.05);
 }
 .manashard .library-skill-card.skill-gem-magic { border-left: 3px solid rgba(78, 205, 196, 0.6); }
 .manashard .library-skill-card.skill-gem-art { border-left: 3px solid rgba(249, 202, 36, 0.6); }
@@ -20559,8 +20723,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   border-radius: 3px;
 }
 .manashard .crystal-entry.crystal-equipped {
-  border-color: rgba(0, 228, 160, 0.3);
-  background: rgba(0, 228, 160, 0.05);
+  border-color: rgba(212, 160, 48, 0.25);
+  background: rgba(212, 160, 48, 0.05);
 }
 .manashard .crystal-img {
   width: 24px;
@@ -20651,20 +20815,20 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .absorption-chat-card {
   --abc-gold: #ffcc22;
   --abc-gold-dim: rgba(255, 204, 34, 0.15);
-  --abc-bg-panel: #151b23;
-  --abc-bg-surface: #1c2430;
-  --abc-bg-deep: #0d1117;
-  --abc-border: #2a3444;
-  --abc-text-primary: #e0e6ed;
-  --abc-text-secondary: #8899aa;
-  --abc-text-dim: #556677;
+  --abc-bg-panel: #1e1828;
+  --abc-bg-surface: #261f30;
+  --abc-bg-deep: #16111e;
+  --abc-border: #3d3250;
+  --abc-text-primary: #ede4d4;
+  --abc-text-secondary: #b8a898;
+  --abc-text-dim: #9a8b7a;
   width: 100%;
   background: var(--abc-bg-panel);
   border: 1px solid var(--abc-border);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
 }
 
 /* Gold top stripe */
@@ -20729,7 +20893,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .absorption-chat-card .abc-actor-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 14px;
   line-height: 1.1;
@@ -20782,7 +20946,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .absorption-chat-card .abc-skill-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 1.1;
@@ -20848,7 +21012,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .absorption-chat-card .abc-stat-value {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 13px;
   color: var(--abc-text-primary);
@@ -20870,6 +21034,261 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 /* =====================================================
+   LEVEL-UP CHAT CARD
+   Shown when a character levels up with stat growth results
+   ===================================================== */
+
+.levelup-chat-card {
+  --luc-cyan: #22cccc;
+  --luc-cyan-dim: rgba(34, 204, 204, 0.15);
+  --luc-green: #44dd66;
+  --luc-green-dim: rgba(68, 221, 102, 0.12);
+  --luc-bg-panel: #1e1828;
+  --luc-bg-surface: #261f30;
+  --luc-bg-deep: #16111e;
+  --luc-border: #3d3250;
+  --luc-text-primary: #ede4d4;
+  --luc-text-secondary: #b8a898;
+  --luc-text-dim: #9a8b7a;
+  width: 100%;
+  background: var(--luc-bg-panel);
+  border: 1px solid var(--luc-border);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  font-family: 'Alegreya Sans', sans-serif;
+}
+
+/* Cyan top stripe */
+.levelup-chat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--luc-cyan), transparent);
+  z-index: 2;
+}
+
+/* Scanline overlay */
+.levelup-chat-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px, transparent 2px,
+    rgba(136,153,170,0.008) 2px, rgba(136,153,170,0.008) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Header ─── */
+.levelup-chat-card .luc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px 8px;
+  background: linear-gradient(135deg, var(--luc-bg-surface) 0%, var(--luc-bg-panel) 100%);
+  border-bottom: 1px solid var(--luc-border);
+}
+
+.levelup-chat-card .luc-portrait-frame {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--luc-cyan);
+  box-shadow: 0 0 8px rgba(34, 204, 204, 0.2);
+  background: var(--luc-bg-deep);
+  overflow: hidden;
+  transform: rotate(45deg);
+}
+
+.levelup-chat-card .luc-portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+  transform: rotate(-45deg) scale(1.42);
+}
+
+.levelup-chat-card .luc-header-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.levelup-chat-card .luc-actor-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.1;
+  color: var(--luc-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.levelup-chat-card .luc-action {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--luc-cyan);
+  text-transform: uppercase;
+}
+
+/* ─── Level Row ─── */
+.levelup-chat-card .luc-level-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--luc-cyan-dim);
+  border-bottom: 1px solid var(--luc-border);
+}
+
+.levelup-chat-card .luc-level-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.levelup-chat-card .luc-old-level {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--luc-text-secondary);
+}
+
+.levelup-chat-card .luc-arrow {
+  font-size: 10px;
+  color: var(--luc-text-dim);
+}
+
+.levelup-chat-card .luc-new-level {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--luc-green);
+  text-shadow: 0 0 8px rgba(68, 221, 102, 0.4);
+}
+
+.levelup-chat-card .luc-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.levelup-chat-card .luc-badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  background: rgba(34, 204, 204, 0.08);
+  border: 1px solid rgba(34, 204, 204, 0.25);
+  color: var(--luc-cyan);
+  text-transform: uppercase;
+}
+
+.levelup-chat-card .luc-badge i {
+  margin-right: 3px;
+  font-size: 8px;
+}
+
+/* ─── Stats Grid ─── */
+.levelup-chat-card .luc-stats {
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--luc-border);
+}
+
+.levelup-chat-card .luc-stat-cell {
+  display: grid;
+  grid-template-columns: 40px 42px 1fr;
+  align-items: center;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(42, 52, 68, 0.5);
+}
+
+.levelup-chat-card .luc-stat-cell:last-child {
+  border-bottom: none;
+}
+
+.levelup-chat-card .luc-stat-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--luc-text-secondary);
+  text-transform: uppercase;
+}
+
+.levelup-chat-card .luc-stat-rate {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--luc-text-dim);
+  text-align: right;
+  padding-right: 8px;
+}
+
+.levelup-chat-card .luc-stat-result {
+  text-align: right;
+}
+
+/* Gain styles */
+.levelup-chat-card .luc-gain {
+  background: var(--luc-green-dim);
+  border-radius: 2px;
+  padding: 3px 4px;
+}
+
+.levelup-chat-card .luc-gain-icon {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--luc-green);
+  text-shadow: 0 0 6px rgba(68, 221, 102, 0.3);
+}
+
+.levelup-chat-card .luc-gain-icon.luc-double {
+  color: #66ff88;
+  text-shadow: 0 0 8px rgba(102, 255, 136, 0.4);
+}
+
+/* Miss styles */
+.levelup-chat-card .luc-miss-icon {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--luc-text-dim);
+}
+
+/* Cap styles */
+.levelup-chat-card .luc-cap-icon {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: var(--luc-text-dim);
+  text-transform: uppercase;
+}
+
+/* ─── Summary footer ─── */
+.levelup-chat-card .luc-confirm {
+  padding: 8px 14px;
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  color: var(--luc-cyan);
+  text-transform: uppercase;
+}
+
+.levelup-chat-card .luc-confirm i {
+  margin-right: 4px;
+}
+
+/* =====================================================
    RETALIATE BUFF CHAT CARD
    Shown when a retaliatory skill is cast (buff applied, no damage yet)
    ===================================================== */
@@ -20877,20 +21296,20 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .retaliate-buff-card {
   --rbc-fire: #ff6633;
   --rbc-fire-dim: rgba(255, 102, 51, 0.15);
-  --rbc-bg-panel: #151b23;
-  --rbc-bg-surface: #1c2430;
-  --rbc-bg-deep: #0d1117;
-  --rbc-border: #2a3444;
-  --rbc-text-primary: #e0e6ed;
-  --rbc-text-secondary: #8899aa;
-  --rbc-text-dim: #556677;
+  --rbc-bg-panel: #1e1828;
+  --rbc-bg-surface: #261f30;
+  --rbc-bg-deep: #16111e;
+  --rbc-border: #3d3250;
+  --rbc-text-primary: #ede4d4;
+  --rbc-text-secondary: #b8a898;
+  --rbc-text-dim: #9a8b7a;
   width: 100%;
   background: var(--rbc-bg-panel);
   border: 1px solid var(--rbc-border);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
 }
 
 /* Fire top stripe */
@@ -20955,7 +21374,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .retaliate-buff-card .rbc-actor-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 14px;
   line-height: 1.1;
@@ -21021,7 +21440,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .retaliate-buff-card .rbc-skill-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 1.1;
@@ -21077,7 +21496,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .retaliate-buff-card .rbc-effect-value {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 13px;
   color: var(--rbc-text-primary);
@@ -21106,20 +21525,20 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .retaliation-chat-card {
   --ret-fire: #ff6633;
   --ret-fire-dim: rgba(255, 102, 51, 0.15);
-  --ret-bg-panel: #151b23;
-  --ret-bg-surface: #1c2430;
-  --ret-bg-deep: #0d1117;
-  --ret-border: #2a3444;
-  --ret-text-primary: #e0e6ed;
-  --ret-text-secondary: #8899aa;
-  --ret-text-dim: #556677;
+  --ret-bg-panel: #1e1828;
+  --ret-bg-surface: #261f30;
+  --ret-bg-deep: #16111e;
+  --ret-border: #3d3250;
+  --ret-text-primary: #ede4d4;
+  --ret-text-secondary: #b8a898;
+  --ret-text-dim: #9a8b7a;
   width: 100%;
   background: var(--ret-bg-panel);
   border: 1px solid var(--ret-border);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Alegreya Sans', sans-serif;
 }
 
 /* Fire top stripe */
@@ -21184,7 +21603,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .retaliation-chat-card .ret-actor-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 14px;
   line-height: 1.1;
@@ -21220,7 +21639,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .retaliation-chat-card .ret-damage-value {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 28px;
   line-height: 1;
@@ -21293,7 +21712,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 }
 
 .retaliation-chat-card .ret-target-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 13px;
   color: var(--ret-text-primary);
@@ -21532,12 +21951,12 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   z-index: 2;
 }
 
-/* ============ DETAIL ROW (EXP/RP/Eiress/SP) ============ */
+/* ============ DETAIL ROW (EXP/RP) ============ */
 .adv-detail-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px 8px;
-  padding: 4px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 2px 0;
 }
 .adv-detail {
   display: flex;
@@ -21553,12 +21972,12 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   flex-shrink: 0;
 }
 .adv-detail-input {
-  width: 48px;
+  width: 36px;
   background: transparent;
   border: none;
   border-bottom: 1px solid var(--manashard-border);
   color: var(--manashard-text);
-  font-size: 12px;
+  font-size: 11px;
   text-align: right;
   -moz-appearance: textfield;
 }

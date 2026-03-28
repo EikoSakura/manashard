@@ -122,12 +122,12 @@
       "system": "manashard"
     }
   ],
-  "socket": false,
+  "socket": true,
   "initiative": "1",
   "grid": {
     "distance": 1,
     "units": "tiles",
-    "diagonals": 3
+    "diagonals": 4
   },
   "primaryTokenAttribute": "stats.hp",
   "secondaryTokenAttribute": "stats.mp"

@@ -117,6 +117,14 @@ export class TokenInfoPanel {
     const barrierPercent = Math.min(hpPercent, barrierPctRaw);
     const barrierRight = 100 - hpPercent;
 
+    // HP bar color: green→yellow→red gradient based on percentage
+    const hpPct = hpPercent / 100;
+    const hpR = hpPct > 0.5 ? Math.round((1 - hpPct) * 2 * 255) : 255;
+    const hpG = hpPct > 0.5 ? 255 : Math.round(hpPct * 2 * 255);
+    const hpRDark = Math.round(hpR * 0.75);
+    const hpGDark = Math.round(hpG * 0.75);
+    const hpColor = `linear-gradient(90deg, rgb(${hpRDark},${hpGDark},0), rgb(${hpR},${hpG},0))`;
+
     // MP data
     const mp = sys.stats?.mp ?? { value: 0, max: 0 };
     const mpPercent = mp.max > 0 ? Math.round((mp.value / mp.max) * 100) : 0;
@@ -140,7 +148,7 @@ export class TokenInfoPanel {
       showHP: hpBarVisible,
       showMP: mpBarVisible,
       showType,
-      hp, hpPercent, barrier, barrierPercent, barrierRight,
+      hp, hpPercent, hpColor, barrier, barrierPercent, barrierRight,
       mp, mpPercent,
       typeTag,
       isNPC,

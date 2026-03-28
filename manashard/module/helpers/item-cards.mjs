@@ -22,6 +22,7 @@ const BADGE_COLORS = {
   dark:     { bg: "rgba(170,102,238,0.1)", border: "rgba(170,102,238,0.3)", text: "#aa66ee" },
   healing:  { bg: "rgba(68,204,102,0.1)",  border: "rgba(68,204,102,0.3)",  text: "#44cc66" },
   barrier:  { bg: "rgba(200,220,255,0.1)", border: "rgba(200,220,255,0.3)", text: "#c8dcff" },
+  none:     { bg: "rgba(128,128,128,0.1)", border: "rgba(128,128,128,0.3)", text: "#999999" },
   neutral:  { bg: "rgba(136,153,170,0.08)",border: "rgba(136,153,170,0.2)", text: "#8899aa" },
   null:     { bg: "rgba(136,153,170,0.08)",border: "rgba(136,153,170,0.2)", text: "#8899aa" }
 };
@@ -94,7 +95,6 @@ function _buildWeapon(d, s) {
 
   d.stats = [
     { label: "MIGHT", value: s.might },
-    { label: "HIT",   value: s.hit },
     { label: "CRIT",  value: s.crit },
     { label: "WEIGHT",value: s.weight },
     { label: s.rangeType === "melee" ? "REACH" : "RANGE", value: s.minRange === s.maxRange ? `${s.minRange}` : `${s.minRange}\u2013${s.maxRange}` },
@@ -356,6 +356,51 @@ export async function postAbsorptionCard(item, actor) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// LEVEL-UP CHAT CARD
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Post a styled level-up chat card for a character.
+ * @param {Actor} actor       The actor who leveled up
+ * @param {number} oldLevel   Previous level
+ * @param {number} newLevel   New level after leveling up
+ * @param {object[]} results  Array of { key, label, effectiveGrowth, gainAmount, atCap }
+ * @param {string|null} jobName  Equipped job name or null
+ */
+export async function postLevelUpCard(actor, oldLevel, newLevel, results, jobName) {
+  const stats = results.map(r => {
+    const cls = r.atCap ? "luc-cap" : r.gainAmount > 0 ? "luc-gain" : "luc-miss";
+    const icon = r.atCap ? `<span class="luc-cap-icon">CAP</span>`
+      : r.gainAmount === 2 ? `<span class="luc-gain-icon luc-double">+2</span>`
+      : r.gainAmount === 1 ? `<span class="luc-gain-icon">+1</span>`
+      : `<span class="luc-miss-icon">—</span>`;
+    return { label: r.label, growth: r.effectiveGrowth, cls, icon };
+  });
+
+  const totalGains = results.reduce((sum, r) => sum + r.gainAmount, 0);
+
+  const data = {
+    actorName: actor.name,
+    actorImg: actor.img,
+    oldLevel,
+    newLevel,
+    jobName,
+    stats,
+    totalGains,
+    singleGain: totalGains === 1
+  };
+
+  const content = await foundry.applications.handlebars.renderTemplate(
+    "systems/manashard/templates/chat/levelup-card.hbs",
+    data
+  );
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
 // APPLY ITEM CARD EFFECT (Chat Button Handler)
 // ═══════════════════════════════════════════════════════════════
 
@@ -409,7 +454,7 @@ async function _applyConsumable(btn, actor, itemId) {
 
   // Resolve target
   let targetToken = null;
-  const selfToken = canvas.tokens?.placeables.find(t => t.actor?.id === actor.id);
+  const selfToken = actor.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === actor.id);
 
   if (targetType === "self") {
     targetToken = selfToken;
@@ -493,7 +538,7 @@ async function _applyCastSkill(btn, actor, itemId) {
     }
 
     const centerToken = targets.first();
-    const casterToken = canvas.tokens?.placeables.find(t => t.actor?.id === actor.id);
+    const casterToken = actor.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === actor.id);
     if (!casterToken) {
       ui.notifications.warn("Caster token not found on canvas.");
       return;
@@ -576,7 +621,7 @@ async function _applyCastSkill(btn, actor, itemId) {
   let targetTokenId = null;
 
   if (skill.targetType === "self" || skill.isHealing) {
-    defenderToken = canvas.tokens?.placeables.find(t => t.actor?.id === actor.id);
+    defenderToken = actor.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === actor.id);
     defenderActor = actor;
     targetTokenId = defenderToken?.id ?? null;
   } else if (targets.size === 1) {

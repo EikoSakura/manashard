@@ -1,7 +1,8 @@
 /**
  * Floating Party Composition Panel — MMO raid-frame style.
- * Shows all friendly combatants' HP, MP, and status effects.
- * Singleton — one panel, auto-shows during combat, draggable.
+ * Shows party members' HP, MP, and status effects.
+ * Always available — shows combatants during combat, party roster otherwise.
+ * Singleton — one panel, draggable, reopened via Manashard tools if closed.
  */
 export class PartyCompositionPanel {
   /** @type {HTMLElement|null} */
@@ -90,71 +91,112 @@ export class PartyCompositionPanel {
 
   #prepareData() {
     const combat = game.combat;
-    if (!combat?.started) return null;
-
-    const currentId = combat.combatant?.id;
+    const inCombat = !!combat?.started;
     const statusIcons = CONFIG.MANASHARD?.statusIcons ?? {};
     const statusEffectLabels = CONFIG.MANASHARD?.statusEffects ?? {};
 
-    // Get friendly combatants (disposition >= 1 = friendly)
-    const members = Array.from(combat.combatants)
-      .filter(c => {
-        const disp = c.token?.disposition ?? 0;
-        return disp >= 1;
-      })
-      .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))
-      .map(c => {
-        const actor = c.actor;
-        const hp = actor?.system?.stats?.hp ?? { value: 0, max: 0 };
-        const mp = actor?.system?.stats?.mp ?? { value: 0, max: 0 };
-        const hpPercent = hp.max > 0 ? Math.round(hp.value / hp.max * 100) : 100;
-        const mpPercent = mp.max > 0 ? Math.round(mp.value / mp.max * 100) : 100;
+    let members;
 
-        // Gather status effects
-        const statuses = [];
-        const actorStatuses = actor?.system?.statusEffects;
-        if (actorStatuses) {
-          for (const key of actorStatuses) {
-            const icon = statusIcons[key] ?? "fas fa-question";
-            const label = statusEffectLabels[key] ?? key;
-            statuses.push({ key, icon, label: typeof label === "string" ? label : key });
-          }
-        }
-
-        // Check if charging
-        const charging = c.getFlag("manashard", "charging");
-
-        const hpBarrier = hp.barrier ?? 0;
-        const clampedHpPct = Math.min(100, Math.max(0, hpPercent));
-        return {
+    if (inCombat) {
+      // During combat: show friendly combatants
+      const currentId = combat.combatant?.id;
+      members = Array.from(combat.combatants)
+        .filter(c => {
+          const disp = c.token?.disposition ?? 0;
+          return disp >= 1;
+        })
+        .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))
+        .map(c => this.#buildMember(c.actor, {
           id: c.id,
           name: c.name,
-          img: c.token?.texture?.src ?? actor?.img ?? "icons/svg/mystery-man.svg",
-          hpValue: hp.value,
-          hpMax: hp.max,
-          hpPercent: clampedHpPct,
-          hpBarrier: hpBarrier,
-          hpBarrierPercent: (hpBarrier > 0 && hp.max > 0) ? Math.min(clampedHpPct, Math.round(hpBarrier / hp.max * 100)) : 0,
-          hpBarrierRight: 100 - clampedHpPct,
-          mpValue: mp.value,
-          mpMax: mp.max,
-          mpPercent: Math.min(100, Math.max(0, mpPercent)),
-          hpCritical: hpPercent <= 25,
+          img: c.token?.texture?.src,
           isActive: c.id === currentId,
           isDefeated: c.isDefeated,
-          statuses,
-          hasStatuses: statuses.length > 0,
-          isCharging: !!charging,
-          chargingSkillName: charging?.skillName ?? ""
-        };
-      });
+          charging: c.getFlag("manashard", "charging"),
+          statusIcons,
+          statusEffectLabels
+        }));
+    } else {
+      // Outside combat: show party roster from settings
+      const memberIds = game.settings.get("manashard", "partyMembers") ?? [];
+      members = memberIds
+        .map(id => game.actors.get(id))
+        .filter(a => a)
+        .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))
+        .map(a => this.#buildMember(a, {
+          id: a.id,
+          name: a.name,
+          img: null,
+          isActive: false,
+          isDefeated: false,
+          charging: null,
+          statusIcons,
+          statusEffectLabels
+        }));
+    }
 
-    if (members.length === 0) return null;
+    if (members.length === 0) {
+      return { members: [], round: 0, collapsed: this.#collapsed, empty: true, inCombat };
+    }
 
     return {
       members,
-      round: combat.round ?? 0,
-      collapsed: this.#collapsed
+      round: combat?.round ?? 0,
+      collapsed: this.#collapsed,
+      inCombat
+    };
+  }
+
+  /**
+   * Build a member data object for the template.
+   */
+  #buildMember(actor, { id, name, img, isActive, isDefeated, charging, statusIcons, statusEffectLabels }) {
+    const hp = actor?.system?.stats?.hp ?? { value: 0, max: 0 };
+    const mp = actor?.system?.stats?.mp ?? { value: 0, max: 0 };
+    const hpPercent = hp.max > 0 ? Math.round(hp.value / hp.max * 100) : 100;
+    const mpPercent = mp.max > 0 ? Math.round(mp.value / mp.max * 100) : 100;
+
+    // Gather status effects
+    const statuses = [];
+    const actorStatuses = actor?.system?.statusEffects;
+    if (actorStatuses) {
+      for (const key of actorStatuses) {
+        const icon = statusIcons[key] ?? "fas fa-question";
+        const label = statusEffectLabels[key] ?? key;
+        statuses.push({ key, icon, label: typeof label === "string" ? label : key });
+      }
+    }
+
+    const hpBarrier = hp.barrier ?? 0;
+    const clampedHpPct = Math.min(100, Math.max(0, hpPercent));
+    const pct = clampedHpPct / 100;
+    const r = pct > 0.5 ? Math.round((1 - pct) * 2 * 255) : 255;
+    const g = pct > 0.5 ? 255 : Math.round(pct * 2 * 255);
+    const rDark = Math.round(r * 0.75);
+    const gDark = Math.round(g * 0.75);
+    const hpColor = `linear-gradient(90deg, rgb(${rDark},${gDark},0), rgb(${r},${g},0))`;
+
+    return {
+      id,
+      name,
+      img: img ?? actor?.img ?? "icons/svg/mystery-man.svg",
+      hpValue: hp.value,
+      hpMax: hp.max,
+      hpPercent: clampedHpPct,
+      hpColor,
+      hpBarrier,
+      hpBarrierPercent: (hpBarrier > 0 && hp.max > 0) ? Math.min(clampedHpPct, Math.round(hpBarrier / hp.max * 100)) : 0,
+      hpBarrierRight: 100 - clampedHpPct,
+      mpValue: mp.value,
+      mpMax: mp.max,
+      mpPercent: Math.min(100, Math.max(0, mpPercent)),
+      hpCritical: hpPercent <= 25,
+      isActive,
+      isDefeated,
+      statuses,
+      hasStatuses: statuses.length > 0,
+      isCharging: !!charging,
+      chargingSkillName: charging?.skillName ?? ""
     };
   }
 
@@ -179,11 +221,24 @@ export class PartyCompositionPanel {
     // Click member to pan to token
     this.#element.querySelectorAll(".pcp-member").forEach(el => {
       el.addEventListener("click", () => {
-        const combatantId = el.dataset.combatantId;
-        if (!combatantId) return;
+        const memberId = el.dataset.memberId;
+        if (!memberId) return;
+
+        // Try combat combatant first, then fall back to actor token on canvas
         const combat = game.combat;
-        const combatant = combat?.combatants?.get(combatantId);
-        const token = combatant?.token?.object;
+        let token;
+        if (combat?.started) {
+          const combatant = combat.combatants?.get(memberId);
+          token = combatant?.token?.object;
+        }
+        if (!token) {
+          // Find actor's token on the current scene
+          const actor = game.actors.get(memberId);
+          if (actor) {
+            const sceneToken = canvas.tokens?.placeables.find(t => t.actor?.id === actor.id);
+            token = sceneToken;
+          }
+        }
         if (token) {
           canvas.animatePan({ x: token.center.x, y: token.center.y });
         }

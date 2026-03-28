@@ -81,7 +81,7 @@ export function buildForecastContext(actor, targetToken, options = {}) {
   }
 
   const damageType = isSkill
-    ? (skillData?.damageType || (rawElement ? "magical" : "physical"))
+    ? (skillData?.damageType || "none")
     : (isNatural ? (weaponItem?.system?.damageType ?? "physical") : (wpn?.system?.damageType ?? "physical"));
   const isMagical = damageType === "magical";
 
@@ -116,8 +116,8 @@ export function buildForecastContext(actor, targetToken, options = {}) {
   const throwRange = actor.system.throwRange ?? 0;
   const canThrow = rngType === "melee" && throwRange > 0 && !isSkill;
 
+  const attackerToken = actor.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === actor.id);
   if (targetToken && !healMode && !skipForecastRange) {
-    const attackerToken = canvas.tokens?.placeables.find(t => t.actor?.id === actor.id);
     if (attackerToken && targetToken) {
       attackDistance = gridDistance(attackerToken, targetToken);
       const rangeCheck = validateAttackRange({ distance: attackDistance, minRange: minRng, maxRange: maxRng, rangeType: rngType });
@@ -151,6 +151,7 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     weaponItemId: isSkill ? itemId : (wpn?.id ?? null),
     weaponCategory: wpn?.system?.category ?? null,
     attackerActorId: actor.id,
+    attackerTokenId: attackerToken?.id ?? null,
     targetTokenId: targetToken?.id ?? null
   };
   const atkConditionals = ruleCache.conditionalRules ?? [];
@@ -179,12 +180,12 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     } else if (ssKey !== "none") {
       scalingStatVal = system.stats?.[ssKey]?.value ?? 0;
     }
-    baseDmg = effectiveBaseRate + scalingStatVal + (condBonuses.damage ?? 0);
-    // Accuracy: fixed-mode skills with skillHit use scaling stat instead of AGI
+    baseDmg = (scalingStatVal * 2) + effectiveBaseRate + (condBonuses.damage ?? 0);
+    // Accuracy: fixed-mode skills with skillHit use 80 base + scaling stat instead of AGI
     const skillHitVal = skillData.skillHit ?? 0;
     if (skillData.baseRateMode === "fixed" && skillHitVal > 0) {
       const accStat = ssKey === "none" ? 0 : scalingStatVal;
-      acc = (accStat * 2) + skillHitVal + (condBonuses.accuracy ?? 0);
+      acc = 80 + (accStat * 2) + skillHitVal + (condBonuses.accuracy ?? 0);
     } else {
       acc = (system.accuracy ?? 0) + (condBonuses.accuracy ?? 0);
     }
@@ -193,15 +194,20 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     // Natural weapon: custom formula
     const stats = system.stats;
     const scalingStat = isMagical ? (stats?.mag?.value ?? 0) : (stats?.str?.value ?? 0);
-    baseDmg = (weaponItem.system?.might ?? 0) + scalingStat + (condBonuses.damage ?? 0);
-    acc = (stats?.agi?.value ?? 0) * 2 + (weaponItem.system?.hit ?? 70) + (condBonuses.accuracy ?? 0);
+    baseDmg = (scalingStat * 2) + (weaponItem.system?.might ?? 0) + (condBonuses.damage ?? 0);
+    acc = 80 + (stats?.agi?.value ?? 0) * 2 + (condBonuses.accuracy ?? 0);
     crit = (stats?.luk?.value ?? 0) * 2 + (weaponItem.system?.crit ?? 0) + (condBonuses.critical ?? 0);
   } else if (weaponItem) {
     // Explicit weapon (e.g. off-hand) — compute from weapon stats directly
     const stats = system.stats;
-    const scalingStat = isMagical ? (stats?.mag?.value ?? 0) : (stats?.str?.value ?? 0);
-    baseDmg = (weaponItem.system?.might ?? 0) + scalingStat + (condBonuses.damage ?? 0);
-    acc = (stats?.agi?.value ?? 0) * 2 + (weaponItem.system?.hit ?? 70) + (condBonuses.accuracy ?? 0);
+    // Swords (Versatile): physical damage uses max(STR, AGI)
+    const wpnCat = weaponItem.system?.category;
+    const physStat = (!isMagical && wpnCat === "swords")
+      ? Math.max(stats?.str?.value ?? 0, stats?.agi?.value ?? 0)
+      : (stats?.str?.value ?? 0);
+    const scalingStat = isMagical ? (stats?.mag?.value ?? 0) : physStat;
+    baseDmg = (scalingStat * 2) + (weaponItem.system?.might ?? 0) + (condBonuses.damage ?? 0);
+    acc = 80 + (stats?.agi?.value ?? 0) * 2 + (condBonuses.accuracy ?? 0);
     crit = (stats?.luk?.value ?? 0) * 2 + (weaponItem.system?.crit ?? 0) + (condBonuses.critical ?? 0);
   } else {
     // Standard weapon attack — uses derived stats (mainhand)
@@ -224,13 +230,28 @@ export function buildForecastContext(actor, targetToken, options = {}) {
   const defCondBonuses = evaluateConditionalRules(defRuleCache.conditionalRules, defCondCtx).statBonuses;
 
   const piercingAmount = condBonuses.piercing ?? 0;
-  const baseDefEva = isMagical ? (defActor?.system?.meva ?? 0) : (defActor?.system?.peva ?? 0);
+  const atkGrants = ruleCache.grants ?? {};
+
+  // Bows (Precision): target the lower of P.EVA or M.EVA
+  let baseDefEva;
+  if (atkGrants.precision && defActor?.system) {
+    baseDefEva = Math.min(defActor.system.peva ?? 0, defActor.system.meva ?? 0);
+  } else {
+    baseDefEva = isMagical ? (defActor?.system?.meva ?? 0) : (defActor?.system?.peva ?? 0);
+  }
   const defEvaBonus = isMagical ? (defCondBonuses.meva ?? 0) : (defCondBonuses.peva ?? 0);
+  const isNoneDamage = skillData?.damageType === "none";
   const skipDefenses = healMode || isRetaliatory;
   const defEva = skipDefenses ? 0 : baseDefEva + defEvaBonus;
-  const defDef = skipDefenses ? 0 : Math.max(0, (isMagical ? (defActor?.system?.mdef ?? 0) : (defActor?.system?.pdef ?? 0)) + (defCondBonuses.def ?? 0) - piercingAmount);
+  let defDefRaw = (skipDefenses || isNoneDamage) ? 0 : Math.max(0, (isMagical ? (defActor?.system?.mdef ?? 0) : (defActor?.system?.pdef ?? 0)) + (defCondBonuses.def ?? 0) - piercingAmount);
+  // Firearms (Penetrating): ignore percentage of DEF
+  if (atkGrants.percentPiercing) {
+    const pct = atkGrants.percentPiercing.percentPiercing ?? 0;
+    defDefRaw = Math.floor(defDefRaw * (1 - pct / 100));
+  }
+  const defDef = defDefRaw;
   const defCritAvoid = skipDefenses ? 0 : (defActor?.system?.critAvoid ?? 0) + (defCondBonuses.critAvoid ?? 0);
-  const defBlockChance = skipDefenses ? 0 : (defActor?.system?.blockChance ?? 0) + (defCondBonuses.blockChance ?? 0);
+  const defBlockChance = (skipDefenses || isNoneDamage) ? 0 : (defActor?.system?.blockChance ?? 0) + (defCondBonuses.blockChance ?? 0);
   const defHealBonus = healMode ? (defCondBonuses.damage ?? 0) : 0;
 
   const defHp = defActor?.system?.stats?.hp?.value ?? "??";
@@ -248,7 +269,9 @@ export function buildForecastContext(actor, targetToken, options = {}) {
 
   // ── Forecast Calculation ──
   let forecastDmg;
-  if (healMode) {
+  if (isNoneDamage) {
+    forecastDmg = 0;
+  } else if (healMode) {
     forecastDmg = Math.floor(Math.max(0, baseDmg + defHealBonus) * effectMod);
   } else {
     forecastDmg = Math.floor(Math.max(0, baseDmg - defDef) * effectMod);
@@ -318,8 +341,8 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     const ohSys = offhandWeapon.system;
     const ohIsMagical = (ohSys.damageType ?? "physical") === "magical";
     const ohScaling = ohIsMagical ? (system.stats?.mag?.value ?? 0) : (system.stats?.str?.value ?? 0);
-    const ohDmg = (ohSys.might ?? 0) + ohScaling + (condBonuses.damage ?? 0);
-    const ohAcc = (system.stats?.agi?.value ?? 0) * 2 + (ohSys.hit ?? 70) + (condBonuses.accuracy ?? 0);
+    const ohDmg = (ohScaling * 2) + (ohSys.might ?? 0) + (condBonuses.damage ?? 0);
+    const ohAcc = 80 + (system.stats?.agi?.value ?? 0) * 2 + (condBonuses.accuracy ?? 0);
     const ohCrit = (system.stats?.luk?.value ?? 0) * 2 + (ohSys.crit ?? 0) + (condBonuses.critical ?? 0);
     const ohDefBase = ohIsMagical ? (defActor?.system?.mdef ?? 0) : (defActor?.system?.pdef ?? 0);
     const ohDefVal = Math.max(0, ohDefBase + (defCondBonuses.def ?? 0));

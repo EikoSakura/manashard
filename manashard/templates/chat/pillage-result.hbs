@@ -27,12 +27,20 @@
       <div class="acc-roll-row acc-hit acc-success pillage-success-row">
         <i class="acc-roll-icon fas fa-gem"></i>
         <span class="acc-roll-label">Pillaged <strong>{{itemName}}</strong>!</span>
+        <span class="acc-roll-dice"><i class="fas fa-dice-d20"></i> {{lootRoll}} / {{lootChance}}{{#if lukBonus}} <small>({{baseChance}}+{{lukBonus}} LUK)</small>{{/if}}</span>
       </div>
     {{else}}
-      <div class="acc-roll-row acc-hit acc-fail pillage-noloot-row">
-        <i class="acc-roll-icon fas fa-ban"></i>
-        <span class="acc-roll-label">No loot to pillage!</span>
-      </div>
+      {{#if noLoot}}
+        <div class="acc-roll-row acc-hit acc-fail pillage-noloot-row">
+          <i class="acc-roll-icon fas fa-ban"></i>
+          <span class="acc-roll-label">No loot to pillage!</span>
+        </div>
+      {{else}}
+        <div class="acc-roll-row acc-hit acc-fail pillage-noloot-row">
+          <i class="acc-roll-icon fas fa-hand-holding"></i>
+          <span class="acc-roll-label">Pillage rolls failed!</span>
+        </div>
+      {{/if}}
     {{/if}}
   </div>
 

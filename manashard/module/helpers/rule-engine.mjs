@@ -181,6 +181,32 @@ export function collectRules(actor) {
     }
   }
 
+  // Inject weapon category identity rules
+  const mainhandWeapon = actor.items.find(
+    i => i.type === "weapon" && i.system.equipped && i.system.equipSlot === "mainhand"
+  );
+  const wpnCategory = mainhandWeapon?.system.category;
+  if (wpnCategory) {
+    const categoryRules = CONFIG.MANASHARD?.weaponCategoryRules?.[wpnCategory] ?? [];
+    for (const rule of categoryRules) {
+      const catLabel = CONFIG.MANASHARD.weaponCategories?.[wpnCategory];
+      const catName = catLabel ? game.i18n.localize(catLabel) : wpnCategory;
+      rules.push({ ...rule, _source: { itemId: null, itemName: catName, itemType: "category" } });
+    }
+  }
+
+  // Inject weapon keyword rules from mainhand weapon tags
+  const weaponTags = (mainhandWeapon?.system.tags ?? "").split(",").map(t => t.trim().toLowerCase()).filter(Boolean);
+  const weaponKeywords = CONFIG.MANASHARD?.weaponKeywords ?? {};
+  for (const tag of weaponTags) {
+    const keyword = weaponKeywords[tag];
+    if (keyword?.rules) {
+      for (const rule of keyword.rules) {
+        rules.push({ ...rule, _source: { itemId: null, itemName: keyword.label, itemType: "keyword" } });
+      }
+    }
+  }
+
   return rules;
 }
 
@@ -471,7 +497,12 @@ export function createRuleEngine(systemData, rules, { weaponCategory = null } = 
         statusInflictions: rules.filter(r => r.key === "Status" && r.action === "inflict"),
         statusRemove: rules.some(r => r.key === "Status" && r.action === "remove"),
         targetRestrictions: rules.filter(r => r.key === "TargetRestriction"),
-        triggers: rules.filter(r => r.key === "Trigger")
+        triggers: rules.filter(r => r.key === "Trigger"),
+        // Weapon category/keyword grants (versatile, brutalCrit, precision, etc.)
+        grants: Object.fromEntries(
+          rules.filter(r => r.key === "Grant" && r.grant)
+            .map(r => [r.grant, r])
+        )
       };
     }
   };

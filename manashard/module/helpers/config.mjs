@@ -137,11 +137,12 @@ MANASHARD.armorCategories = {
  * Damage types.
  */
 MANASHARD.damageTypes = {
-  barrier: "MANASHARD.DamageTypes.Barrier",
+  none: "MANASHARD.DamageTypes.None",
+  physical: "MANASHARD.DamageTypes.Physical",
+  magical: "MANASHARD.DamageTypes.Magical",
   elemental: "MANASHARD.DamageTypes.Elemental",
   healing: "MANASHARD.DamageTypes.Healing",
-  magical: "MANASHARD.DamageTypes.Magical",
-  physical: "MANASHARD.DamageTypes.Physical",
+  barrier: "MANASHARD.DamageTypes.Barrier",
   retaliatory: "MANASHARD.DamageTypes.Retaliatory"
 };
 
@@ -342,6 +343,37 @@ MANASHARD.enemyRoleActions = {
   elite: 1,
   boss: 2,
   legendary: 3
+};
+
+/**
+ * Role-based stat modifier applied to suggested combat stats.
+ * HP is the primary role differentiator; stats ensure all roles
+ * can meaningfully participate (critical for subtractive DEF at low ranks).
+ *
+ * Minion (0.50): Fodder — 1 PC handles 3. Low stats but can still scratch.
+ * Standard (0.70): Core creature — fair 1v1 fight with a PC.
+ * Elite (0.85): Group anchor — requires 2 PCs or smart play.
+ * Boss (1.0): At rank cap — combined with extra actions, genuinely dangerous.
+ * Legendary (1.10): Exceeds cap — isekai "one rank above" feel.
+ */
+MANASHARD.roleStatMod = {
+  minion: 0.50,
+  standard: 0.70,
+  elite: 0.85,
+  boss: 1.0,
+  legendary: 1.10
+};
+
+/**
+ * Role-based MP modifier applied to suggested MP.
+ * Bosses/Legendaries have deeper MP pools for sustained magical threat.
+ */
+MANASHARD.roleMpMod = {
+  minion: 0.30,
+  standard: 1.0,
+  elite: 1.2,
+  boss: 1.8,
+  legendary: 2.5
 };
 
 /**
@@ -572,11 +604,11 @@ MANASHARD.creationGrowthCaps = {
 /**
  * Free stat points to distribute at character creation (on top of minimums).
  */
-MANASHARD.statPointPool = 18;
+MANASHARD.statPointPool = 20;
 
 /**
  * Minimum stat values at character creation.
- * Minimums sum to 28, leaving 18 free points from the pool.
+ * Minimums sum to 28, leaving 20 free points from the pool.
  */
 MANASHARD.statMinimums = {
   hp: 10, mp: 10, str: 1, agi: 1, mag: 1, end: 1,
@@ -864,6 +896,63 @@ MANASHARD.valueModes = {
 };
 
 /**
+ * Weapon category identity rules.
+ * Auto-injected when a weapon of this category is equipped in mainhand.
+ * These give each weapon type a unique passive identity.
+ */
+MANASHARD.weaponCategoryDefaults = {
+  swords:    { rangeType: "melee",  minRange: 1, maxRange: 1 },
+  daggers:   { rangeType: "melee",  minRange: 1, maxRange: 1 },
+  axes:      { rangeType: "melee",  minRange: 1, maxRange: 1 },
+  polearms:  { rangeType: "melee",  minRange: 1, maxRange: 2 },
+  chains:    { rangeType: "melee",  minRange: 1, maxRange: 2 },
+  fist:      { rangeType: "melee",  minRange: 1, maxRange: 1 },
+  bows:      { rangeType: "ranged", minRange: 2, maxRange: 8 },
+  firearms:  { rangeType: "ranged", minRange: 2, maxRange: 5 },
+  grimoires: { rangeType: "ranged", minRange: 1, maxRange: 4 },
+  staves:    { rangeType: "melee",  minRange: 1, maxRange: 1 },
+  shields:   { rangeType: "melee",  minRange: 1, maxRange: 1 },
+  natural:   { rangeType: "melee",  minRange: 1, maxRange: 1 },
+};
+
+MANASHARD.weaponCategoryRules = {
+  swords:    [{ key: "Grant", grant: "versatile", label: "Versatile" }],
+  daggers:   [{ key: "Modifier", selector: "peva", value: 5, mode: "flat", label: "Swift" }],
+  axes:      [{ key: "Grant", grant: "brutalCrit", label: "Brutal" }],
+  polearms:  [], // Reach is already inherent via weapon maxRange
+  chains:    [{ key: "Status", status: "immobilize", action: "inflict", chance: 20, label: "Binding" }],
+  fist:      [{ key: "Modifier", selector: "mpCost", value: -1, mode: "flat", label: "Flow" }],
+  bows:      [{ key: "Grant", grant: "precision", label: "Precision" }],
+  firearms:  [{ key: "Grant", grant: "percentPiercing", percentPiercing: 30, label: "Penetrating" }],
+  grimoires: [], // Element affinity is already inherent via weapon element field
+  staves:    [{ key: "Modifier", selector: "damage", value: 2, mode: "flat", condition: "weaponIsMagical", label: "Arcane Conduit" }],
+  shields:   [], // Block chance is already inherent via weapon block field
+  natural:   [], // Species scaling is already inherent via natural weapon path
+};
+
+/**
+ * Weapon keyword properties.
+ * Recognized tags on weapons that inject mechanical rules when equipped.
+ * Added via the weapon's tags field (comma-separated).
+ */
+MANASHARD.weaponKeywords = {
+  parrying:  { label: "Parrying",   description: "Grants block chance without a shield",
+               rules: [{ key: "Modifier", selector: "blockChance", value: 10, mode: "flat", label: "Parrying" }] },
+  lifedrain: { label: "Life Drain", description: "Recover 1 HP on defeating an enemy",
+               rules: [{ key: "Trigger", event: "onDefeat", action: "restoreHP", value: 1, label: "Life Drain" }] },
+  heavy:     { label: "Heavy",      description: "+2 damage, -1 MOV",
+               rules: [{ key: "Modifier", selector: "damage", value: 2, mode: "flat", label: "Heavy" },
+                        { key: "Modifier", selector: "mov", value: -1, mode: "flat", label: "Heavy" }] },
+  light:     { label: "Light",      description: "+1 MOV, -1 damage",
+               rules: [{ key: "Modifier", selector: "mov", value: 1, mode: "flat", label: "Light" },
+                        { key: "Modifier", selector: "damage", value: -1, mode: "flat", label: "Light" }] },
+  keen:      { label: "Keen",        description: "+5 critical chance",
+               rules: [{ key: "Modifier", selector: "critical", value: 5, mode: "flat", label: "Keen" }] },
+  reliable:  { label: "Reliable",   description: "Attacks always deal at least 1 damage",
+               rules: [{ key: "Grant", grant: "reliableDamage", label: "Reliable" }] },
+};
+
+/**
  * Status effect mechanical rules.
  * Injected as rule elements when a status effect is active on an actor.
  */
@@ -902,6 +991,7 @@ MANASHARD.threatArchetypes = {
   skirmisher: { label: "MANASHARD.EncBuilder.ArchSkirmisher", primary: ["agi", "luk"],  secondary: ["str", "spi"],  hpMod: 0.9, mpMod: 0.9 },
   caster:     { label: "MANASHARD.EncBuilder.ArchCaster",     primary: ["mag", "spi"],  secondary: ["int", "end"],  hpMod: 0.8, mpMod: 1.3 },
   tank:       { label: "MANASHARD.EncBuilder.ArchTank",       primary: ["end", "spi"],  secondary: ["str", "agi"],  hpMod: 1.3, mpMod: 0.8 },
+  artillery:  { label: "MANASHARD.EncBuilder.ArchArtillery",  primary: ["mag", "int"],  secondary: ["agi", "luk"],  hpMod: 0.7, mpMod: 1.2 },
   balanced:   { label: "MANASHARD.EncBuilder.ArchBalanced",   primary: [],              secondary: [],              hpMod: 1.0, mpMod: 1.0 },
   custom:     { label: "MANASHARD.EncBuilder.ArchCustom",     primary: [],              secondary: [],              hpMod: 1.0, mpMod: 1.0 }
 };
@@ -917,7 +1007,7 @@ MANASHARD.tlRankBonus = {
  * Threat Level role bonuses — flat additive to TL formula.
  */
 MANASHARD.tlRoleBonus = {
-  minion: -5, standard: 0, elite: 10, boss: 30, legendary: 60
+  minion: -8, standard: 0, elite: 8, boss: 25, legendary: 50
 };
 
 /**
@@ -936,10 +1026,51 @@ MANASHARD.encounterDifficultyTiers = [
  * Encounter quick templates for the encounter composer.
  */
 MANASHARD.encounterTemplates = {
-  bossMinions: { label: "MANASHARD.EncBuilder.TplBossMinions", slots: [{ role: "boss", count: 1 }, { role: "minion", count: 4 }] },
-  eliteSquad:  { label: "MANASHARD.EncBuilder.TplEliteSquad",  slots: [{ role: "elite", count: 2 }, { role: "standard", count: 2 }] },
-  horde:       { label: "MANASHARD.EncBuilder.TplHorde",       slots: [{ role: "minion", count: 8 }] },
-  ambush:      { label: "MANASHARD.EncBuilder.TplAmbush",      slots: [{ role: "standard", count: 3 }, { role: "elite", count: 1 }] }
+  bossMinions:     { label: "MANASHARD.EncBuilder.TplBossMinions",     slots: [{ role: "boss", count: 1 }, { role: "minion", count: 6 }] },
+  eliteSquad:      { label: "MANASHARD.EncBuilder.TplEliteSquad",      slots: [{ role: "elite", count: 1 }, { role: "standard", count: 3 }] },
+  horde:           { label: "MANASHARD.EncBuilder.TplHorde",           slots: [{ role: "minion", count: 12 }] },
+  ambush:          { label: "MANASHARD.EncBuilder.TplAmbush",          slots: [{ role: "standard", count: 2 }, { role: "elite", count: 1 }, { role: "minion", count: 3 }] },
+  legendaryBattle: { label: "MANASHARD.EncBuilder.TplLegendaryBattle", slots: [{ role: "legendary", count: 1 }, { role: "elite", count: 1 }, { role: "minion", count: 4 }] }
+};
+
+/**
+ * Skill guidelines per enemy role — recommended skill counts and design notes.
+ * Displayed in the Threat Builder to help GMs build appropriately complex threats.
+ */
+MANASHARD.roleSkillGuidelines = {
+  minion:    { active: { min: 0, max: 1 }, passive: { min: 0, max: 0 }, notes: "MANASHARD.EncBuilder.SkillNoteMinion" },
+  standard:  { active: { min: 1, max: 2 }, passive: { min: 0, max: 1 }, notes: "MANASHARD.EncBuilder.SkillNoteStandard" },
+  elite:     { active: { min: 2, max: 3 }, passive: { min: 1, max: 1 }, notes: "MANASHARD.EncBuilder.SkillNoteElite" },
+  boss:      { active: { min: 3, max: 5 }, passive: { min: 1, max: 2 }, notes: "MANASHARD.EncBuilder.SkillNoteBoss" },
+  legendary: { active: { min: 5, max: 7 }, passive: { min: 2, max: 3 }, notes: "MANASHARD.EncBuilder.SkillNoteLegendary" }
+};
+
+/**
+ * Suggested skill baseRate values per rank — weak/standard/strong tiers.
+ * Helps GMs build skills with appropriate damage output for their rank.
+ * Calculated to produce meaningful damage against same-rank PC defenses.
+ */
+MANASHARD.skillBaseRateByRank = {
+  f: { weak: 2, standard: 4, strong: 6 },
+  e: { weak: 3, standard: 6, strong: 9 },
+  d: { weak: 5, standard: 8, strong: 12 },
+  c: { weak: 7, standard: 11, strong: 16 },
+  b: { weak: 9, standard: 14, strong: 20 },
+  a: { weak: 12, standard: 18, strong: 25 },
+  s: { weak: 15, standard: 22, strong: 30 }
+};
+
+/**
+ * Role-based HP modifier applied to suggested HP in the Threat Builder.
+ * HP is the primary lever for role differentiation:
+ * Minions die in 1-2 hits, Bosses require sustained party focus.
+ */
+MANASHARD.roleHpMod = {
+  minion: 0.30,
+  standard: 1.0,
+  elite: 1.5,
+  boss: 2.5,
+  legendary: 4.0
 };
 
 /**

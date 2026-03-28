@@ -1,0 +1,46 @@
+<div class="manashard levelup-chat-card">
+
+  {{!-- ═══ HEADER: Portrait + Actor Info ═══ --}}
+  <div class="luc-header">
+    <div class="luc-portrait-frame">
+      <img src="{{actorImg}}" class="luc-portrait" />
+    </div>
+    <div class="luc-header-text">
+      <span class="luc-actor-name">{{actorName}}</span>
+      <span class="luc-action">leveled up</span>
+    </div>
+  </div>
+
+  {{!-- ═══ LEVEL DISPLAY ═══ --}}
+  <div class="luc-level-row">
+    <div class="luc-level-info">
+      <span class="luc-old-level">Lv {{oldLevel}}</span>
+      <i class="fas fa-arrow-right luc-arrow"></i>
+      <span class="luc-new-level">Lv {{newLevel}}</span>
+    </div>
+    {{#if jobName}}
+    <div class="luc-badges">
+      <span class="luc-badge"><i class="fas fa-briefcase"></i> {{jobName}}</span>
+    </div>
+    {{/if}}
+  </div>
+
+  {{!-- ═══ STAT RESULTS ═══ --}}
+  {{#if stats.length}}
+  <div class="luc-stats">
+    {{#each stats}}
+    <div class="luc-stat-cell {{this.cls}}">
+      <span class="luc-stat-label">{{this.label}}</span>
+      <span class="luc-stat-rate">{{this.growth}}%</span>
+      <span class="luc-stat-result">{{{this.icon}}}</span>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{!-- ═══ SUMMARY FOOTER ═══ --}}
+  <div class="luc-confirm">
+    <i class="fas fa-star"></i> {{totalGains}} stat point{{#unless singleGain}}s{{/unless}} gained
+  </div>
+
+</div>

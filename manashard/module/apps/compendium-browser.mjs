@@ -62,20 +62,21 @@ export class CompendiumBrowser extends HandlebarsApplicationMixin(ApplicationV2)
 
   /* ─── Singleton ─────────────────────────────────────────── */
 
-  static #instance = null;
+
 
   static open() {
-    if (!CompendiumBrowser.#instance) {
-      CompendiumBrowser.#instance = new CompendiumBrowser();
+    const existing = foundry.applications.instances.get("compendium-browser");
+    if (existing) {
+      existing.close();
+      return;
     }
-    CompendiumBrowser.#instance.render(true);
+    new CompendiumBrowser().render(true);
   }
 
   /* ─── Lifecycle ─────────────────────────────────────────── */
 
   _onClose() {
     super._onClose?.();
-    CompendiumBrowser.#instance = null;
   }
 
   _onRender(context, options) {
@@ -150,7 +151,7 @@ export class CompendiumBrowser extends HandlebarsApplicationMixin(ApplicationV2)
     switch (tabId) {
       case "equipment":
         return ["system.category", "system.rank", "system.damageType", "system.rangeType",
-                "system.handedness", "system.might", "system.hit", "system.pdef", "system.mdef",
+                "system.handedness", "system.might", "system.pdef", "system.mdef",
                 "system.weight", "system.price", "system.element", "system.block"];
       case "manacite":
         return ["system.manaciteType", "system.skillType", "system.element",
@@ -316,7 +317,7 @@ export class CompendiumBrowser extends HandlebarsApplicationMixin(ApplicationV2)
         ...base, typeLabel, categoryLabel,
         rank: sys.rank,
         handedness: sys.handedness ? sys.handedness.toUpperCase() : "",
-        might: sys.might, hit: sys.hit,
+        might: sys.might,
         pdef: sys.pdef, mdef: sys.mdef,
         block: sys.block, price: sys.price
       };

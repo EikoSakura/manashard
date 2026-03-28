@@ -16,7 +16,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel {
       }),
       damageType: new StringField({
         required: true, initial: "physical",
-        choices: ["physical", "magical", "elemental"]
+        choices: ["physical", "magical", "elemental", "none"]
       }),
       rangeType: new StringField({
         required: true, initial: "melee",
@@ -28,8 +28,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel {
       }),
 
       // Core weapon stats
-      might: new NumberField({ required: true, integer: true, min: 0, initial: 4 }),
-      hit: new NumberField({ required: true, integer: true, initial: 85 }),
+      might: new NumberField({ required: true, integer: true, min: 0, initial: 2 }),
       crit: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
       weight: new NumberField({ required: true, integer: true, min: 0, initial: 4 }),
       minRange: new NumberField({ required: true, integer: true, min: 0, initial: 1 }),

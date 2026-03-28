@@ -179,7 +179,7 @@ function filterBySkillScope(rules, attackingItemId) {
  * @returns {boolean}
  */
 function checkCondition(condition, context) {
-  const { system, defenderActor, element, damageType, isInitiator, weaponMinRange, weaponMaxRange, weaponRangeType, attackDistance, isHealing, weaponCategory, attackerActorId, targetTokenId } = context;
+  const { system, defenderActor, element, damageType, isInitiator, weaponMinRange, weaponMaxRange, weaponRangeType, attackDistance, isHealing, weaponCategory, attackerActorId, attackerTokenId, targetTokenId } = context;
   const hp = system?.stats?.hp;
   const mp = system?.stats?.mp;
   const hpPct = (hp?.max > 0) ? hp.value / hp.max : 1;
@@ -229,7 +229,7 @@ function checkCondition(condition, context) {
     case "allyWithinReachOfTarget": {
       if (!targetTokenId || !attackerActorId) return 0;
       const tgtTok = canvas.tokens?.get(targetTokenId);
-      const atkTok = canvas.tokens?.placeables.find(t => t.actor?.id === attackerActorId);
+      const atkTok = (attackerTokenId ? canvas.tokens?.get(attackerTokenId) : null) ?? canvas.tokens?.placeables.find(t => t.actor?.id === attackerActorId);
       if (!tgtTok || !atkTok) return 0;
       const atkDisp = atkTok.document.disposition;
       return canvas.tokens.placeables.filter(t => {
@@ -462,6 +462,7 @@ export function resolveAttack(params) {
     weaponItemId = null,
     weaponCategory = null,
     attackerActorId = null,
+    attackerTokenId = null,
     targetTokenId = null
   } = params;
 
@@ -475,7 +476,7 @@ export function resolveAttack(params) {
     }
   }
 
-  const atkContext = { system: attackerSystem, defenderActor, element: resolvedElement, damageType, isInitiator, isHealing, weaponItemId, weaponCategory, attackerActorId, targetTokenId };
+  const atkContext = { system: attackerSystem, defenderActor, element: resolvedElement, damageType, isInitiator, isHealing, weaponItemId, weaponCategory, attackerActorId, attackerTokenId, targetTokenId };
 
   // Evaluate attacker conditional rules
   const atkConditionals = ruleCache.conditionalRules ?? [];
@@ -505,8 +506,23 @@ export function resolveAttack(params) {
 
   // Apply defender conditional bonuses, then subtract piercing
   let modDefenderDef = Math.max(0, defenderDef + (defCond.statBonuses.def ?? 0) - piercingAmount);
+
+  // Firearms (Penetrating): ignore percentage of DEF after flat piercing
+  const grants = ruleCache.grants ?? {};
+  if (grants.percentPiercing) {
+    const pct = grants.percentPiercing.percentPiercing ?? 0;
+    modDefenderDef = Math.floor(modDefenderDef * (1 - pct / 100));
+  }
+
+  // Bows (Precision): target the lower of P.EVA or M.EVA
+  let effectiveEvasion = defenderEvasion;
+  if (grants.precision && defenderActor?.system) {
+    const defPeva = defenderActor.system.peva ?? 0;
+    const defMeva = defenderActor.system.meva ?? 0;
+    effectiveEvasion = Math.min(defPeva, defMeva);
+  }
   const evaBonus = damageType === "magical" ? (defCond.statBonuses.meva ?? 0) : (defCond.statBonuses.peva ?? 0);
-  let modDefenderEvasion = defenderEvasion + evaBonus;
+  let modDefenderEvasion = effectiveEvasion + evaBonus;
   const modDefenderCritAvoid = defenderCritAvoid + (defCond.statBonuses.critAvoid ?? 0);
   const modDefenderBlockChance = defenderBlockChance + (defCond.statBonuses.blockChance ?? 0);
 
@@ -521,6 +537,11 @@ export function resolveAttack(params) {
   // Defense subtraction
   let rawDamage = Math.max(0, modDamage - modDefenderDef);
 
+  // Reliable keyword: attacks always deal at least 1 damage (before elemental/chant)
+  if (grants.reliableDamage && rawDamage === 0 && modDamage > 0 && !isHealing) {
+    rawDamage = 1;
+  }
+
   // Defender healing received bonus (e.g. +3 healing received from equipment)
   const defHealBonus = isHealing ? (defCond.statBonuses.damage ?? 0) : 0;
   if (defHealBonus) rawDamage = Math.max(0, rawDamage + defHealBonus);
@@ -532,8 +553,8 @@ export function resolveAttack(params) {
   const elementalDamage = Math.floor(rawDamage * elemMult);
   const chantedDamage = Math.floor(Math.floor(elementalDamage * chantModifier) * damageMultiplier);
 
-  // Hit and crit chances
-  const hitChance = Math.max(0, modAccuracy - modDefenderEvasion);
+  // Hit and crit chances (clamped 5–99: always a small chance to hit or miss)
+  const hitChance = Math.min(99, Math.max(5, modAccuracy - modDefenderEvasion));
   const critChance = Math.max(0, modCritical - modDefenderCritAvoid);
 
   return {
@@ -610,7 +631,9 @@ export async function executeCombatRolls(result, attackerSystem, defenderActor, 
 
   // Compute final damage
   let dmg = result.chantedDamage;
-  if (result.critHit) dmg *= 2;
+  // Axes (Brutal): crits deal ×2.5 instead of ×2
+  const atkGrants = attackerSystem?._ruleCache?.grants ?? {};
+  if (result.critHit) dmg = atkGrants.brutalCrit ? Math.floor(dmg * 2.5) : dmg * 2;
   if (result.blocked) dmg = Math.floor(dmg * 0.5);
 
   // (Impair and Expose are applied during resolveAttack, not here)
@@ -705,13 +728,11 @@ export async function applyDamageFromChat(event, buttonEl) {
     }
   }
 
-  // Pillage passive: auto-loot on enemy down
+  // Loot resolution: Eiress + Pillage + Party Loot
   if (wasJustDowned && game.combat?.started) {
     const attackerTokenId = btn.dataset.attackerTokenId;
     const attackerToken = attackerTokenId ? canvas.tokens?.get(attackerTokenId) : null;
-    if (attackerToken?.actor && actorHasPillage(attackerToken.actor)) {
-      await triggerPillage(attackerToken.actor, attackerToken, token.actor, token);
-    }
+    await triggerLootResolution(token.actor, token, attackerToken?.actor ?? null, attackerToken ?? null);
   }
 
   // Trigger rules: on-defeat effects for the attacker
@@ -899,7 +920,7 @@ export function resolveSteal(attackerActor, defenderActor, accuracy, defenderEva
   if (!hit) return { hit: false, hitRoll, hitChance };
 
   const lootTable = defenderActor?.system?.lootTable ?? [];
-  const hasAvailable = lootTable.some(e => !e.stolen && e.itemName);
+  const hasAvailable = lootTable.some(e => !e.stolen && defenderActor.items.get(e.itemId));
 
   if (!hasAvailable) return { hit: true, hitRoll, hitChance, stolen: false, noLoot: true };
 
@@ -909,14 +930,16 @@ export function resolveSteal(attackerActor, defenderActor, accuracy, defenderEva
   // Roll against each entry's chance + LUK, first success wins
   for (let i = 0; i < lootTable.length; i++) {
     const entry = lootTable[i];
-    if (entry.stolen || !entry.itemName) continue;
+    if (entry.stolen) continue;
+    const item = defenderActor.items.get(entry.itemId);
+    if (!item) continue;
     const effectiveChance = Math.min(100, (entry.chance ?? 0) + luk);
     const lootRoll = Math.ceil(Math.random() * 100);
     if (lootRoll <= effectiveChance) {
       return {
         hit: true, hitRoll, hitChance,
         stolen: true, itemIndex: i,
-        itemName: entry.itemName, itemUuid: entry.itemUuid,
+        itemName: item.name, itemUuid: item.uuid, itemImg: item.img ?? "icons/svg/item-bag.svg",
         lootRoll, lootChance: effectiveChance, baseChance: entry.chance, lukBonus: luk
       };
     }
@@ -1056,16 +1079,27 @@ export function resolvePillage(attackerActor, defenderActor) {
     return { pillaged: false, noLoot: true };
   }
 
-  // Pick one random available entry
-  const pick = available[Math.floor(Math.random() * available.length)];
-  return {
-    pillaged: true,
-    noLoot: false,
-    itemIndex: pick.index,
-    itemName: pick.item.name,
-    itemImg: pick.item.img ?? "icons/svg/item-bag.svg",
-    itemUuid: pick.item.uuid ?? ""
-  };
+  // LUK-boosted d100 roll per entry, first success wins
+  const luk = attackerActor?.system?.stats?.luk?.value ?? 0;
+  for (const { index, item, entry } of available) {
+    const effectiveChance = Math.min(100, (entry.chance ?? 0) + luk);
+    const lootRoll = Math.ceil(Math.random() * 100);
+    if (lootRoll <= effectiveChance) {
+      return {
+        pillaged: true,
+        noLoot: false,
+        itemIndex: index,
+        itemName: item.name,
+        itemImg: item.img ?? "icons/svg/item-bag.svg",
+        itemUuid: item.uuid ?? "",
+        lootRoll, lootChance: effectiveChance,
+        baseChance: entry.chance, lukBonus: luk
+      };
+    }
+  }
+
+  // Entries existed but all rolls failed
+  return { pillaged: false, noLoot: false };
 }
 
 /**
@@ -1159,6 +1193,285 @@ export async function applyPillageFromChat(event, buttonEl) {
   btn.disabled = true;
   btn.classList.add("applied");
   btn.innerHTML = `<i class="fas fa-check"></i> ${itemName} transferred!`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EIRESS DISTRIBUTION
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Distribute Eiress from a defeated enemy to the party fund.
+ * Applies role-based multiplier to the base eiressDrop.
+ * @param {Actor} defenderActor - The defeated enemy
+ * @returns {object|null} { amount, base, multiplier, role } or null if no Eiress
+ */
+export async function distributeEiress(defenderActor) {
+  const base = defenderActor?.system?.eiressDrop ?? 0;
+  if (base <= 0) return null;
+
+  const role = defenderActor?.system?.role ?? "standard";
+  const multiplier = CONFIG.MANASHARD.eiressRoleMultipliers?.[role] ?? 1.0;
+  const amount = Math.round(base * multiplier);
+
+  if (amount <= 0) return null;
+
+  const current = game.settings.get("manashard", "partyEiress") ?? 0;
+  await game.settings.set("manashard", "partyEiress", current + amount);
+
+  return { amount, base, multiplier, role };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LOOT RESOLUTION (POST-COMBAT)
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Resolve all loot for a defeated enemy: Pillage priority roll, then party loot rolls.
+ * Each party member rolls d100 vs (entry.chance + their LUK) per loot entry.
+ * First success per player wins (max 1 item per player per enemy).
+ * @param {Actor} defenderActor - The defeated enemy
+ * @param {Actor|null} pillagerActor - The attacker (checked for Pillage passive)
+ * @returns {object} { pillageResult, partyResults: [...], eiressResult }
+ */
+export async function resolvePartyLoot(defenderActor, pillagerActor = null) {
+  const lootTable = defenderActor?.system?.lootTable ?? [];
+  const claimed = new Set(); // indices claimed during this resolution
+
+  // ── Pillage Phase ──
+  let pillageResult = null;
+  if (pillagerActor && actorHasPillage(pillagerActor)) {
+    const pillagerLuk = pillagerActor.system?.stats?.luk?.value ?? 0;
+    for (let i = 0; i < lootTable.length; i++) {
+      const entry = lootTable[i];
+      if (entry.stolen || claimed.has(i)) continue;
+      const item = defenderActor.items.get(entry.itemId);
+      if (!item) continue;
+      const effectiveChance = Math.min(100, (entry.chance ?? 0) + pillagerLuk);
+      const lootRoll = Math.ceil(Math.random() * 100);
+      if (lootRoll <= effectiveChance) {
+        claimed.add(i);
+        pillageResult = {
+          actorId: pillagerActor.id,
+          actorName: pillagerActor.name,
+          actorImg: pillagerActor.img ?? "icons/svg/mystery-man.svg",
+          itemIndex: i, itemName: item.name,
+          itemImg: item.img ?? "icons/svg/item-bag.svg",
+          itemUuid: item.uuid ?? "",
+          lootRoll, lootChance: effectiveChance,
+          baseChance: entry.chance, lukBonus: pillagerLuk,
+          pillaged: true
+        };
+        break; // max 1 item from Pillage
+      }
+    }
+    // If Pillage holder had entries but all rolls failed
+    if (!pillageResult) {
+      const hasEntries = lootTable.some(e => !e.stolen && defenderActor.items.get(e.itemId));
+      pillageResult = {
+        actorId: pillagerActor.id,
+        actorName: pillagerActor.name,
+        actorImg: pillagerActor.img ?? "icons/svg/mystery-man.svg",
+        pillaged: false,
+        noLoot: !hasEntries
+      };
+    }
+  }
+
+  // ── Party Loot Phase ──
+  const memberIds = game.settings.get("manashard", "partyMembers") ?? [];
+  // Shuffle for fairness
+  const shuffled = [...memberIds].sort(() => Math.random() - 0.5);
+
+  const partyResults = [];
+  for (const memberId of shuffled) {
+    // Skip the pillager — they already had priority
+    if (pillagerActor && memberId === pillagerActor.id) continue;
+    const member = game.actors.get(memberId);
+    if (!member || member.type !== "character") continue;
+    // Skip downed members (HP <= 0)
+    if ((member.system?.stats?.hp?.value ?? 0) <= 0) continue;
+
+    const memberLuk = member.system?.stats?.luk?.value ?? 0;
+    let won = false;
+
+    for (let i = 0; i < lootTable.length; i++) {
+      const entry = lootTable[i];
+      if (entry.stolen || claimed.has(i)) continue;
+      const item = defenderActor.items.get(entry.itemId);
+      if (!item) continue;
+      const effectiveChance = Math.min(100, (entry.chance ?? 0) + memberLuk);
+      const lootRoll = Math.ceil(Math.random() * 100);
+      if (lootRoll <= effectiveChance) {
+        claimed.add(i);
+        partyResults.push({
+          actorId: member.id,
+          actorName: member.name,
+          actorImg: member.img ?? "icons/svg/mystery-man.svg",
+          itemIndex: i, itemName: item.name,
+          itemImg: item.img ?? "icons/svg/item-bag.svg",
+          itemUuid: item.uuid ?? "",
+          lootRoll, lootChance: effectiveChance,
+          baseChance: entry.chance, lukBonus: memberLuk,
+          won: true
+        });
+        won = true;
+        break; // max 1 item per player
+      }
+    }
+
+    if (!won) {
+      partyResults.push({
+        actorId: member.id,
+        actorName: member.name,
+        actorImg: member.img ?? "icons/svg/mystery-man.svg",
+        won: false
+      });
+    }
+  }
+
+  // ── Eiress Phase ──
+  const eiressResult = await distributeEiress(defenderActor);
+
+  return { pillageResult, partyResults, eiressResult };
+}
+
+/**
+ * Orchestrate full loot resolution when an enemy is downed.
+ * Called from applyDamageFromChat when HP reaches 0.
+ * @param {Actor} defenderActor - The defeated enemy
+ * @param {Token} defenderToken - The enemy's token
+ * @param {Actor|null} attackerActor - The attacker (for Pillage check)
+ * @param {Token|null} attackerToken - The attacker's token
+ */
+export async function triggerLootResolution(defenderActor, defenderToken, attackerActor, attackerToken) {
+  if (!defenderActor || defenderActor.type !== "threat") return;
+
+  const result = await resolvePartyLoot(defenderActor, attackerActor);
+
+  // Check if there's anything to show
+  const hasEiress = result.eiressResult && result.eiressResult.amount > 0;
+  const hasPillage = result.pillageResult !== null;
+  const hasPartyLoot = result.partyResults.length > 0;
+
+  if (!hasEiress && !hasPillage && !hasPartyLoot) return;
+
+  // Build awards array for the Apply button (only successful claims)
+  const awards = [];
+  if (result.pillageResult?.pillaged) {
+    awards.push({
+      actorId: result.pillageResult.actorId,
+      itemIndex: result.pillageResult.itemIndex,
+      itemUuid: result.pillageResult.itemUuid,
+      itemName: result.pillageResult.itemName
+    });
+  }
+  for (const pr of result.partyResults) {
+    if (pr.won) {
+      awards.push({
+        actorId: pr.actorId,
+        itemIndex: pr.itemIndex,
+        itemUuid: pr.itemUuid,
+        itemName: pr.itemName
+      });
+    }
+  }
+
+  const templateData = {
+    defenderImg: defenderActor.img ?? "icons/svg/mystery-man.svg",
+    defenderName: defenderActor.name,
+    targetTokenId: defenderToken?.id ?? "",
+    targetActorId: defenderActor.id,
+    hasEiress,
+    eiress: result.eiressResult,
+    hasPillage,
+    pillage: result.pillageResult,
+    hasPartyLoot,
+    partyResults: result.partyResults,
+    hasAwards: awards.length > 0,
+    awardsJson: JSON.stringify(awards)
+  };
+
+  const chatContent = await foundry.applications.handlebars.renderTemplate(
+    "systems/manashard/templates/chat/loot-result.hbs",
+    templateData
+  );
+
+  await ChatMessage.create({
+    speaker: { alias: defenderActor.name },
+    content: chatContent
+  });
+}
+
+/**
+ * Apply all loot awards from a loot result chat card button click.
+ * Marks entries as stolen on the defender and creates items on recipients.
+ * @param {Event} event - Click event from the chat button
+ * @param {HTMLElement} [buttonEl] - The button element
+ */
+export async function applyLootFromChat(event, buttonEl) {
+  event.preventDefault();
+  const btn = buttonEl ?? event.currentTarget;
+  const targetTokenId = btn.dataset.targetTokenId;
+  const targetActorId = btn.dataset.targetActorId;
+  const awardsJson = btn.dataset.awards || "[]";
+
+  let awards;
+  try { awards = JSON.parse(awardsJson); } catch { awards = []; }
+  if (awards.length === 0) {
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fas fa-check"></i> No items to distribute`;
+    return;
+  }
+
+  // Find target actor (prefer token, fall back to actor)
+  const targetToken = targetTokenId ? canvas.tokens?.get(targetTokenId) : null;
+  const targetActor = targetToken?.actor ?? (targetActorId ? game.actors.get(targetActorId) : null);
+
+  if (!targetActor) {
+    ui.notifications.warn("Target actor not found.");
+    return;
+  }
+
+  // Mark loot entries as stolen (batch update)
+  const lootTable = foundry.utils.deepClone(targetActor.system.lootTable ?? []);
+  for (const award of awards) {
+    if (lootTable[award.itemIndex]) {
+      lootTable[award.itemIndex].stolen = true;
+    }
+  }
+  await targetActor.update({ "system.lootTable": lootTable });
+
+  // Create items on each recipient
+  for (const award of awards) {
+    const recipient = game.actors.get(award.actorId);
+    if (!recipient) continue;
+
+    if (award.itemUuid) {
+      try {
+        const sourceItem = await fromUuid(award.itemUuid);
+        if (sourceItem) {
+          await recipient.createEmbeddedDocuments("Item", [sourceItem.toObject()]);
+        } else {
+          await recipient.createEmbeddedDocuments("Item", [{
+            name: award.itemName, type: "consumable", img: "icons/svg/item-bag.svg"
+          }]);
+        }
+      } catch {
+        await recipient.createEmbeddedDocuments("Item", [{
+          name: award.itemName, type: "consumable", img: "icons/svg/item-bag.svg"
+        }]);
+      }
+    } else {
+      await recipient.createEmbeddedDocuments("Item", [{
+        name: award.itemName, type: "consumable", img: "icons/svg/item-bag.svg"
+      }]);
+    }
+  }
+
+  // Visual feedback
+  btn.disabled = true;
+  btn.classList.add("applied");
+  btn.innerHTML = `<i class="fas fa-check"></i> Loot distributed!`;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1301,7 +1614,7 @@ export async function applyConsumableFromChat(event, btn) {
   let targetToken = targetTokenId ? canvas.tokens?.get(targetTokenId) : null;
   const userActor = game.actors.get(userActorId);
   if (!targetToken && userActor) {
-    targetToken = canvas.tokens?.placeables.find(t => t.actor?.id === userActor.id);
+    targetToken = userActor.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === userActor.id);
   }
   if (!targetToken?.actor) {
     ui.notifications.warn("Target token not found on the canvas.");

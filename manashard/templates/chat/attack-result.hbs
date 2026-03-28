@@ -138,6 +138,8 @@
             <span class="acc-badge acc-badge-retaliatory"><span class="acc-badge-dot"></span>RETALIATORY</span>
           {{else if isBarrier}}
             <span class="acc-badge acc-badge-barrier"><span class="acc-badge-dot"></span>BARRIER</span>
+          {{else if (eq damageType "none")}}
+            <span class="acc-badge acc-badge-none"><span class="acc-badge-dot"></span>NONE</span>
           {{else if (eq damageType "physical")}}
             <span class="acc-badge acc-badge-physical"><span class="acc-badge-dot"></span>PHYSICAL</span>
           {{else}}
@@ -337,12 +339,6 @@
       </div>
     </div>
     {{/if}}
-  </div>
-
-  {{!-- ═══ INSPECT HINT ═══ --}}
-  <div class="acc-inspect-hint">
-    <span class="acc-hint-key">Right-click</span>
-    <span>to inspect formulas</span>
   </div>
 
 </div>

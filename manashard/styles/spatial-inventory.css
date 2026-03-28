@@ -4,15 +4,15 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .spatial-inventory {
-  --si-bg: var(--manashard-bg-dark, #060a0d);
-  --si-surface: var(--manashard-bg-mid, #0b1216);
-  --si-surface-light: var(--manashard-bg-light, #0e171d);
-  --si-border: var(--manashard-border, #1a2a32);
-  --si-text: var(--manashard-text, #e0f0ea);
-  --si-text-dim: var(--manashard-text-dim, #7a9a8e);
-  --si-text-label: var(--manashard-text-label, #4a7a6a);
-  --si-accent: var(--manashard-accent, #00e4a0);
-  --si-accent-glow: var(--manashard-accent-glow, rgba(0, 228, 160, 0.4));
+  --si-bg: var(--manashard-bg-dark, #1a1520);
+  --si-surface: var(--manashard-bg-mid, #211b2a);
+  --si-surface-light: var(--manashard-bg-light, #2a2335);
+  --si-border: var(--manashard-border, #3d3250);
+  --si-text: var(--manashard-text, #ede4d4);
+  --si-text-dim: var(--manashard-text-dim, #b8a898);
+  --si-text-label: var(--manashard-text-label, #9a8b7a);
+  --si-accent: var(--manashard-accent, #d4a030);
+  --si-accent-glow: var(--manashard-accent-glow, rgba(212, 160, 48, 0.35));
 }
 
 /* ─── Window Chrome ───────────────────────────────────────── */
@@ -83,7 +83,7 @@
 
 .spatial-inventory .spatial-tab:hover {
   color: var(--si-text) !important;
-  background: rgba(0, 228, 160, 0.04) !important;
+  background: rgba(212, 160, 48, 0.04) !important;
 }
 
 .spatial-inventory .spatial-tab.active {
@@ -251,7 +251,7 @@
 }
 
 .spatial-inventory .spatial-action-btn.retrieve:hover {
-  background: rgba(0, 228, 160, 0.08) !important;
+  background: rgba(212, 160, 48, 0.07) !important;
 }
 
 
@@ -285,7 +285,7 @@
 
 .stow-spatial {
   font-size: 11px;
-  color: var(--manashard-text-dim, #7a9a8e);
+  color: var(--manashard-text-dim, #b8a898);
   opacity: 0.5;
   transition: all 0.15s ease;
   cursor: pointer;
@@ -293,14 +293,14 @@
 }
 
 .stow-spatial:hover {
-  color: var(--manashard-accent, #00e4a0);
+  color: var(--manashard-accent, #d4a030);
   opacity: 1;
-  text-shadow: 0 0 6px var(--manashard-accent-glow, rgba(0, 228, 160, 0.4));
+  text-shadow: 0 0 6px var(--manashard-accent-glow, rgba(212, 160, 48, 0.35));
 }
 
 /* Spatial inventory open button in inventory header */
 .spatial-inv-btn {
-  color: var(--manashard-accent, #00e4a0) !important;
+  color: var(--manashard-accent, #d4a030) !important;
   opacity: 0.7;
   transition: all 0.15s ease;
   margin-left: 4px;
@@ -308,5 +308,5 @@
 
 .spatial-inv-btn:hover {
   opacity: 1;
-  text-shadow: 0 0 8px var(--manashard-accent-glow, rgba(0, 228, 160, 0.4));
+  text-shadow: 0 0 8px var(--manashard-accent-glow, rgba(212, 160, 48, 0.35));
 }

@@ -32,7 +32,8 @@ export class ManashardActor extends Actor {
     if (this.type === "character") {
       this.updateSource({
         "prototypeToken.actorLink": true,
-        "prototypeToken.disposition": disposition
+        "prototypeToken.disposition": disposition,
+        "prototypeToken.displayBars": 50
       });
     } else if (this.type === "trap") {
       // Traps: hidden by default, no vision, no bars
@@ -48,14 +49,15 @@ export class ManashardActor extends Actor {
     } else {
       this.updateSource({
         "prototypeToken.actorLink": false,
-        "prototypeToken.disposition": disposition
+        "prototypeToken.disposition": disposition,
+        "prototypeToken.displayBars": 50
       });
     }
 
     // Enable vision on prototype token with base range, lock rotation.
     // sight.range is in distance units; Foundry adds token-edge padding internally.
     const initSize = this.system?.size ?? 1;
-    const baseVision = this.isNpcType && initSize >= 4 ? 5 : 4;
+    const baseVision = this.isNpcType && initSize >= 4 ? 7 : 6;
     this.updateSource({
       "prototypeToken.sight.enabled": true,
       "prototypeToken.sight.range": baseVision,
@@ -418,7 +420,7 @@ export class ManashardActor extends Actor {
     data.peva = system.peva ?? 0;
     data.meva = system.meva ?? 0;
     data.critAvoid = system.critAvoid ?? 0;
-    data.mov = system.mov ?? 5;
+    data.mov = system.mov ?? 6;
     data.mpRegen = system.mpRegen ?? 0;
     data.carryingCapacity = system.carryingCapacity ?? 0;
 
@@ -488,7 +490,7 @@ export class ManashardActor extends Actor {
     const maxRange = rangeType === "melee" ? (this.system.reach ?? 1) : (weapon?.system?.maxRange ?? 1);
     const throwRange = this.system.throwRange ?? 0;
     const canThrow = rangeType === "melee" && throwRange > 0;
-    const attackerToken = canvas.tokens?.placeables.find(t => t.actor?.id === this.id);
+    const attackerToken = this.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === this.id);
     let attackDistance = Infinity;
     if (targetTokenId) {
       const targetToken = canvas.tokens?.get(targetTokenId);
@@ -517,11 +519,15 @@ export class ManashardActor extends Actor {
     if (weaponOverride) {
       const stats = system.stats;
       const wpnMight = weapon?.system?.might ?? 0;
-      const wpnHit = weapon?.system?.hit ?? 70;
       const wpnCrit = weapon?.system?.crit ?? 0;
-      const scalingStat = damageType === "magical" ? (stats?.mag?.value ?? 0) : (stats?.str?.value ?? 0);
-      baseDamage = wpnMight + scalingStat;
-      accuracy = (stats?.agi?.value ?? 0) * 2 + wpnHit;
+      // Swords (Versatile): physical damage uses max(STR, AGI)
+      const wpnCat = weapon?.system?.category;
+      const physStat = (damageType !== "magical" && wpnCat === "swords")
+        ? Math.max(stats?.str?.value ?? 0, stats?.agi?.value ?? 0)
+        : (stats?.str?.value ?? 0);
+      const scalingStat = damageType === "magical" ? (stats?.mag?.value ?? 0) : physStat;
+      baseDamage = (scalingStat * 2) + wpnMight;
+      accuracy = 80 + (stats?.agi?.value ?? 0) * 2;
       critical = (stats?.luk?.value ?? 0) * 2 + wpnCrit;
     } else {
       baseDamage = system.damage ?? 0;
@@ -547,6 +553,7 @@ export class ManashardActor extends Actor {
       weaponItemId: weapon?.id ?? null,
       weaponCategory: weapon?.system?.category ?? null,
       attackerActorId: this.id,
+      attackerTokenId: attackerToken?.id ?? null,
       targetTokenId
     });
 
@@ -703,7 +710,7 @@ export class ManashardActor extends Actor {
 
     // Determine element and damage type from skill
     const element = skill.element || "";
-    const damageType = skill.damageType || (element ? "magical" : "physical");
+    const damageType = skill.damageType || "none";
 
     // ── Range validation ──
     // Weapon-mode skills use the equipped weapon's range; fixed-mode skills use the skill's own minRange/maxRange
@@ -731,7 +738,7 @@ export class ManashardActor extends Actor {
     }
 
     let skillAttackDistance = Infinity;
-    const attackerToken = canvas.tokens?.placeables.find(t => t.actor?.id === this.id);
+    const attackerToken = this.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === this.id);
     if (targetTokenId && !skipRangeCheck) {
       const targetToken = canvas.tokens?.get(targetTokenId);
       if (targetToken && attackerToken) {
@@ -769,6 +776,11 @@ export class ManashardActor extends Actor {
     // Pick correct defense
     let defValue = damageType === "magical" ? defenderSpi : defenderDef;
 
+    // None damage type: force 0 damage; auto-hit only if skill has no hit mechanics
+    const isNoneDamage = damageType === "none";
+    const noneHasHitMechanics = isNoneDamage && (skill.baseRateMode === "weapon" || (skill.baseRateMode === "fixed" && (skill.skillHit ?? 0) > 0));
+    const noneAutoHit = isNoneDamage && !noneHasHitMechanics;
+
     // Healing / Barrier / Retaliatory: skip defense (unless target is Undead for healing)
     const isHealing = skill.isHealing ?? false;
     const isBarrier = skill.isBarrier ?? false;
@@ -805,7 +817,7 @@ export class ManashardActor extends Actor {
         const buffFilter = skillSys.aoeTargetFilter || "allies";
 
         if (buffRadius > 0 && canvas?.tokens) {
-          const casterToken = canvas.tokens.placeables.find(t => t.actor?.id === this.id);
+          const casterToken = this.token?.object ?? canvas.tokens.placeables.find(t => t.actor?.id === this.id);
           if (casterToken) {
             for (const t of canvas.tokens.placeables) {
               if (!t.actor || t.actor.id === this.id) continue;
@@ -860,7 +872,7 @@ export class ManashardActor extends Actor {
 
     const defSys = defenderActor?.system;
     const targetIsUndead = defSys?.creatureType?.includes?.("undead") ?? false;
-    if ((isHealing && !targetIsUndead) || isBarrier) {
+    if ((isHealing && !targetIsUndead) || isBarrier || isNoneDamage) {
       defValue = 0;
     }
 
@@ -876,30 +888,34 @@ export class ManashardActor extends Actor {
       accuracy = (accStat * 2) + skillHit;
     }
 
+    // None damage type: force 0 baseDamage so no HP change occurs
+    const effectiveBaseDamage = isNoneDamage ? 0 : baseDamage;
+
     // Resolve attack values
     const result = resolveAttack({
       attackerSystem: system,
       defenderActor,
       element,
       damageType,
-      baseDamage,
+      baseDamage: effectiveBaseDamage,
       accuracy,
       critical: system.critical ?? 0,
-      defenderEvasion: (isHealing && !targetIsUndead) || isBarrier ? 0 : defenderEvasion,
+      defenderEvasion: (isHealing && !targetIsUndead) || isBarrier || noneAutoHit ? 0 : defenderEvasion,
       defenderDef: defValue,
-      defenderCritAvoid: (isHealing && !targetIsUndead) || isBarrier ? 0 : defenderCritAvoid,
-      defenderBlockChance: isHealing || isBarrier ? 0 : defenderBlockChance,
+      defenderCritAvoid: (isHealing && !targetIsUndead) || isBarrier || noneAutoHit ? 0 : defenderCritAvoid,
+      defenderBlockChance: isHealing || isBarrier || isNoneDamage ? 0 : defenderBlockChance,
       chantModifier,
       isInitiator,
       isHealing,
       weaponItemId: itemId,
       weaponCategory: equippedWeapon?.system?.category ?? null,
       attackerActorId: this.id,
+      attackerTokenId: attackerToken?.id ?? null,
       targetTokenId
     });
 
-    // Healing / Barrier is auto-hit (unless target is Undead for healing)
-    if ((isHealing && !targetIsUndead) || isBarrier) {
+    // Healing / Barrier / None (without hit mechanics) is auto-hit
+    if ((isHealing && !targetIsUndead) || isBarrier || noneAutoHit) {
       result.hitChance = 100;
       result.blockChance = 0;
     }
@@ -927,7 +943,7 @@ export class ManashardActor extends Actor {
 
         if (buffRadius > 0 && canvas?.tokens) {
           // AoE buff: apply to all matching tokens within radius of caster
-          const casterToken = canvas.tokens.placeables.find(t => t.actor?.id === this.id);
+          const casterToken = this.token?.object ?? canvas.tokens.placeables.find(t => t.actor?.id === this.id);
           if (casterToken) {
             for (const t of canvas.tokens.placeables) {
               if (!t.actor || t.actor.id === this.id) continue;
@@ -1105,7 +1121,7 @@ export class ManashardActor extends Actor {
 
     // Determine element and damage type from skill
     const element = skill.element || "";
-    const damageType = skill.damageType || (element ? "magical" : "physical");
+    const damageType = skill.damageType || "none";
 
     // Compute base damage ONCE (shared across all targets)
     const isWeaponMode = skill.baseRateMode === "weapon";
@@ -1139,6 +1155,9 @@ export class ManashardActor extends Actor {
     const isHealing = skill.isHealing ?? false;
     const isBarrier = skill.isBarrier ?? false;
     const isRetaliatory = skill.isRetaliatory ?? false;
+    const isNoneDamage = damageType === "none";
+    const noneHasHitMechanics = isNoneDamage && (skill.baseRateMode === "weapon" || (skill.baseRateMode === "fixed" && (skill.skillHit ?? 0) > 0));
+    const noneAutoHit = isNoneDamage && !noneHasHitMechanics;
     const isInitiator = game.combat?.combatant?.actorId === this.id;
 
     // ── Retaliatory AoE early-return: apply buff to all targets, no damage rolls ──
@@ -1231,19 +1250,19 @@ export class ManashardActor extends Actor {
       const defenderSpi = defSys?.mdef ?? 0;
       let defValue = damageType === "magical" ? defenderSpi : defenderDef;
 
-      // Healing: skip defense unless target is Undead
+      // Healing / None: skip defense unless target is Undead
       const targetIsUndead = defSys?.creatureType?.includes?.("undead") ?? false;
-      if ((isHealing && !targetIsUndead) || isBarrier) defValue = 0;
+      if ((isHealing && !targetIsUndead) || isBarrier || isNoneDamage) defValue = 0;
 
       const result = resolveAttack({
         attackerSystem: system,
         defenderActor,
         element,
         damageType,
-        baseDamage,
+        baseDamage: isNoneDamage ? 0 : baseDamage,
         accuracy,
         critical: system.critical ?? 0,
-        defenderEvasion: (isHealing && !targetIsUndead) || isBarrier ? 0 : defenderEvasion,
+        defenderEvasion: (isHealing && !targetIsUndead) || isBarrier || noneAutoHit ? 0 : defenderEvasion,
         defenderDef: defValue,
         defenderCritAvoid: 0,
         defenderBlockChance: 0,
@@ -1253,11 +1272,12 @@ export class ManashardActor extends Actor {
         weaponItemId: itemId,
         weaponCategory: equippedWeapon?.system?.category ?? null,
         attackerActorId: this.id,
+        attackerTokenId: this.token?.object?.id ?? null,
         targetTokenId: token?.id ?? null
       });
 
-      // Healing / Barrier auto-hit
-      if ((isHealing && !targetIsUndead) || isBarrier) {
+      // Healing / Barrier / None (without hit mechanics) auto-hit
+      if ((isHealing && !targetIsUndead) || isBarrier || noneAutoHit) {
         result.hitChance = 100;
         result.blockChance = 0;
       }
@@ -1322,7 +1342,7 @@ export class ManashardActor extends Actor {
     const totalCount = targetResults.length;
 
     // Attacker token ID for retaliation
-    const aoeAttackerToken = canvas.tokens?.placeables.find(t => t.actor?.id === this.id);
+    const aoeAttackerToken = this.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === this.id);
     const aoeAttackerTokenId = aoeAttackerToken?.id ?? "";
 
     // Shape labels
@@ -1640,7 +1660,7 @@ export class ManashardActor extends Actor {
     }
 
     // Resolve target
-    const selfToken = canvas.tokens?.placeables.find(t => t.actor?.id === this.id);
+    const selfToken = this.token?.object ?? canvas.tokens?.placeables.find(t => t.actor?.id === this.id);
     const targetType = item.system.targetType ?? "self";
     let targetToken = null;
     let targetName = this.name;

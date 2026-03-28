@@ -111,8 +111,8 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       // Core stats — no growth rates for NPCs
       stats: new SchemaField({
         hp: new SchemaField({
-          value: new NumberField({ required: true, integer: true, min: 0, initial: 20 }),
-          max: new NumberField({ required: true, integer: true, min: 0, initial: 20 }),
+          value: new NumberField({ required: true, integer: true, min: 0, initial: 15 }),
+          max: new NumberField({ required: true, integer: true, min: 0, initial: 15 }),
           barrier: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
         }),
         mp: new SchemaField({
@@ -120,22 +120,22 @@ export class NpcData extends foundry.abstract.TypeDataModel {
           max: new NumberField({ required: true, integer: true, min: 0, initial: 4 })
         }),
         str: new SchemaField({
-          value: new NumberField({ required: true, integer: true, min: 0, initial: 5 })
+          value: new NumberField({ required: true, integer: true, min: 0, initial: 3 })
         }),
         agi: new SchemaField({
-          value: new NumberField({ required: true, integer: true, min: 0, initial: 4 })
+          value: new NumberField({ required: true, integer: true, min: 0, initial: 3 })
         }),
         mag: new SchemaField({
           value: new NumberField({ required: true, integer: true, min: 0, initial: 1 })
         }),
         end: new SchemaField({
-          value: new NumberField({ required: true, integer: true, min: 0, initial: 3 })
+          value: new NumberField({ required: true, integer: true, min: 0, initial: 2 })
         }),
         spi: new SchemaField({
           value: new NumberField({ required: true, integer: true, min: 0, initial: 1 })
         }),
         luk: new SchemaField({
-          value: new NumberField({ required: true, integer: true, min: 0, initial: 2 })
+          value: new NumberField({ required: true, integer: true, min: 0, initial: 1 })
         }),
         int: new SchemaField({
           value: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
@@ -146,7 +146,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       }),
 
       // MOV set directly for NPCs
-      mov: new NumberField({ required: true, integer: true, min: 0, initial: 5 }),
+      mov: new NumberField({ required: true, integer: true, min: 0, initial: 6 }),
 
       // Movement Modes (GM-editable)
       movementModes: new ArrayField(new StringField(), { required: true, initial: ["walk"] }),
@@ -251,15 +251,17 @@ export class NpcData extends foundry.abstract.TypeDataModel {
 
     // Weapon stats
     const weaponMight = equippedWeapon?.might ?? 0;
-    const weaponHit = equippedWeapon?.hit ?? 70;
     const weaponCrit = equippedWeapon?.crit ?? 0;
     const weaponDamageType = equippedWeapon?.damageType ?? "physical";
 
-    this.damage = weaponMight + (weaponDamageType === "magical" ? stats.mag.value : stats.str.value);
-    this.accuracy = (stats.agi.value * 2) + weaponHit;
+    // Swords (Versatile): physical damage uses max(STR, AGI)
+    const weaponCategory = equippedWeapon?.category ?? null;
+    const physScaling = weaponCategory === "swords" ? Math.max(stats.str.value, stats.agi.value) : stats.str.value;
+    this.damage = (weaponDamageType === "magical" ? stats.mag.value * 2 : physScaling * 2) + weaponMight;
+    this.accuracy = 80 + (stats.agi.value * 2);
     this.critical = (stats.luk.value * 2) + weaponCrit;
-    this.peva = stats.agi.value * 2;
-    this.meva = stats.spi.value * 2;
+    this.peva = stats.agi.value;
+    this.meva = stats.spi.value;
     this.critAvoid = stats.luk.value * 2;
 
     this.armorPdef = equippedArmor?.pdef ?? 0;
@@ -282,8 +284,8 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     // Throw Range (default 0, granted by passives like Telekinesis)
     this.throwRange = 0;
 
-    // Vision: base 4, huge creatures (size 4+) get 5
-    this.vision = this.size >= 4 ? 5 : 4;
+    // Vision: base 6, huge creatures (size 4+) get 7
+    this.vision = this.size >= 4 ? 7 : 6;
 
     // Movement Modes (start from persisted array, grants can add more)
     this._movementModes = new Set(this.movementModes);

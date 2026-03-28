@@ -3,14 +3,14 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .character-creation-wizard {
-  --wizard-bg: #1a1a2e;
-  --wizard-surface: #16213e;
-  --wizard-surface-light: #1c2a4a;
-  --wizard-border: #2a3a5e;
-  --wizard-text: #e0e0e0;
-  --wizard-text-dim: #8899aa;
-  --wizard-accent: #4fc3f7;
-  --wizard-accent-glow: rgba(79, 195, 247, 0.3);
+  --wizard-bg: #1a1520;
+  --wizard-surface: #211b2a;
+  --wizard-surface-light: #2a2335;
+  --wizard-border: #3d3250;
+  --wizard-text: #ede4d4;
+  --wizard-text-dim: #b8a898;
+  --wizard-accent: #d4a030;
+  --wizard-accent-glow: rgba(212, 160, 48, 0.35);
   --wizard-success: #66bb6a;
   --wizard-warning: #ffa726;
   --wizard-danger: #ef5350;
@@ -628,13 +628,13 @@
 .skill-filter-btn.filter-art.active {
   background: var(--wizard-gold);
   border-color: var(--wizard-gold);
-  color: #1a1a2e;
+  color: #1a1520;
 }
 
 .skill-filter-btn.filter-passive.active {
   background: #ce93d8;
   border-color: #ce93d8;
-  color: #1a1a2e;
+  color: #1a1520;
 }
 
 .skill-catalog-status {
@@ -1685,8 +1685,8 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .portrait-adjuster-app .window-content {
-  background: #1a1a2e;
-  color: #e0e0e0;
+  background: #1a1520;
+  color: #ede4d4;
   padding: 16px;
 }
 
@@ -1699,7 +1699,7 @@
 
 .pa-hint {
   font-size: 11px;
-  color: #8899aa;
+  color: #b8a898;
   margin: 0;
 }
 
@@ -1750,10 +1750,10 @@
 .pa-icon-btn {
   width: 32px;
   height: 32px;
-  border: 1px solid #2a3a5e;
+  border: 1px solid #3d3250;
   border-radius: 4px;
-  background: #16213e;
-  color: #8899aa;
+  background: #211b2a;
+  color: #b8a898;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1763,9 +1763,9 @@
 }
 
 .pa-icon-btn:hover {
-  background: #1c2a4a;
+  background: #2a2335;
   border-color: #4fc3f7;
-  color: #e0e0e0;
+  color: #ede4d4;
 }
 
 .pa-icon-btn.active {
@@ -1783,18 +1783,18 @@
 .pa-btn {
   flex: 1;
   padding: 8px 12px;
-  border: 1px solid #2a3a5e;
+  border: 1px solid #3d3250;
   border-radius: 4px;
-  background: #16213e;
-  color: #e0e0e0;
-  font-family: 'Exo 2', sans-serif;
+  background: #211b2a;
+  color: #ede4d4;
+  font-family: 'Alegreya Sans', sans-serif;
   font-size: 12px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
 
 .pa-btn:hover {
-  background: #1c2a4a;
+  background: #2a2335;
   border-color: #4fc3f7;
 }
 

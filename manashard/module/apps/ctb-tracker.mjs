@@ -42,7 +42,8 @@ export class CTBTracker extends foundry.applications.sidebar.tabs.CombatTracker 
       toggleSection: CTBTracker.#onToggleSection,
       toggleAmbush: CTBTracker.#onToggleAmbush,
       endTurn: CTBTracker.#onEndTurn,
-      selectCombatant: CTBTracker.#onSelectCombatant
+      selectCombatant: CTBTracker.#onSelectCombatant,
+      raiseHand: CTBTracker.#onRaiseHand
     }
   };
 
@@ -112,12 +113,19 @@ export class CTBTracker extends foundry.applications.sidebar.tabs.CombatTracker 
         const mp = currentCombatant.actor?.system?.stats?.mp;
         const hpBarrier = hp?.barrier ?? 0;
         const hpPct = (hp?.max > 0) ? Math.round(hp.value / hp.max * 100) : 100;
+        // HP bar color: green→yellow→red gradient based on percentage
+        const hpFrac = hpPct / 100;
+        const hpR = hpFrac > 0.5 ? Math.round((1 - hpFrac) * 2 * 255) : 255;
+        const hpG = hpFrac > 0.5 ? 255 : Math.round(hpFrac * 2 * 255);
+        const hpRD = Math.round(hpR * 0.75);
+        const hpGD = Math.round(hpG * 0.75);
         context.heroCard = {
           name: currentCombatant.name,
           img: currentCombatant.token?.texture?.src ?? currentCombatant.actor?.img ?? "icons/svg/mystery-man.svg",
           hpValue: hp?.value ?? 0,
           hpMax: hp?.max ?? 0,
           hpPercent: hpPct,
+          hpColor: `linear-gradient(90deg, rgb(${hpRD},${hpGD},0), rgb(${hpR},${hpG},0))`,
           hpBarrier: hpBarrier,
           hpBarrierPercent: (hpBarrier > 0 && hp?.max > 0) ? Math.min(hpPct, Math.round(hpBarrier / hp.max * 100)) : 0,
           hpBarrierRight: 100 - hpPct,
@@ -272,14 +280,21 @@ export class CTBTracker extends foundry.applications.sidebar.tabs.CombatTracker 
 
   static async #onEndTurn(event, target) {
     const combat = this.viewed;
-    if (combat?.started) await combat.nextTurn();
+    if (combat?.started) await combat.requestEndTurn();
   }
 
   static async #onSelectCombatant(event, target) {
     const combat = this.viewed;
-    if (!combat?.started) return;
+    if (!combat?.started || !game.user.isGM) return;
     const combatantId = target.dataset.combatantId;
     if (combatantId) await combat.selectCombatant(combatantId);
+  }
+
+  static async #onRaiseHand(event, target) {
+    const combat = this.viewed;
+    if (!combat?.started) return;
+    const combatantId = target.dataset.combatantId;
+    if (combatantId) await combat.requestRaiseHand(combatantId);
   }
 
   // ═══════════════════════════════════════════════════════════════

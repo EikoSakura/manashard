@@ -3,7 +3,7 @@
   <div class="pcp-header">
     <i class="fas fa-users pcp-header-icon"></i>
     <span class="pcp-title">Party</span>
-    <span class="pcp-round">R{{round}}</span>
+    {{#if inCombat}}<span class="pcp-round">R{{round}}</span>{{/if}}
     <button type="button" class="pcp-btn" data-action="pcp-collapse" title="{{#if collapsed}}Expand{{else}}Collapse{{/if}}">
       <i class="fas {{#if collapsed}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i>
     </button>
@@ -15,11 +15,11 @@
   {{!-- Member List --}}
   {{#unless collapsed}}
   {{#if empty}}
-  <div class="pcp-empty">No active combat.</div>
+  <div class="pcp-empty">No party members.</div>
   {{else}}
   <div class="pcp-members">
     {{#each members}}
-    <div class="pcp-member {{#if isActive}}pcp-member--active{{/if}} {{#if isDefeated}}pcp-member--defeated{{/if}} {{#if hpCritical}}pcp-member--critical{{/if}}" data-combatant-id="{{id}}">
+    <div class="pcp-member {{#if isActive}}pcp-member--active{{/if}} {{#if isDefeated}}pcp-member--defeated{{/if}} {{#if hpCritical}}pcp-member--critical{{/if}}" data-member-id="{{id}}">
       {{!-- Portrait --}}
       <div class="pcp-portrait">
         <img src="{{img}}" alt="{{name}}" />
@@ -36,7 +36,7 @@
         <div class="pcp-bar-row">
           <span class="pcp-bar-label pcp-hp-label">HP</span>
           <div class="pcp-bar-track">
-            <div class="pcp-bar-fill pcp-hp-fill {{#if hpCritical}}pcp-hp-critical{{/if}}" style="width: {{hpPercent}}%"></div>
+            <div class="pcp-bar-fill pcp-hp-fill {{#if hpCritical}}pcp-hp-critical{{/if}}" style="width: {{hpPercent}}%; background: {{{hpColor}}}"></div>
             {{#if hpBarrier}}
             <div class="pcp-bar-fill pcp-barrier-fill" style="right: {{hpBarrierRight}}%; width: {{hpBarrierPercent}}%"></div>
             {{/if}}

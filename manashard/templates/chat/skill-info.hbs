@@ -25,6 +25,15 @@
     {{/if}}
   </div>
 
+  {{!-- ═══ TARGET LINE ═══ --}}
+  {{#if targetName}}
+  <div class="acc-target-line">
+    <span class="acc-target-arrow">&#9656;</span>
+    <span class="acc-target-label">TARGET</span>
+    <span class="acc-target-name">{{targetName}}</span>
+  </div>
+  {{/if}}
+
   {{!-- ═══ SKILL TYPE BADGES ═══ --}}
   <div class="scc-type-row">
     <span class="scc-type-badge scc-type-{{skillType}}">{{skillType}}</span>

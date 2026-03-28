@@ -85,7 +85,7 @@ export async function syncSenseDetection(actor) {
 
   // Range = actor's Vision stat (derived from SPI + modifiers)
   const raw = actor.system.vision;
-  const visionRange = Number.isFinite(raw) ? raw : 4;
+  const visionRange = Number.isFinite(raw) ? raw : 6;
 
   // Sanitize a detection modes array: ensure every entry has a finite range
   const sanitizeModes = (modes) => modes.map(m => ({

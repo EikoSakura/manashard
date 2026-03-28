@@ -93,7 +93,7 @@ export class PartySheet extends HandlebarsApplicationMixin(ApplicationV2) {
       const level = sys.level ?? 1;
       totalLevel += level;
 
-      const mov = sys.mov ?? 5;
+      const mov = sys.mov ?? 6;
       const dmg = sys.damage ?? 0;
       const acc = sys.accuracy ?? 0;
       const peva = sys.peva ?? 0;
