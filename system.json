@@ -2,7 +2,7 @@
   "id": "manashard",
   "title": "Manashard",
   "description": "A grid-based tactical RPG system inspired by Fire Emblem, featuring side-based turns, Job/Manacite progression, and D100 roll-under mechanics.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351",
