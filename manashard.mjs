@@ -30,7 +30,7 @@ import { StatusEffectPanel } from "./module/apps/status-effect-panel.mjs";
 import { TokenInfoConfig } from "./module/apps/token-info-config.mjs";
 import { CreationConfig } from "./module/apps/creation-config.mjs";
 import { PartySheet } from "./module/apps/party-sheet.mjs";
-import { PartyCompositionPanel } from "./module/apps/party-comp-panel.mjs";
+import { PartyHUD } from "./module/apps/party-hud.mjs";
 import { CompendiumBrowser } from "./module/apps/compendium-browser.mjs";
 import { ManaciteManager } from "./module/apps/manacite-manager.mjs";
 import { SpatialInventory } from "./module/apps/spatial-inventory.mjs";
@@ -71,7 +71,7 @@ Hooks.once("init", () => {
     PartySheet,
     tokenInfoPanel: new TokenInfoPanel(),
     statusEffectPanel: new StatusEffectPanel(),
-    partyCompPanel: null  // Initialized on "ready" after settings are registered
+    partyHUD: null  // Initialized on "ready" after settings are registered
   };
 
   // Register party members setting
@@ -80,7 +80,7 @@ Hooks.once("init", () => {
     config: false,
     type: Array,
     default: [],
-    onChange: () => game.manashard?.partyCompPanel?.refresh()
+    onChange: () => { game.manashard?.partyHUD?.refresh(); }
   });
 
   // Party name (editable group name)
@@ -208,12 +208,11 @@ Hooks.once("init", () => {
     }
   };
 
-  // Register Party Composition Panel position setting (client-scoped)
-  game.settings.register("manashard", "partyCompPosition", {
+  game.settings.register("manashard", "partyHudState", {
     scope: "client",
     config: false,
     type: Object,
-    default: null
+    default: { position: null, mode: "full", minimized: false }
   });
 
   // VS Splash animation toggle (per-client)
@@ -242,7 +241,7 @@ Hooks.once("init", () => {
   foundry.applications.handlebars.loadTemplates([
     "systems/manashard/templates/apps/token-info-panel.hbs",
     "systems/manashard/templates/apps/party-sheet.hbs",
-    "systems/manashard/templates/apps/party-comp-panel.hbs",
+    "systems/manashard/templates/apps/party-hud.hbs",
     "systems/manashard/templates/apps/status-effect-panel.hbs",
     "systems/manashard/templates/apps/compendium-browser.hbs",
     "systems/manashard/templates/apps/encounter-builder.hbs",
@@ -541,9 +540,9 @@ Hooks.on("preCreateActor", (actor, data, options, userId) => {
 Hooks.once("ready", async () => {
   console.log("Manashard | System Ready");
 
-  // Initialize Party Composition Panel singleton — always visible by default
-  game.manashard.partyCompPanel = new PartyCompositionPanel();
-  game.manashard.partyCompPanel.show();
+  // Party HUD — persistent floating party tracker
+  game.manashard.partyHUD = new PartyHUD();
+  game.manashard.partyHUD.show();
 
   // --- One-time legacy data cleanup (GM only) ---
   if (game.user.isGM) {
@@ -668,7 +667,7 @@ Hooks.once("ready", () => {
   // Right-click context menu: toggle formula panel on attack & stat check cards
   // Use capture phase so this fires before Foundry's native context menu handler
   document.addEventListener("contextmenu", (event) => {
-    const card = event.target.closest(".attack-chat-card") || event.target.closest(".aoe-chat-card") || event.target.closest(".stat-check-card");
+    const card = event.target.closest(".ms-card");
     if (!card) return;
     // Don't intercept if clicking inside the formula panel itself
     if (event.target.closest(".acc-formula-context") || event.target.closest(".sc-formula-context")) return;
@@ -726,27 +725,29 @@ Hooks.on("createCombat", () => {
 
 // Show/refresh panel when combat state changes (start, turn advance, etc.)
 Hooks.on("updateCombat", (combat, changes) => {
-  const panel = game.manashard?.partyCompPanel;
-  if (!panel) return;
+  const hud = game.manashard?.partyHUD;
+  if (!hud) return;
   if (combat?.started) {
-    if (!panel.visible) panel.show();
-    else panel.refresh();
+    if (!hud.visible) hud.show();
+    else hud.refresh();
+  } else {
+    hud.refresh();
   }
 });
 
 // Refresh panel when combat ends (switches back to party roster view)
 Hooks.on("deleteCombat", () => {
-  game.manashard?.partyCompPanel?.refresh();
+  game.manashard?.partyHUD?.refresh();
 });
 
 // Refresh panel when actor HP/MP changes
 Hooks.on("updateActor", () => {
-  game.manashard?.partyCompPanel?.refresh();
+  game.manashard?.partyHUD?.refresh();
 });
 
 // Refresh panel when combatant state changes (defeated, turn advancement, etc.)
 Hooks.on("updateCombatant", () => {
-  game.manashard?.partyCompPanel?.refresh();
+  game.manashard?.partyHUD?.refresh();
 });
 
 /* -------------------------------------------- */
@@ -936,16 +937,16 @@ Hooks.on("getSceneControlButtons", (controls) => {
           _applyGmVision(active);
         }
       },
-      partyComp: {
-        name: "partyComp",
+      partyHud: {
+        name: "partyHud",
         title: "MANASHARD.Controls.PartyComp",
         icon: "fa-solid fa-heart-pulse",
         button: true,
         onChange: () => {
-          const panel = game.manashard?.partyCompPanel;
-          if (!panel) return;
-          if (panel.visible) panel.hide();
-          else panel.show();
+          const hud = game.manashard?.partyHUD;
+          if (!hud) return;
+          if (hud.visible) hud.hide();
+          else hud.show();
         }
       }
     }
@@ -1291,6 +1292,27 @@ function _registerHandlebarsHelpers() {
   // Rule summary helper — generates human-readable description of a rule element
   Handlebars.registerHelper("ruleSummary", (rule) => {
     return ruleSummary(rule);
+  });
+
+  // Fantasy icon helper — renders FA icons or SVG sprite icons
+  // Usage: {{{manashardIcon "gi-fire"}}} or {{{manashardIcon "fas fa-sword"}}}
+  Handlebars.registerHelper("manashardIcon", (iconRef, options) => {
+    if (!iconRef) return "";
+    const hash = options?.hash || {};
+    const cls = hash.class || "";
+    const title = hash.title || "";
+    const titleAttr = title ? ` title="${Handlebars.Utils.escapeExpression(title)}"` : "";
+    if (iconRef.startsWith("gi-")) {
+      // SVG sprite icon
+      const sizeClass = hash.size ? ` gi-${hash.size}` : "";
+      return new Handlebars.SafeString(
+        `<svg class="gi-icon manashard-icon-glow${sizeClass}${cls ? " " + cls : ""}"${titleAttr}><use href="systems/manashard/assets/icons/gi-sprites.svg#${iconRef}"></use></svg>`
+      );
+    }
+    // Font Awesome icon
+    return new Handlebars.SafeString(
+      `<i class="${iconRef}${cls ? " " + cls : ""}"${titleAttr}></i>`
+    );
   });
 
 }

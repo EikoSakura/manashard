@@ -23,7 +23,7 @@
     {{!-- ═══ OBJECTIVE BANNER ═══ --}}
     {{#if objective}}
     <div class="ctb-objective-banner objective-{{objectiveType}} {{#if objective.isComplete}}objective-complete{{/if}} {{#if objective.isFailed}}objective-failed{{/if}} {{#if objective.capturable}}objective-capturable{{/if}}">
-      <i class="{{objectiveIcon}} ctb-objective-icon"></i>
+      {{{manashardIcon objectiveIcon class="ctb-objective-icon"}}}
       <div class="ctb-objective-text">
         <span class="ctb-objective-type">{{objective.label}}</span>
         <span class="ctb-objective-desc">{{objective.description}}</span>
@@ -128,7 +128,7 @@
               {{#if statusIcons.length}}
                 <div class="ct-bar-statuses">
                   {{#each statusIcons}}
-                    <i class="{{icon}} ct-status-icon ct-status-{{key}}" title="{{label}}"></i>
+                    {{{manashardIcon icon class=(concat "ct-status-icon ct-status-" key) title=label}}}
                   {{/each}}
                 </div>
               {{/if}}
@@ -180,13 +180,13 @@
             <div class="ctb-entry-info">
               <span class="ctb-entry-name">
                 {{name}}
-                {{#if roleBadge}}<span class="ctb-role-badge role-{{role}}" title="{{roleBadge}}"><i class="{{roleIcon}}"></i></span>{{/if}}
+                {{#if roleBadge}}<span class="ctb-role-badge role-{{role}}" title="{{roleBadge}}">{{{manashardIcon roleIcon}}}</span>{{/if}}
                 {{#if (gt actionsPerTurn 1)}}<span class="ctb-action-count">{{actionsRemaining}}/{{actionsPerTurn}}</span>{{/if}}
               </span>
               {{#if statusIcons.length}}
                 <div class="ct-bar-statuses">
                   {{#each statusIcons}}
-                    <i class="{{icon}} ct-status-icon ct-status-{{key}}" title="{{label}}"></i>
+                    {{{manashardIcon icon class=(concat "ct-status-icon ct-status-" key) title=label}}}
                   {{/each}}
                 </div>
               {{/if}}

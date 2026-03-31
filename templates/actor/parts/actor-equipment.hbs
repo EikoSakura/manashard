@@ -1,240 +1,179 @@
-<section class="tab-content {{tab.cssClass}}" data-tab="equipment" data-group="primary">
+<section class="tab-content {{tab.cssClass}}" data-tab="equipment">
 
   {{!-- ═══ PAPERDOLL ═══ --}}
-  <div class="paperdoll">
-    <div class="paperdoll-grid">
+  <div class="ms-section">
+    <div class="ms-section-header equip"><div class="sh-gem"></div>Equipment</div>
 
-      {{!-- Top-Left: Main Hand --}}
-      <div class="paperdoll-slot weapon-card {{#unless equippedWeapon}}empty-slot{{/unless}}" data-slot="mainhand">
-        <div class="slot-label">Main Hand</div>
-        {{#if equippedWeapon}}
-        <div class="slot-card-inner" data-item-id="{{equippedWeapon.id}}">
-          <img src="{{equippedWeapon.img}}" class="slot-img" width="40" height="40" data-action="postItemToChat" title="Post to chat" />
-          <div class="slot-info">
-            <span class="slot-name" data-action="editItem">{{equippedWeapon.name}}</span>
-            <span class="slot-stats">Mt {{equippedWeapon.system.might}} | Crit {{equippedWeapon.system.crit}}{{#if mainhandIs2H}} | <strong>2H</strong>{{/if}}</span>
-          </div>
-          <a class="slot-unequip" data-action="toggleEquip" title="Unequip"><i class="fas fa-times"></i></a>
-        </div>
-        {{else}}
-        <div class="slot-empty-state">
-          <i class="fas fa-sword"></i>
-          <span>Unarmed</span>
-        </div>
-        {{/if}}
-      </div>
+    <div class="ms-paperdoll">
 
-      {{!-- Top-Right: Off Hand --}}
-      <div class="paperdoll-slot offhand-card {{#unless equippedOffhand}}empty-slot{{/unless}}{{#if mainhandIs2H}} slot-disabled{{/if}}" data-slot="offhand">
-        <div class="slot-label">Off Hand{{#if mainhandIs2H}} <small>(2H equipped)</small>{{/if}}</div>
-        {{#if equippedOffhand}}
-        <div class="slot-card-inner" data-item-id="{{equippedOffhand.id}}">
-          <img src="{{equippedOffhand.img}}" class="slot-img" width="40" height="40" data-action="postItemToChat" title="Post to chat" />
-          <div class="slot-info">
-            <span class="slot-name" data-action="editItem">{{equippedOffhand.name}}</span>
-            <span class="slot-stats">
-              {{#if equippedOffhand.system.block}}Blk {{equippedOffhand.system.block}}{{else}}Mt {{equippedOffhand.system.might}}{{/if}}
-              | Wt {{equippedOffhand.system.weight}}
-            </span>
-          </div>
-          <a class="slot-unequip" data-action="unequipOffhand" title="Unequip"><i class="fas fa-times"></i></a>
-        </div>
-        {{else}}
-        <div class="slot-empty-state">
-          <i class="fas fa-shield-halved"></i>
-          <span>None</span>
-        </div>
-        {{/if}}
-      </div>
-
-      {{!-- Center: Actor Portrait --}}
-      <div class="paperdoll-portrait">
-        <img src="{{actor.img}}" alt="{{actor.name}}"
-             style="object-position: {{system.portraitOffsetX}}% {{system.portraitOffsetY}}%;{{#if system.portraitMirrored}} transform: scaleX(-1);{{/if}}" />
-      </div>
-
-      {{!-- Middle-Left: Accessory 1 --}}
-      {{#if accessorySlots}}
-      <div class="paperdoll-slot paperdoll-accessory-slot {{#unless accessorySlots.[0]}}empty-slot{{/unless}}" data-slot="accessory" data-slot-index="0">
-        <div class="slot-label">Accessory</div>
-        {{#if accessorySlots.[0]}}
-        <div class="slot-card-inner" data-item-id="{{accessorySlots.[0].id}}">
-          <img src="{{accessorySlots.[0].img}}" class="slot-img" width="32" height="32" data-action="postItemToChat" title="Post to chat" />
-          <div class="slot-info">
-            <span class="slot-name" data-action="editItem">{{accessorySlots.[0].name}}</span>
-          </div>
-          <a class="slot-unequip" data-action="toggleEquip" title="Unequip"><i class="fas fa-times"></i></a>
-        </div>
-        {{else}}
-        <div class="slot-empty-state">
-          <i class="fas fa-ring"></i>
-          <span>Empty</span>
-        </div>
-        {{/if}}
-      </div>
-      {{/if}}
-
-      {{!-- Middle-Right: Armor --}}
-      <div class="paperdoll-slot armor-card {{#unless equippedArmor}}empty-slot{{/unless}}" data-slot="armor">
-        <div class="slot-label">Armor</div>
+      {{!-- ── Armor (top) ── --}}
+      <div class="ms-pd-slot armor-card {{#if equippedArmor}}filled{{else}}empty{{/if}}" data-slot="armor">
+        <div class="ms-pd-label">Armor</div>
         {{#if equippedArmor}}
         <div class="slot-card-inner" data-item-id="{{equippedArmor.id}}">
-          <img src="{{equippedArmor.img}}" class="slot-img" width="40" height="40" data-action="postItemToChat" title="Post to chat" />
-          <div class="slot-info">
-            <span class="slot-name" data-action="editItem">{{equippedArmor.name}}</span>
-            <span class="slot-stats">PDEF {{equippedArmor.system.pdef}} | MDEF {{equippedArmor.system.mdef}}</span>
+          <div class="ms-pd-icon">
+            <img src="{{equippedArmor.img}}" data-action="postItemToChat" />
           </div>
-          <a class="slot-unequip" data-action="toggleEquip" title="Unequip"><i class="fas fa-times"></i></a>
+          <span class="ms-pd-item-name" data-action="editItem">{{equippedArmor.name}}</span>
+          <span class="ms-pd-item-stats">PDEF {{equippedArmor.system.pdef}} · MDEF {{equippedArmor.system.mdef}}</span>
+          {{#if equippedArmor.system.weight}}<span class="ms-pd-item-weight">{{equippedArmor.system.weight}} wt</span>{{/if}}
+          <a class="ms-pd-remove" data-action="toggleEquip" title="Unequip"><i class="fas fa-times"></i></a>
         </div>
         {{else}}
-        <div class="slot-empty-state">
-          <i class="fas fa-shirt"></i>
-          <span>None</span>
-        </div>
+        <div class="ms-pd-icon ghost"><i class="fas fa-shirt"></i></div>
+        <span class="ms-pd-hint">Drag armor here</span>
+        <span class="ms-pd-hint-stats">PDEF · MDEF</span>
         {{/if}}
       </div>
 
-      {{!-- Bottom-Left: Accessory 2 --}}
-      {{#if accessorySlots.[1]}}
-      <div class="paperdoll-slot paperdoll-accessory-slot" data-slot="accessory" data-slot-index="1">
-        <div class="slot-label">Accessory</div>
-        <div class="slot-card-inner" data-item-id="{{accessorySlots.[1].id}}">
-          <img src="{{accessorySlots.[1].img}}" class="slot-img" width="32" height="32" data-action="postItemToChat" title="Post to chat" />
-          <div class="slot-info">
-            <span class="slot-name" data-action="editItem">{{accessorySlots.[1].name}}</span>
+      {{!-- ── Connectors ── --}}
+      <div class="ms-pd-conn conn-tl"></div>
+      <div class="ms-pd-conn conn-t"></div>
+      <div class="ms-pd-conn conn-tr"></div>
+      <div class="ms-pd-conn conn-l"></div>
+      <div class="ms-pd-conn conn-r"></div>
+      <div class="ms-pd-conn conn-bl"></div>
+      <div class="ms-pd-conn conn-b"></div>
+      <div class="ms-pd-conn conn-br"></div>
+
+      {{!-- ── Main Hand (left) ── --}}
+      <div class="ms-pd-slot weapon-card {{#if equippedWeapon}}filled{{else}}empty{{/if}}" data-slot="mainhand">
+        <div class="ms-pd-label">Main Hand</div>
+        {{#if equippedWeapon}}
+        <div class="slot-card-inner" data-item-id="{{equippedWeapon.id}}">
+          <div class="ms-pd-icon">
+            <img src="{{equippedWeapon.img}}" data-action="postItemToChat" />
           </div>
-          <a class="slot-unequip" data-action="toggleEquip" title="Unequip"><i class="fas fa-times"></i></a>
+          <span class="ms-pd-item-name" data-action="editItem">{{equippedWeapon.name}}</span>
+          <span class="ms-pd-item-stats">Mt {{equippedWeapon.system.might}} · Crit {{equippedWeapon.system.crit}}</span>
+          {{#if equippedWeapon.system.weight}}<span class="ms-pd-item-weight">{{equippedWeapon.system.weight}} wt</span>{{/if}}
+          <a class="ms-pd-remove" data-action="toggleEquip" title="Unequip"><i class="fas fa-times"></i></a>
         </div>
+        {{else}}
+        <div class="ms-pd-icon ghost"><i class="fas fa-sword"></i></div>
+        <span class="ms-pd-hint">Drag weapon here</span>
+        <span class="ms-pd-hint-stats">Mt · Crit</span>
+        {{/if}}
+      </div>
+
+      {{!-- ── Central Portrait ── --}}
+      <div class="ms-pd-portrait">
+        <div class="ms-pd-orbit"></div>
+        <div class="ms-pd-diamond">
+          <img src="{{actor.img}}" alt="" />
+        </div>
+      </div>
+
+      {{!-- ── Off Hand (right) ── --}}
+      {{#if mainhandIs2H}}
+      <div class="ms-pd-slot offhand-card disabled" data-slot="offhand">
+        <div class="ms-pd-label">Off Hand</div>
+        <div class="ms-pd-icon ghost"><i class="fas fa-fist-raised"></i></div>
+        <span class="ms-pd-hint">Two-handing</span>
       </div>
       {{else}}
-      <div class="paperdoll-slot paperdoll-accessory-slot empty-slot" data-slot="accessory" data-slot-index="1">
-        <div class="slot-label">Accessory</div>
-        <div class="slot-empty-state">
-          <i class="fas fa-ring"></i>
-          <span>Empty</span>
-        </div>
-      </div>
-      {{/if}}
-
-      {{!-- Bottom-Right: Bonus Accessory Slots (if any) --}}
-      {{#each accessorySlots}}
-      {{#if (gt @index 1)}}
-      <div class="paperdoll-slot paperdoll-accessory-slot {{#unless this}}empty-slot{{/unless}}" data-slot="accessory" data-slot-index="{{@index}}">
-        <div class="slot-label">Accessory {{math @index "+" 1}}</div>
-        {{#if this}}
-        <div class="slot-card-inner" data-item-id="{{this.id}}">
-          <img src="{{this.img}}" class="slot-img" width="32" height="32" data-action="postItemToChat" title="Post to chat" />
-          <div class="slot-info">
-            <span class="slot-name" data-action="editItem">{{this.name}}</span>
+      <div class="ms-pd-slot offhand-card {{#if equippedOffhand}}filled{{else}}empty{{/if}}" data-slot="offhand">
+        <div class="ms-pd-label">Off Hand</div>
+        {{#if equippedOffhand}}
+        <div class="slot-card-inner" data-item-id="{{equippedOffhand.id}}">
+          <div class="ms-pd-icon">
+            <img src="{{equippedOffhand.img}}" data-action="postItemToChat" />
           </div>
-          <a class="slot-unequip" data-action="toggleEquip" title="Unequip"><i class="fas fa-times"></i></a>
+          <span class="ms-pd-item-name" data-action="editItem">{{equippedOffhand.name}}</span>
+          <span class="ms-pd-item-stats">Mt {{equippedOffhand.system.might}} · Crit {{equippedOffhand.system.crit}}</span>
+          {{#if equippedOffhand.system.weight}}<span class="ms-pd-item-weight">{{equippedOffhand.system.weight}} wt</span>{{/if}}
+          <a class="ms-pd-remove" data-action="unequipOffhand" title="Unequip"><i class="fas fa-times"></i></a>
         </div>
         {{else}}
-        <div class="slot-empty-state">
-          <i class="fas fa-ring"></i>
-          <span>Empty</span>
-        </div>
+        <div class="ms-pd-icon ghost"><i class="fas fa-shield-halved"></i></div>
+        <span class="ms-pd-hint">Drag off-hand here</span>
+        <span class="ms-pd-hint-stats">Shield · Weapon</span>
         {{/if}}
       </div>
       {{/if}}
-      {{/each}}
 
-    </div>
-  </div>
-
-  {{!-- ═══ SPECIES ═══ --}}
-  {{#if equippedSpecies}}
-  <div class="species-display" data-item-id="{{equippedSpecies.id}}">
-    <img src="{{equippedSpecies.img}}" class="species-display-img" width="24" height="24" data-action="editItem" />
-    <span class="species-display-name" data-action="editItem">{{equippedSpecies.name}}</span>
-    <span class="species-display-size">Size {{equippedSpecies.system.size}}</span>
-  </div>
-  {{/if}}
-
-  {{!-- ═══ WEIGHT BAR ═══ --}}
-  <div class="weight-bar-section">
-    <div class="weight-bar-label">
-      <span>Weight</span>
-      <span class="weight-bar-values {{#if system.overencumbered}}overencumbered{{/if}}">{{system.totalWeight}} / {{system.carryingCapacity}}</span>
-    </div>
-    <div class="weight-bar-track">
-      <div class="weight-bar-fill {{#if system.overencumbered}}overencumbered{{/if}}"
-           style="width: {{#if system.carryingCapacity}}{{math system.totalWeight "/" system.carryingCapacity "*" 100}}%{{else}}0%{{/if}}"></div>
-    </div>
-    <div class="weight-breakdown">
-      {{#if system.weightBreakdown.weapon}}<span class="wb-item">Wpn: {{system.weightBreakdown.weapon}}</span>{{/if}}
-      {{#if system.weightBreakdown.offhand}}<span class="wb-item">Off: {{system.weightBreakdown.offhand}}</span>{{/if}}
-      {{#if system.weightBreakdown.armor}}<span class="wb-item">Arm: {{system.weightBreakdown.armor}}</span>{{/if}}
-      {{#if system.overencumbered}}<span class="wb-item capacity-warning">Capacity reached</span>{{/if}}
-    </div>
-  </div>
-
-  {{!-- ═══ NATURAL WEAPONS ═══ --}}
-  {{#if naturalWeapons.length}}
-  <div class="inventory-divider"></div>
-  <div class="natural-weapons-section">
-    <h3><i class="fas fa-paw"></i> Natural Weapons</h3>
-    <div class="adv-tile-grid">
-      {{#each naturalWeapons}}
-      <details class="adv-tile" data-item-id="{{this.id}}">
-        <summary>
-          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
-          <span class="adv-tile-name">{{this.name}}</span>
-          <a class="adv-tile-action attack-button" data-action="rollNaturalAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
-        </summary>
-        <div class="adv-tile-details">
-          <div class="adv-tile-stats">
-            <span class="adv-tile-stat">Mt {{this.system.might}}</span>
-            <span class="adv-tile-stat">Crit {{this.system.crit}}</span>
+      {{!-- ── Accessories (bottom) ── --}}
+      {{#each accessorySlots}}
+      <div class="ms-pd-slot ms-pd-acc-{{@index}} loadout-accessories paperdoll-accessory-slot {{#if this}}filled{{else}}empty{{/if}}" data-slot="accessory" data-slot-index="{{@index}}">
+        <div class="ms-pd-label">Accessory</div>
+        {{#if this}}
+        <div class="slot-card-inner" data-item-id="{{this.id}}">
+          <div class="ms-pd-icon">
+            <img src="{{this.img}}" data-action="postItemToChat" />
           </div>
+          <span class="ms-pd-item-name" data-action="editItem">{{this.name}}</span>
+          {{#if this.system.weight}}<span class="ms-pd-item-weight">{{this.system.weight}} wt</span>{{/if}}
+          <a class="ms-pd-remove" data-action="toggleEquip" title="Unequip"><i class="fas fa-times"></i></a>
         </div>
-      </details>
+        {{else}}
+        <div class="ms-pd-icon ghost"><i class="fas fa-ring"></i></div>
+        <span class="ms-pd-hint">Accessory slot</span>
+        {{/if}}
+      </div>
       {{/each}}
+
     </div>
   </div>
-  {{/if}}
+
+  {{!-- ═══ WEIGHT ═══ --}}
+  <div class="ms-section">
+    <div class="ms-section-header equip"><div class="sh-gem"></div>Weight</div>
+    <div class="ms-weight-bar-wrap">
+      <div class="ms-weight-track">
+        <div class="ms-weight-fill" style="width: {{#if system.carryingCapacity}}{{math system.totalWeight "*" 100 "/" system.carryingCapacity}}%{{else}}0%{{/if}};"></div>
+      </div>
+      <div class="ms-weight-border"></div>
+    </div>
+    <div class="ms-weight-labels">
+      <div class="ms-weight-breakdown">
+        <span class="ms-wb-item"><span>Wpn</span> {{system.weightBreakdown.weapon}}</span>
+        <span class="ms-wb-item"><span>Off</span> {{system.weightBreakdown.offhand}}</span>
+        <span class="ms-wb-item"><span>Arm</span> {{system.weightBreakdown.armor}}</span>
+        <span class="ms-wb-item"><span>Acc</span> {{system.weightBreakdown.accessory}}</span>
+      </div>
+      <span class="ms-weight-total {{#if system.overencumbered}}overencumbered{{/if}}">{{system.totalWeight}} / {{system.carryingCapacity}}</span>
+    </div>
+  </div>
 
   {{!-- ═══ INVENTORY ═══ --}}
-  <div class="inventory-divider"></div>
-  <div class="inventory-section">
-    <div class="inventory-header">
-      <h3>Inventory
-        <a class="item-control add-item" data-action="addItem" data-type="weapon"><i class="fas fa-sword" title="Add Weapon"></i></a>
-        <a class="item-control add-item" data-action="addItem" data-type="armor"><i class="fas fa-shield-halved" title="Add Armor"></i></a>
-        <a class="item-control add-item" data-action="addItem" data-type="accessory"><i class="fas fa-ring" title="Add Accessory"></i></a>
-        <a class="item-control add-item" data-action="addItem" data-type="consumable"><i class="fas fa-flask" title="Add Consumable"></i></a>
-        {{#if hasSpatialInventory}}
-        <a class="item-control spatial-inv-btn" data-action="openSpatialInventory" title="Spatial Inventory"><i class="fas fa-box-open"></i></a>
-        {{/if}}
-      </h3>
-      <div class="eiress-wallet">
-        <i class="fas fa-coins eiress-wallet-icon"></i>
-        <span class="eiress-wallet-label">Eiress</span>
-        <button type="button" class="eiress-wallet-btn" data-action="adjustEiress" data-delta="-1"><i class="fas fa-minus"></i></button>
-        <input type="number" name="system.eiress" value="{{system.eiress}}" min="0" data-dtype="Number" class="eiress-wallet-value" />
-        <button type="button" class="eiress-wallet-btn" data-action="adjustEiress" data-delta="1"><i class="fas fa-plus"></i></button>
+  <div class="ms-section">
+    <div class="ms-inv-header">
+      <div class="ms-section-header inv" style="margin-bottom:0"><div class="sh-gem"></div>Inventory</div>
+      <div class="ms-inv-actions">
+        <a class="ms-inv-add" data-action="addItem" data-type="weapon" title="Add Weapon"><i class="fas fa-sword"></i></a>
+        <a class="ms-inv-add" data-action="addItem" data-type="armor" title="Add Armor"><i class="fas fa-shield-halved"></i></a>
+        <a class="ms-inv-add" data-action="addItem" data-type="accessory" title="Add Accessory"><i class="fas fa-ring"></i></a>
+        <a class="ms-inv-add" data-action="addItem" data-type="consumable" title="Add Consumable"><i class="fas fa-flask"></i></a>
       </div>
     </div>
+
+    {{!-- Eiress --}}
+    <div class="ms-currency-bar">
+      <i class="fas fa-coins ms-currency-icon"></i>
+      <span class="ms-currency-label">Eiress</span>
+      <div class="ms-currency-controls">
+        <button type="button" class="ms-currency-btn" data-action="adjustEiress" data-delta="-1"><i class="fas fa-minus"></i></button>
+        <input type="number" name="system.eiress" value="{{system.eiress}}" min="0" data-dtype="Number" class="ms-currency-val" />
+        <button type="button" class="ms-currency-btn" data-action="adjustEiress" data-delta="1"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+
+    {{!-- Item Grid --}}
     {{#if inventory.length}}
-    <div class="adv-tile-grid">
+    <div class="inventory-grid ms-inv-grid">
       {{#each inventory}}
-      <details class="adv-tile draggable {{#if this._isGranted}}granted-item{{/if}}" data-item-id="{{this.id}}" data-item-type="{{this.type}}">
-        <summary>
-          <img src="{{this.img}}" class="adv-tile-img" data-action="postItemToChat" title="Post to chat" />
-          <span class="adv-tile-name">{{this.name}}</span>
-          {{#if this.system.quantity}}<span class="adv-tile-badge">x{{this.system.quantity}}</span>{{/if}}
-          {{#if ../hasSpatialInventory}}<a class="stow-spatial" data-action="stowInSpatial" title="Stow in Spatial Inventory"><i class="fas fa-box-archive"></i></a>{{/if}}
-        </summary>
-        <div class="adv-tile-details">
-          <div class="adv-tile-stats">
-            <span class="adv-tile-stat">{{this.type}}</span>
-          </div>
-        </div>
-      </details>
+      <div class="ms-inv-card item draggable" data-item-id="{{this.id}}" data-item-type="{{this.type}}" draggable="true">
+        <img src="{{this.img}}" class="ms-inv-card-img" data-action="postItemToChat" />
+        <span class="ms-inv-card-name">{{this.name}}</span>
+        {{#if (eq this.type "consumable")}}<span class="ms-inv-card-qty">x{{this.system.quantity}}</span>{{/if}}
+      </div>
       {{/each}}
     </div>
     {{else}}
-    <div class="adv-empty-state"><em>No items in inventory.</em></div>
+    <div class="ms-empty-state">
+      <i class="fas fa-box-open"></i>
+      <span>No items in inventory.</span>
+    </div>
     {{/if}}
   </div>
 

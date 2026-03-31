@@ -1,77 +1,71 @@
-<div class="manashard stat-check-card {{#if success}}sc-pass{{else}}sc-fail{{/if}} {{#if contested}}sc-contested{{/if}}" style="--sc-accent: {{statColor}}">
+<div class="ms-card card-stat {{#if success}}sc-pass{{else}}sc-fail{{/if}} {{#if contested}}sc-contested{{/if}}" style="--sc-accent: {{statColor}}">
 
   {{!-- ═══ HEADER ═══ --}}
-  <div class="sc-header">
-    <div class="acc-portrait-frame">
-      <div class="acc-portrait-diamond">
-        <img src="{{actorImg}}" class="acc-portrait" />
-      </div>
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">makes a stat check</div>
     </div>
-    <div class="sc-header-info">
-      <div class="sc-actor-name">{{actorName}}</div>
-      <div class="sc-action-line">makes a stat check</div>
-    </div>
-    <div class="sc-stat-badge" style="--sc-stat-color: {{statColor}}">{{statLabel}}</div>
+    <span class="ms-card-header-badge badge-stat" style="--sc-stat-color: {{statColor}}">{{statLabel}}</span>
   </div>
 
   {{!-- ═══ CONTEXT LINE ═══ --}}
   {{#if context}}
-  <div class="sc-context-line">
-    <span class="sc-context-icon">&#9656;</span>
-    <span class="sc-context-text">{{context}}</span>
+  <div class="ms-card-context-line">
+    <span class="ctx-icon">&#9656;</span>
+    <span>{{context}}</span>
   </div>
   {{/if}}
 
   {{!-- ═══ ROLL ZONE ═══ --}}
-  <div class="sc-roll-zone {{#if success}}sc-roll-pass{{else}}sc-roll-fail{{/if}}">
-    <i class="sc-roll-icon fas fa-dice-d20"></i>
-    <span class="sc-roll-stat-label" style="color: {{statColor}}">{{statLabel}}</span>
-    <div class="sc-roll-values">
-      <span class="sc-roll-result">{{rollTotal}}</span>
-      <span class="sc-roll-sep">/</span>
-      <span class="sc-roll-threshold">{{threshold}}</span>
+  <div class="ms-card-roll">
+    <div class="ms-card-roll-row {{#if success}}roll-hit{{else}}roll-miss{{/if}}">
+      <i class="ms-card-roll-icon fas fa-dice-d20"></i>
+      <span class="ms-card-roll-label" style="color: {{statColor}}">{{statLabel}}</span>
+      <div class="ms-card-roll-values">
+        <span class="ms-card-roll-result">{{rollTotal}}</span>
+        <span class="ms-card-roll-sep">/</span>
+        <span class="ms-card-roll-threshold">{{threshold}}</span>
+      </div>
+      <span class="ms-card-outcome-badge {{#if success}}badge-pass{{else}}badge-fail{{/if}}">
+        {{#if success}}PASS{{else}}FAIL{{/if}}
+      </span>
     </div>
-    <span class="sc-outcome-badge {{#if success}}sc-badge-pass{{else}}sc-badge-fail{{/if}}">
-      {{#if success}}PASS{{else}}FAIL{{/if}}
-    </span>
   </div>
 
   {{!-- ═══ CONTESTED: OPPONENT ═══ --}}
   {{#if contested}}
-    <div class="sc-vs-divider">
-      <span class="sc-vs-text">VS</span>
-    </div>
+    <div class="ms-card-vs-divider"><span class="ms-card-vs-text">VS</span></div>
 
     {{!-- Opponent Header --}}
-    <div class="sc-header sc-opponent-header">
-      <div class="acc-portrait-frame">
-        <div class="acc-portrait-diamond" style="--sc-accent: {{opponentStatColor}}">
-          <img src="{{opponentImg}}" class="acc-portrait" />
-        </div>
+    <div class="ms-card-header">
+      <div class="ms-card-portrait"><img src="{{opponentImg}}" /></div>
+      <div class="ms-card-identity">
+        <div class="ms-card-name">{{opponentName}}</div>
+        <div class="ms-card-subtitle">responds with a stat check</div>
       </div>
-      <div class="sc-header-info">
-        <div class="sc-actor-name sc-opponent-name">{{opponentName}}</div>
-        <div class="sc-action-line">responds with a stat check</div>
-      </div>
-      <div class="sc-stat-badge" style="--sc-stat-color: {{opponentStatColor}}">{{opponentStatLabel}}</div>
+      <span class="ms-card-header-badge badge-stat" style="--sc-stat-color: {{opponentStatColor}}">{{opponentStatLabel}}</span>
     </div>
 
     {{!-- Opponent Roll Zone --}}
-    <div class="sc-roll-zone {{#if opponentSuccess}}sc-roll-pass{{else}}sc-roll-fail{{/if}}">
-      <i class="sc-roll-icon fas fa-dice-d20"></i>
-      <span class="sc-roll-stat-label" style="color: {{opponentStatColor}}">{{opponentStatLabel}}</span>
-      <div class="sc-roll-values">
-        <span class="sc-roll-result">{{opponentRollTotal}}</span>
-        <span class="sc-roll-sep">/</span>
-        <span class="sc-roll-threshold">{{opponentThreshold}}</span>
+    <div class="ms-card-roll">
+      <div class="ms-card-roll-row {{#if opponentSuccess}}roll-hit{{else}}roll-miss{{/if}}">
+        <i class="ms-card-roll-icon fas fa-dice-d20"></i>
+        <span class="ms-card-roll-label" style="color: {{opponentStatColor}}">{{opponentStatLabel}}</span>
+        <div class="ms-card-roll-values">
+          <span class="ms-card-roll-result">{{opponentRollTotal}}</span>
+          <span class="ms-card-roll-sep">/</span>
+          <span class="ms-card-roll-threshold">{{opponentThreshold}}</span>
+        </div>
+        <span class="ms-card-outcome-badge {{#if opponentSuccess}}badge-pass{{else}}badge-fail{{/if}}">
+          {{#if opponentSuccess}}PASS{{else}}FAIL{{/if}}
+        </span>
       </div>
-      <span class="sc-outcome-badge {{#if opponentSuccess}}sc-badge-pass{{else}}sc-badge-fail{{/if}}">
-        {{#if opponentSuccess}}PASS{{else}}FAIL{{/if}}
-      </span>
     </div>
 
     {{!-- Winner Banner --}}
-    <div class="sc-winner-banner sc-has-winner">
+    <div class="ms-card-winner-banner">
       <i class="fas fa-trophy"></i>
       <span><strong>{{winnerName}}</strong> wins!</span>
     </div>
@@ -165,8 +159,8 @@
   </div>
 
   {{!-- ═══ INSPECT HINT ═══ --}}
-  <div class="sc-inspect-hint">
-    <span class="sc-hint-key">Right-click</span>
+  <div class="ms-card-inspect-hint">
+    <span class="hint-key">Right-click</span>
     <span>to inspect formulas</span>
   </div>
 

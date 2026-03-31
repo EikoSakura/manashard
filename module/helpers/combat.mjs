@@ -514,16 +514,9 @@ export function resolveAttack(params) {
     modDefenderDef = Math.floor(modDefenderDef * (1 - pct / 100));
   }
 
-  // Bows (Precision): target the lower of P.EVA or M.EVA
-  let effectiveEvasion = defenderEvasion;
-  if (grants.precision && defenderActor?.system) {
-    const defPeva = defenderActor.system.peva ?? 0;
-    const defMeva = defenderActor.system.meva ?? 0;
-    effectiveEvasion = Math.min(defPeva, defMeva);
-  }
   const evaBonus = damageType === "magical" ? (defCond.statBonuses.meva ?? 0) : (defCond.statBonuses.peva ?? 0);
-  let modDefenderEvasion = effectiveEvasion + evaBonus;
-  const modDefenderCritAvoid = defenderCritAvoid + (defCond.statBonuses.critAvoid ?? 0);
+  let modDefenderEvasion = defenderEvasion + evaBonus;
+  const modDefenderCritAvoid = defenderCritAvoid + (defCond.statBonuses.critEvo ?? 0);
   const modDefenderBlockChance = defenderBlockChance + (defCond.statBonuses.blockChance ?? 0);
 
   // Expose: halve defender's EVA and DEF at resolution time

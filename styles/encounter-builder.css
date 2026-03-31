@@ -1031,6 +1031,12 @@
   outline: none;
 }
 
+.encounter-builder select option,
+.encounter-builder select optgroup {
+  background: var(--eb-bg);
+  color: var(--eb-text);
+}
+
 .eb-obj-mod {
   display: flex;
   align-items: center;
@@ -1209,7 +1215,7 @@
   align-items: flex-end;
   gap: 10px;
   padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 30, 60, 0.03);
   border-bottom: 1px solid rgba(238, 136, 68, 0.1);
 }
 

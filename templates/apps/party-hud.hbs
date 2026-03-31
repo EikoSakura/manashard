@@ -1,0 +1,108 @@
+<div class="phud-inner {{#if minimized}}phud-minimized{{/if}} phud-mode-{{mode}}">
+  {{!-- Header --}}
+  <div class="phud-header manashard-ornament">
+    <span class="phud-title manashard-sparkle-text">Party</span>
+    {{#if inCombat}}<span class="phud-round">R{{round}}</span>{{/if}}
+    <div class="phud-controls">
+      <button type="button" class="phud-btn" data-action="phud-mode" title="Toggle Full/Compact">
+        <i class="fas {{#if isFull}}fa-compress{{else}}fa-expand{{/if}}"></i>
+      </button>
+      <button type="button" class="phud-btn" data-action="phud-minimize" title="{{#if minimized}}Expand{{else}}Minimize{{/if}}">
+        <i class="fas {{#if minimized}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i>
+      </button>
+      <button type="button" class="phud-btn" data-action="phud-close" title="Close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  {{!-- Member List --}}
+  {{#unless minimized}}
+  {{#if empty}}
+  <div class="phud-empty">No party members.</div>
+  {{else}}
+  <div class="phud-members">
+    {{#each members}}
+    <div class="phud-member {{#if isActive}}phud-member--active{{/if}} {{#if isDefeated}}phud-member--defeated{{/if}} {{#if hpCritical}}phud-member--critical{{/if}}" data-member-id="{{id}}">
+
+      {{!-- Portrait --}}
+      <div class="phud-portrait">
+        <img src="{{img}}" alt="{{name}}" />
+        {{#if isDefeated}}<i class="fas fa-skull phud-defeated-icon"></i>{{/if}}
+      </div>
+
+      {{!-- Full Mode Content --}}
+      {{#if ../isFull}}
+      <div class="phud-info">
+        <div class="phud-name-row">
+          <span class="phud-name">{{name}}</span>
+          <span class="phud-level">Lv.{{level}}</span>
+        </div>
+        {{#if jobName}}<div class="phud-job">{{jobName}}</div>{{/if}}
+
+        {{!-- HP Bar --}}
+        <div class="phud-bar-row">
+          <span class="phud-bar-label phud-hp-label">HP</span>
+          <div class="phud-bar-track">
+            <div class="phud-bar-fill phud-hp-fill {{#if hpCritical}}phud-hp-critical{{/if}}" style="width: {{hpPercent}}%"></div>
+            {{#if hpBarrier}}
+            <div class="phud-bar-fill phud-barrier-fill" style="right: {{hpBarrierRight}}%; width: {{hpBarrierPercent}}%"></div>
+            {{/if}}
+          </div>
+          <span class="phud-bar-value">{{hpValue}}{{#if hpBarrier}}<span class="phud-barrier-text">+{{hpBarrier}}</span>{{/if}}<span class="phud-bar-max">/{{hpMax}}</span></span>
+        </div>
+
+        {{!-- MP Bar --}}
+        <div class="phud-bar-row">
+          <span class="phud-bar-label phud-mp-label">MP</span>
+          <div class="phud-bar-track">
+            <div class="phud-bar-fill phud-mp-fill" style="width: {{mpPercent}}%"></div>
+          </div>
+          <span class="phud-bar-value">{{mpValue}}<span class="phud-bar-max">/{{mpMax}}</span></span>
+        </div>
+
+        {{!-- Status Effects --}}
+        {{#if hasStatuses}}
+        <div class="phud-statuses">
+          {{#each statuses}}
+            {{{iconHtml}}}
+          {{/each}}
+        </div>
+        {{/if}}
+
+        {{!-- Charging indicator --}}
+        {{#if isCharging}}
+        <div class="phud-charging">
+          <i class="fas fa-hourglass-half"></i> {{chargingSkillName}}
+        </div>
+        {{/if}}
+      </div>
+      {{/if}}
+
+      {{!-- Compact Mode Content --}}
+      {{#if ../isCompact}}
+      <div class="phud-compact-info">
+        <div class="phud-compact-bars">
+          <div class="phud-compact-bar-track">
+            <div class="phud-bar-fill phud-hp-fill {{#if hpCritical}}phud-hp-critical{{/if}}" style="width: {{hpPercent}}%"></div>
+          </div>
+          <div class="phud-compact-bar-track">
+            <div class="phud-bar-fill phud-mp-fill" style="width: {{mpPercent}}%"></div>
+          </div>
+        </div>
+        {{#if hasStatuses}}
+        <div class="phud-compact-statuses">
+          {{#each statuses}}
+            <span class="phud-status-dot phud-status-dot--{{key}}" title="{{label}}"></span>
+          {{/each}}
+        </div>
+        {{/if}}
+      </div>
+      {{/if}}
+
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+  {{/unless}}
+</div>

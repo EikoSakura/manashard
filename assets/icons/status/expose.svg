@@ -1,10 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#ee5544" stroke-width="4"/>
-  <!-- Broken shield -->
-  <path d="M128 45 L185 75 L185 145 C185 185 128 220 128 220 C128 220 71 185 71 145 L71 75 Z" fill="none" stroke="#ee5544" stroke-width="7"/>
-  <!-- Crack through shield -->
-  <path d="M128 55 L135 100 L120 120 L140 155 L125 190" fill="none" stroke="#ee5544" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Small break marks -->
-  <line x1="120" y1="120" x2="105" y2="115" stroke="#ee5544" stroke-width="4" stroke-linecap="round"/>
-  <line x1="140" y1="155" x2="155" y2="150" stroke="#ee5544" stroke-width="4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#dc3545" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#dc3545" stop-opacity="0.08"/>
+    </radialGradient>
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff6b7a"/>
+      <stop offset="100%" stop-color="#dc3545"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg)" stroke="#dc3545" stroke-width="10" stroke-opacity="0.7"/>
+  <!-- Shield shape -->
+  <path d="M256 70 L380 130 L380 280 C380 360 256 440 256 440 C256 440 132 360 132 280 L132 130 Z"
+        fill="url(#shieldGrad)" fill-opacity="0.3" stroke="#dc3545" stroke-width="14" stroke-linejoin="round" filter="url(#glow)"/>
+  <!-- White highlight on shield -->
+  <path d="M190 150 L200 140 L210 160" fill="none" stroke="white" stroke-width="7" stroke-opacity="0.4" stroke-linecap="round"/>
+  <!-- Major crack down center -->
+  <path d="M256 90 L270 170 L240 220 L275 290 L245 350 L256 420"
+        fill="none" stroke="white" stroke-width="10" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Branching cracks -->
+  <path d="M240 220 L195 210" fill="none" stroke="white" stroke-width="6" stroke-opacity="0.65" stroke-linecap="round"/>
+  <path d="M275 290 L320 280" fill="none" stroke="white" stroke-width="6" stroke-opacity="0.65" stroke-linecap="round"/>
+  <path d="M270 170 L310 155" fill="none" stroke="white" stroke-width="5" stroke-opacity="0.5" stroke-linecap="round"/>
+  <path d="M245 350 L205 345" fill="none" stroke="white" stroke-width="5" stroke-opacity="0.5" stroke-linecap="round"/>
+  <!-- Shard fragments flying off -->
+  <polygon points="105,200 115,185 125,205" fill="#dc3545" fill-opacity="0.45" stroke="#dc3545" stroke-width="3" stroke-opacity="0.6"/>
+  <polygon points="395,250 385,235 375,258" fill="#dc3545" fill-opacity="0.4" stroke="#dc3545" stroke-width="3" stroke-opacity="0.5"/>
+  <!-- Sparkle at impact -->
+  <circle cx="256" cy="220" r="6" fill="white" fill-opacity="0.6"/>
 </svg>

@@ -1,96 +1,87 @@
-<div class="manashard attack-chat-card loot-card">
-  {{!-- ═══ HEADER BAR ═══ --}}
-  <div class="acc-header">
-    <div class="acc-portrait-frame">
-      <div class="acc-portrait-diamond">
-        <img src="{{defenderImg}}" class="acc-portrait" />
-      </div>
+<div class="ms-card card-loot">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{defenderImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{defenderName}}</div>
+      <div class="ms-card-subtitle">defeated!</div>
     </div>
-    <div class="acc-header-text">
-      <span class="acc-actor-name">{{defenderName}}</span>
-      <span class="acc-action">defeated!</span>
-    </div>
-    <span class="acc-target-badge acc-target-loot"><i class="fas fa-gift"></i></span>
+    <span class="ms-card-header-badge badge-icon"><i class="fas fa-gift"></i></span>
   </div>
-
-  {{!-- ═══ EIRESS SECTION ═══ --}}
+  <div class="ms-card-action loot">
+    <div class="action-gem"></div>
+    Loot
+  </div>
   {{#if hasEiress}}
-  <div class="loot-eiress-row">
-    <i class="fas fa-coins loot-eiress-icon"></i>
-    <span class="loot-eiress-amount">{{eiress.amount}}G deposited</span>
+  <div class="ms-card-loot-eiress">
+    <i class="fas fa-coins"></i>
+    <span class="ms-card-loot-eiress-amount">{{eiress.amount}}G deposited</span>
     {{#if (gt eiress.multiplier 1)}}
-      <small class="loot-eiress-breakdown">{{eiress.base}} &times; {{eiress.multiplier}} ({{eiress.role}})</small>
+      <small class="ms-card-loot-eiress-breakdown">{{eiress.base}} &times; {{eiress.multiplier}} ({{eiress.role}})</small>
     {{/if}}
   </div>
   {{/if}}
-
-  {{!-- ═══ PILLAGE SECTION ═══ --}}
   {{#if hasPillage}}
-  <div class="loot-section">
-    <div class="loot-section-header">
+  <div class="ms-card-loot-section">
+    <div class="ms-card-loot-section-header">
       <i class="fas fa-skull-crossbones"></i>
       <span>Pillage — {{pillage.actorName}}</span>
     </div>
     {{#if pillage.pillaged}}
-      <div class="loot-member-row loot-win-row">
-        <img src="{{pillage.actorImg}}" class="loot-member-portrait" />
-        <span class="loot-member-name">{{pillage.actorName}}</span>
-        <span class="loot-item-badge">
-          <img src="{{pillage.itemImg}}" class="loot-item-icon" />
+      <div class="ms-card-loot-member">
+        <img src="{{pillage.actorImg}}" />
+        <span class="ms-card-loot-member-name">{{pillage.actorName}}</span>
+        <span class="ms-card-loot-item-badge">
+          <img src="{{pillage.itemImg}}" />
           {{pillage.itemName}}
         </span>
-        <span class="acc-roll-dice"><i class="fas fa-dice-d20"></i> {{pillage.lootRoll}} / {{pillage.lootChance}}{{#if pillage.lukBonus}} <small>({{pillage.baseChance}}+{{pillage.lukBonus}} LUK)</small>{{/if}}</span>
+        <span class="ms-card-loot-roll"><i class="fas fa-dice-d20"></i> {{pillage.lootRoll}} / {{pillage.lootChance}}{{#if pillage.lukBonus}} <small>({{pillage.baseChance}}+{{pillage.lukBonus}} LUK)</small>{{/if}}</span>
       </div>
     {{else}}
       {{#if pillage.noLoot}}
-        <div class="loot-member-row loot-miss-row">
-          <img src="{{pillage.actorImg}}" class="loot-member-portrait" />
-          <span class="loot-member-name">{{pillage.actorName}}</span>
-          <span class="loot-miss-text">No loot available</span>
+        <div class="ms-card-loot-member">
+          <img src="{{pillage.actorImg}}" />
+          <span class="ms-card-loot-member-name">{{pillage.actorName}}</span>
+          <span class="ms-card-loot-miss">No loot available</span>
         </div>
       {{else}}
-        <div class="loot-member-row loot-miss-row">
-          <img src="{{pillage.actorImg}}" class="loot-member-portrait" />
-          <span class="loot-member-name">{{pillage.actorName}}</span>
-          <span class="loot-miss-text">Rolls failed</span>
+        <div class="ms-card-loot-member">
+          <img src="{{pillage.actorImg}}" />
+          <span class="ms-card-loot-member-name">{{pillage.actorName}}</span>
+          <span class="ms-card-loot-miss">Rolls failed</span>
         </div>
       {{/if}}
     {{/if}}
   </div>
   {{/if}}
-
-  {{!-- ═══ PARTY LOOT SECTION ═══ --}}
   {{#if hasPartyLoot}}
-  <div class="loot-section">
-    <div class="loot-section-header">
+  <div class="ms-card-loot-section">
+    <div class="ms-card-loot-section-header">
       <i class="fas fa-users"></i>
       <span>Party Loot</span>
     </div>
     {{#each partyResults}}
       {{#if this.won}}
-        <div class="loot-member-row loot-win-row">
-          <img src="{{this.actorImg}}" class="loot-member-portrait" />
-          <span class="loot-member-name">{{this.actorName}}</span>
-          <span class="loot-item-badge">
-            <img src="{{this.itemImg}}" class="loot-item-icon" />
+        <div class="ms-card-loot-member">
+          <img src="{{this.actorImg}}" />
+          <span class="ms-card-loot-member-name">{{this.actorName}}</span>
+          <span class="ms-card-loot-item-badge">
+            <img src="{{this.itemImg}}" />
             {{this.itemName}}
           </span>
-          <span class="acc-roll-dice"><i class="fas fa-dice-d20"></i> {{this.lootRoll}} / {{this.lootChance}}{{#if this.lukBonus}} <small>({{this.baseChance}}+{{this.lukBonus}} LUK)</small>{{/if}}</span>
+          <span class="ms-card-loot-roll"><i class="fas fa-dice-d20"></i> {{this.lootRoll}} / {{this.lootChance}}{{#if this.lukBonus}} <small>({{this.baseChance}}+{{this.lukBonus}} LUK)</small>{{/if}}</span>
         </div>
       {{else}}
-        <div class="loot-member-row loot-miss-row">
-          <img src="{{this.actorImg}}" class="loot-member-portrait" />
-          <span class="loot-member-name">{{this.actorName}}</span>
-          <span class="loot-miss-text">No drops</span>
+        <div class="ms-card-loot-member">
+          <img src="{{this.actorImg}}" />
+          <span class="ms-card-loot-member-name">{{this.actorName}}</span>
+          <span class="ms-card-loot-miss">No drops</span>
         </div>
       {{/if}}
     {{/each}}
   </div>
   {{/if}}
-
-  {{!-- ═══ APPLY ALL LOOT BUTTON ═══ --}}
   {{#if hasAwards}}
-    <div class="acc-apply-row">
+    <div class="ms-card-apply-row">
       <button type="button" class="loot-apply-btn"
               data-target-token-id="{{targetTokenId}}"
               data-target-actor-id="{{targetActorId}}"

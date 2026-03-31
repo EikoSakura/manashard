@@ -1,10 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#ee66aa" stroke-width="4"/>
-  <!-- Broken heart -->
-  <path d="M128 200 L60 130 C40 100 40 70 70 55 C100 40 128 70 128 70 C128 70 156 40 186 55 C216 70 216 100 196 130 Z" fill="none" stroke="#ee66aa" stroke-width="7"/>
-  <!-- Crack down middle -->
-  <path d="M128 80 L135 115 L120 140 L132 170 L128 200" fill="none" stroke="#ee66aa" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Spiral/hypnotic swirls in heart halves -->
-  <circle cx="95" cy="105" r="10" fill="none" stroke="#ee66aa" stroke-width="3"/>
-  <circle cx="161" cy="105" r="10" fill="none" stroke="#ee66aa" stroke-width="3"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d63384" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#d63384" stop-opacity="0.08"/>
+    </radialGradient>
+    <linearGradient id="heartGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff6eb4"/>
+      <stop offset="100%" stop-color="#d63384"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg)" stroke="#d63384" stroke-width="10" stroke-opacity="0.7"/>
+  <!-- Heart shape -->
+  <path d="M256 420 L120 270 C70 210 70 140 130 105 C190 70 256 140 256 140 C256 140 322 70 382 105 C442 140 442 210 392 270 Z"
+        fill="url(#heartGrad)" fill-opacity="0.35" stroke="#d63384" stroke-width="14" stroke-linejoin="round" filter="url(#glow)"/>
+  <!-- White highlight on heart -->
+  <path d="M180 160 C170 140 190 120 210 130" fill="none" stroke="white" stroke-width="8" stroke-opacity="0.5" stroke-linecap="round"/>
+  <!-- Spiral in left half -->
+  <path d="M195 215 C195 195 220 195 220 215 C220 235 190 235 190 210 C190 185 230 185 230 220"
+        fill="none" stroke="white" stroke-width="7" stroke-opacity="0.8" stroke-linecap="round"/>
+  <!-- Spiral in right half -->
+  <path d="M305 215 C305 195 280 195 280 215 C280 235 310 235 310 210 C310 185 270 185 270 220"
+        fill="none" stroke="white" stroke-width="7" stroke-opacity="0.8" stroke-linecap="round"/>
+  <!-- Daze sparkles around heart -->
+  <circle cx="140" cy="100" r="8" fill="white" fill-opacity="0.7"/>
+  <circle cx="372" cy="100" r="6" fill="white" fill-opacity="0.6"/>
+  <circle cx="110" cy="200" r="5" fill="white" fill-opacity="0.5"/>
+  <circle cx="402" cy="200" r="7" fill="white" fill-opacity="0.6"/>
+  <!-- Small floating hearts -->
+  <path d="M100 320 L90 310 C82 298 82 286 92 280 C102 274 110 286 110 286 C110 286 118 274 128 280 C138 286 138 298 130 310 Z"
+        fill="#ff6eb4" fill-opacity="0.5" stroke="none"/>
+  <path d="M400 140 L393 133 C387 125 387 117 394 113 C401 109 407 117 407 117 C407 117 413 109 420 113 C427 117 427 125 421 133 Z"
+        fill="#ff6eb4" fill-opacity="0.4" stroke="none"/>
 </svg>

@@ -1,88 +1,79 @@
-<div class="manashard skill-chat-card">
+<div class="ms-card card-skill">
   {{!-- ═══ HEADER BAR ═══ --}}
-  <div class="scc-header">
-    <div class="scc-portrait-frame">
-      <div class="scc-portrait-diamond">
-        <img src="{{actorImg}}" class="scc-portrait" />
-      </div>
-    </div>
-    {{#if (eq skillType "magic")}}
-      <i class="scc-type-icon fas fa-hat-wizard"></i>
-    {{else if (eq skillType "art")}}
-      <i class="scc-type-icon fas fa-swords"></i>
-    {{else}}
-      <i class="scc-type-icon fas fa-sparkles"></i>
-    {{/if}}
-    <div class="scc-header-text">
-      <span class="scc-actor-name">{{actorName}}</span>
-      <span class="scc-action">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">
         {{#if (eq skillType "magic")}}casts{{else}}uses{{/if}}
         <strong>{{skillName}}</strong>
-      </span>
+      </div>
     </div>
     {{#if element}}
-      <span class="scc-element element-pip element-{{element}}">{{element}}</span>
+      <span class="ms-card-header-badge element-pip element-{{element}}">{{element}}</span>
     {{/if}}
   </div>
 
   {{!-- ═══ TARGET LINE ═══ --}}
   {{#if targetName}}
-  <div class="acc-target-line">
-    <span class="acc-target-arrow">&#9656;</span>
-    <span class="acc-target-label">TARGET</span>
-    <span class="acc-target-name">{{targetName}}</span>
+  <div class="ms-card-target">
+    <span class="ms-card-target-arrow">&#9656;</span>
+    <span class="ms-card-target-label">TARGET</span>
+    <span class="ms-card-target-name">{{targetName}}</span>
   </div>
   {{/if}}
 
   {{!-- ═══ SKILL TYPE BADGES ═══ --}}
-  <div class="scc-type-row">
-    <span class="scc-type-badge scc-type-{{skillType}}">{{skillType}}</span>
+  <div class="ms-card-tags">
+    <span class="ms-card-tag tag-type">{{skillType}}</span>
     {{#if isHealing}}
-      <span class="scc-type-badge scc-type-healing"><i class="fas fa-heart"></i> Healing</span>
+      <span class="ms-card-tag tag-type"><i class="fas fa-heart"></i> Healing</span>
     {{/if}}
     {{#if (eq targetType "aoe")}}
-      <span class="scc-type-badge scc-type-aoe"><i class="fas fa-burst"></i> AoE</span>
+      <span class="ms-card-tag tag-type"><i class="fas fa-burst"></i> AoE</span>
     {{else if (eq targetType "self")}}
-      <span class="scc-type-badge scc-type-self"><i class="fas fa-user-shield"></i> Self</span>
+      <span class="ms-card-tag tag-type"><i class="fas fa-user-shield"></i> Self</span>
     {{/if}}
   </div>
 
   {{!-- ═══ STAT PIPS ═══ --}}
-  <div class="scc-stats">
+  <div class="ms-card-stat-pips">
     {{#if mpCost}}
-      <div class="scc-stat-pip scc-mp">
-        <span class="scc-stat-label">MP</span>
-        <span class="scc-stat-value">{{mpCost}}</span>
+      <div class="ms-card-stat-pip pip-mp">
+        <span class="pip-label">MP</span>
+        <span class="pip-value">{{mpCost}}</span>
       </div>
     {{/if}}
     {{#if range}}
-      <div class="scc-stat-pip">
-        <span class="scc-stat-label">{{#if isMeleeSkill}}Reach{{else}}Rng{{/if}}</span>
-        <span class="scc-stat-value">{{range}}</span>
+      <div class="ms-card-stat-pip">
+        <span class="pip-label">{{#if isMeleeSkill}}Reach{{else}}Rng{{/if}}</span>
+        <span class="pip-value">{{range}}</span>
       </div>
     {{/if}}
     {{#if chantLabel}}
-      <div class="scc-stat-pip scc-chant-{{chantKey}}">
-        <span class="scc-stat-label">Chant</span>
-        <span class="scc-stat-value">{{chantLabel}}</span>
+      <div class="ms-card-stat-pip pip-chant-{{chantKey}}">
+        <span class="pip-label">Chant</span>
+        <span class="pip-value">{{chantLabel}}</span>
       </div>
     {{/if}}
     {{#if showEffectMod}}
-      <div class="scc-stat-pip">
-        <span class="scc-stat-label">Effect</span>
-        <span class="scc-stat-value">x{{effectModifier}}</span>
+      <div class="ms-card-stat-pip">
+        <span class="pip-label">Effect</span>
+        <span class="pip-value">x{{effectModifier}}</span>
       </div>
     {{/if}}
   </div>
 
   {{!-- ═══ DESCRIPTION ═══ --}}
   {{#if description}}
-    <div class="scc-desc {{#unless longDescription}}scc-desc-short{{/unless}}">{{{description}}}</div>
+    <div class="ms-card-body">
+      <div class="ms-card-desc {{#unless longDescription}}scc-desc-short{{/unless}}">{{{description}}}</div>
+    </div>
   {{/if}}
 
   {{!-- ═══ APPLY EFFECT BUTTON (buff/debuff skills) ═══ --}}
   {{#if buffDuration}}
-    <div class="scc-apply-row">
+    <div class="ms-card-apply-row">
       <button type="button" class="scc-apply-buff"
               data-buff="{{{buffRulesJson}}}">
         <i class="fas fa-shield-halved"></i> Apply Effect to Targets ({{buffDuration}} turns)

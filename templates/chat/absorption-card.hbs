@@ -1,46 +1,41 @@
-<div class="manashard absorption-chat-card">
-
-  {{!-- ═══ HEADER: Portrait + Skill Info ═══ --}}
-  <div class="abc-header">
-    <div class="abc-portrait-frame">
-      <img src="{{actorImg}}" class="abc-portrait" />
-    </div>
-    <div class="abc-header-text">
-      <span class="abc-actor-name">{{actorName}}</span>
-      <span class="abc-action">absorbed</span>
+<div class="ms-card card-absorb">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">absorbed</div>
     </div>
   </div>
-
-  {{!-- ═══ SKILL DISPLAY ═══ --}}
-  <div class="abc-skill-row">
-    <div class="abc-skill-icon-frame">
-      <img src="{{itemImg}}" class="abc-skill-icon" alt="{{itemName}}" />
-    </div>
-    <div class="abc-skill-info">
-      <div class="abc-skill-name">{{itemName}}</div>
-      <div class="abc-badges">
-        {{#each typeBadges}}
-          <span class="abc-badge">{{this}}</span>
-        {{/each}}
+  <div class="ms-card-action absorb">
+    <div class="action-gem"></div>
+    Manacite Absorbed
+  </div>
+  <div class="ms-card-body">
+    <div class="ms-card-item-row" style="border-color: rgba(167, 139, 250, .12);">
+      <div class="ms-card-item-icon" style="background: rgba(167, 139, 250, .12);">
+        <img src="{{itemImg}}" alt="{{itemName}}" />
+      </div>
+      <div>
+        <div class="ms-card-item-name" style="color: #c4a7fa;">{{itemName}}</div>
+        {{#if typeBadges.length}}
+        <div class="ms-card-tags" style="padding: 2px 0 0;">
+          {{#each typeBadges}}<span class="ms-card-tag tag-type">{{this}}</span>{{/each}}
+        </div>
+        {{/if}}
       </div>
     </div>
   </div>
-
-  {{!-- ═══ STAT PIPS (if any) ═══ --}}
   {{#if stats.length}}
-  <div class="abc-stats">
+  <div class="ms-card-stats">
     {{#each stats}}
-    <div class="abc-stat-cell">
-      <span class="abc-stat-label">{{this.label}}</span>
-      <span class="abc-stat-value">{{this.value}}</span>
+    <div class="ms-card-stat-cell">
+      <span class="ms-card-stat-label">{{this.label}}</span>
+      <span class="ms-card-stat-value">{{this.value}}</span>
     </div>
     {{/each}}
   </div>
   {{/if}}
-
-  {{!-- ═══ CONFIRMATION ═══ --}}
-  <div class="abc-confirm">
+  <div class="ms-card-confirm">
     <i class="fas fa-sun"></i> Skill permanently learned
   </div>
-
 </div>

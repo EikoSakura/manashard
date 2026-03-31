@@ -1,53 +1,50 @@
-<div class="manashard attack-chat-card pillage-card">
-  {{!-- ═══ HEADER BAR ═══ --}}
-  <div class="acc-header">
-    <div class="acc-portrait-frame">
-      <div class="acc-portrait-diamond">
-        <img src="{{actorImg}}" class="acc-portrait" />
-      </div>
+<div class="ms-card card-pillage">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">triggers <strong>Pillage</strong></div>
     </div>
-    <div class="acc-header-text">
-      <span class="acc-actor-name">{{actorName}}</span>
-      <span class="acc-action">triggers <strong>Pillage</strong></span>
-    </div>
-    <span class="acc-target-badge acc-target-pillage"><i class="fas fa-skull-crossbones"></i></span>
+    <span class="ms-card-header-badge badge-icon"><i class="fas fa-skull-crossbones"></i></span>
   </div>
-
-  {{!-- ═══ TARGET LINE ═══ --}}
+  <div class="ms-card-action pillage">
+    <div class="action-gem"></div>
+    Pillage
+  </div>
   {{#if targetName}}
-  <div class="acc-target-line">
-    <i class="fas fa-arrow-right acc-target-arrow"></i>
-    <span class="acc-target-name">{{targetName}}</span>
+  <div class="ms-card-target">
+    <span class="ms-card-target-arrow"><i class="fas fa-arrow-right"></i></span>
+    <span class="ms-card-target-name">{{targetName}}</span>
   </div>
   {{/if}}
-
-  {{!-- ═══ RESULT ═══ --}}
-  <div class="acc-rolls">
+  <div class="ms-card-roll">
     {{#if pillaged}}
-      <div class="acc-roll-row acc-hit acc-success pillage-success-row">
-        <i class="acc-roll-icon fas fa-gem"></i>
-        <span class="acc-roll-label">Pillaged <strong>{{itemName}}</strong>!</span>
-        <span class="acc-roll-dice"><i class="fas fa-dice-d20"></i> {{lootRoll}} / {{lootChance}}{{#if lukBonus}} <small>({{baseChance}}+{{lukBonus}} LUK)</small>{{/if}}</span>
+      <div class="ms-card-roll-row roll-hit">
+        <i class="ms-card-roll-icon fas fa-gem"></i>
+        <span class="ms-card-roll-label">Pillaged <strong>{{itemName}}</strong>!</span>
+        <div class="ms-card-roll-values">
+          <span class="ms-card-roll-result"><i class="fas fa-dice-d20"></i> {{lootRoll}}</span>
+          <span class="ms-card-roll-sep">/</span>
+          <span class="ms-card-roll-threshold">{{lootChance}}{{#if lukBonus}} <small>({{baseChance}}+{{lukBonus}} LUK)</small>{{/if}}</span>
+        </div>
       </div>
     {{else}}
       {{#if noLoot}}
-        <div class="acc-roll-row acc-hit acc-fail pillage-noloot-row">
-          <i class="acc-roll-icon fas fa-ban"></i>
-          <span class="acc-roll-label">No loot to pillage!</span>
+        <div class="ms-card-roll-row roll-miss">
+          <i class="ms-card-roll-icon fas fa-ban"></i>
+          <span class="ms-card-roll-label">No loot to pillage!</span>
         </div>
       {{else}}
-        <div class="acc-roll-row acc-hit acc-fail pillage-noloot-row">
-          <i class="acc-roll-icon fas fa-hand-holding"></i>
-          <span class="acc-roll-label">Pillage rolls failed!</span>
+        <div class="ms-card-roll-row roll-miss">
+          <i class="ms-card-roll-icon fas fa-hand-holding"></i>
+          <span class="ms-card-roll-label">Pillage rolls failed!</span>
         </div>
       {{/if}}
     {{/if}}
   </div>
-
-  {{!-- ═══ APPLY PILLAGE BUTTON ═══ --}}
   {{#if pillaged}}
     {{#if targetTokenId}}
-      <div class="acc-apply-row">
+      <div class="ms-card-apply-row">
         <button type="button" class="pillage-apply-btn"
                 data-target-token-id="{{targetTokenId}}"
                 data-looter-token-id="{{looterTokenId}}"

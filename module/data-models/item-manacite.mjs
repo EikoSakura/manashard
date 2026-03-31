@@ -139,6 +139,8 @@ export class ManaciteData extends foundry.abstract.TypeDataModel {
 
       // Growth rates — integer percentages added to character base growths on level-up
       growthRates: new SchemaField({
+        hp: new NumberField({ required: true, integer: true, min: 0, max: 200, initial: 0 }),
+        mp: new NumberField({ required: true, integer: true, min: 0, max: 200, initial: 0 }),
         str: new NumberField({ required: true, integer: true, min: 0, max: 200, initial: 0 }),
         agi: new NumberField({ required: true, integer: true, min: 0, max: 200, initial: 0 }),
         mag: new NumberField({ required: true, integer: true, min: 0, max: 200, initial: 0 }),

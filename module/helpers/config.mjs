@@ -1,6 +1,40 @@
 export const MANASHARD = {};
 
 /**
+ * Sheet accent color presets.
+ * Each preset defines a primary color; lighter/darker/glow variants
+ * are derived in CSS via opacity and filter adjustments.
+ */
+MANASHARD.sheetAccentPresets = {
+  gold:     { label: "Gold",     color: "#c49a2a" },
+  crimson:  { label: "Crimson",  color: "#d43050" },
+  rose:     { label: "Rose",     color: "#d45090" },
+  sapphire: { label: "Sapphire", color: "#3070d0" },
+  emerald:  { label: "Emerald",  color: "#2eaa6e" },
+  amethyst: { label: "Amethyst", color: "#8844cc" },
+  amber:    { label: "Amber",    color: "#e08820" },
+  silver:   { label: "Silver",   color: "#8899bb" },
+  cyan:     { label: "Cyan",     color: "#20b0c0" },
+  custom:   { label: "Custom",   color: null },
+};
+
+/**
+ * Render icon HTML for either Font Awesome or SVG sprite icons.
+ * @param {string} iconRef - Icon reference (e.g. "fas fa-sword" or "gi-fire")
+ * @param {string} [cls] - Additional CSS classes
+ * @param {string} [title] - Title attribute
+ * @returns {string} HTML string
+ */
+export function renderIconHtml(iconRef, cls = "", title = "") {
+  if (!iconRef) return "";
+  const titleAttr = title ? ` title="${title}"` : "";
+  if (iconRef.startsWith("gi-")) {
+    return `<svg class="gi-icon manashard-icon-glow${cls ? " " + cls : ""}"${titleAttr}><use href="systems/manashard/assets/icons/gi-sprites.svg#${iconRef}"></use></svg>`;
+  }
+  return `<i class="${iconRef}${cls ? " " + cls : ""}"${titleAttr}></i>`;
+}
+
+/**
  * All NPC-type actor subtypes. Use this set for type checks instead of
  * comparing against individual type strings.
  */
@@ -245,9 +279,9 @@ MANASHARD.manaciteSubTypeColors = {
  * Manacite sub-type icons for UI display.
  */
 MANASHARD.manaciteSubTypeIcons = {
-  magic: "fas fa-hat-wizard",
-  art: "fas fa-swords",
-  passive: "fas fa-shield-halved"
+  magic: "gi-magic",
+  art: "gi-art",
+  passive: "gi-passive"
 };
 
 /**
@@ -326,11 +360,11 @@ MANASHARD.enemyRoles = {
  * Icons for enemy roles (Font Awesome).
  */
 MANASHARD.enemyRoleIcons = {
-  minion: "fas fa-chess-pawn",
-  standard: "fas fa-shield-halved",
-  elite: "fas fa-chess-knight",
-  boss: "fas fa-crown",
-  legendary: "fas fa-dragon"
+  minion: "gi-minion",
+  standard: "gi-standard",
+  elite: "gi-elite",
+  boss: "gi-boss",
+  legendary: "gi-legendary"
 };
 
 /**
@@ -486,31 +520,31 @@ MANASHARD.objectiveTypes = {
  * Font Awesome icons for each objective type.
  */
 MANASHARD.objectiveIcons = {
-  rout: "fas fa-skull-crossbones",
-  defeatBoss: "fas fa-crown",
-  survive: "fas fa-hourglass-end",
-  escape: "fas fa-door-open",
-  defendPoint: "fas fa-shield-alt",
-  escort: "fas fa-user-shield",
-  negotiate: "fas fa-handshake",
-  protectCivilians: "fas fa-people-arrows",
-  captureAlive: "fas fa-hand-holding-heart",
-  slayBeforeTime: "fas fa-stopwatch",
-  repel: "fas fa-dragon"
+  rout: "gi-skull",
+  defeatBoss: "gi-boss",
+  survive: "gi-hourglass",
+  escape: "gi-exit",
+  defendPoint: "gi-castle",
+  escort: "gi-standard",
+  negotiate: "gi-handshake",
+  protectCivilians: "gi-standard",
+  captureAlive: "gi-handshake",
+  slayBeforeTime: "gi-hourglass",
+  repel: "gi-legendary"
 };
 
 /**
  * Font Awesome icons for status effects.
  */
 MANASHARD.statusIcons = {
-  beguile:    "fas fa-heart-crack",
-  blight:     "fas fa-biohazard",
-  expose:     "fas fa-shield-virus",
-  immobilize: "fas fa-anchor",
-  impair:     "fas fa-eye-slash",
-  silence:    "fas fa-comment-slash",
-  stun:       "fas fa-star",
-  taunt:      "fas fa-bullseye"
+  beguile:    "gi-beguile",
+  blight:     "gi-blight",
+  expose:     "gi-expose",
+  immobilize: "gi-immobilize",
+  impair:     "gi-impair",
+  silence:    "gi-silence",
+  stun:       "gi-stun",
+  taunt:      "gi-taunt"
 };
 
 /**
@@ -729,7 +763,7 @@ MANASHARD.ruleSelectors = {
   blockChance: "MANASHARD.RuleSelectors.blockChance",
   carryingCapacity: "MANASHARD.RuleSelectors.carryingCapacity",
   chm: "MANASHARD.StatsAbbr.CHM",
-  critAvoid: "MANASHARD.RuleSelectors.critAvoid",
+  critEvo: "MANASHARD.RuleSelectors.critEvo",
   critical: "MANASHARD.RuleSelectors.critical",
   damage: "MANASHARD.RuleSelectors.damage",
   damageTaken: "MANASHARD.RuleSelectors.damageTaken",
@@ -747,6 +781,7 @@ MANASHARD.ruleSelectors = {
   "hp.barrier": "MANASHARD.RuleSelectors.hpBarrier",
   "hp.max": "MANASHARD.RuleSelectors.hpMax",
   int: "MANASHARD.StatsAbbr.INT",
+  loadoutSlots: "MANASHARD.RuleSelectors.loadoutSlots",
   luk: "MANASHARD.StatsAbbr.LUK",
   mag: "MANASHARD.StatsAbbr.MAG",
   mdef: "MANASHARD.RuleSelectors.mdef",
@@ -775,7 +810,7 @@ MANASHARD.ruleSelectorGroups = {
   },
   defense: {
     label: "MANASHARD.RuleSelectorGroups.Defense",
-    selectors: ["blockChance", "critAvoid", "damageTaken", "mdef", "meva", "pdef", "peva"]
+    selectors: ["blockChance", "critEvo", "damageTaken", "mdef", "meva", "pdef", "peva"]
   },
   growthRates: {
     label: "MANASHARD.RuleSelectorGroups.GrowthRates",
@@ -791,7 +826,7 @@ MANASHARD.ruleSelectorGroups = {
   },
   resources: {
     label: "MANASHARD.RuleSelectorGroups.Resources",
-    selectors: ["hp.barrier", "hp.max", "mp.max", "mpCost", "mpRegen"]
+    selectors: ["hp.barrier", "hp.max", "loadoutSlots", "mp.max", "mpCost", "mpRegen"]
   }
 };
 
@@ -916,18 +951,30 @@ MANASHARD.weaponCategoryDefaults = {
 };
 
 MANASHARD.weaponCategoryRules = {
-  swords:    [{ key: "Grant", grant: "versatile", label: "Versatile" }],
-  daggers:   [{ key: "Modifier", selector: "peva", value: 5, mode: "flat", label: "Swift" }],
-  axes:      [{ key: "Grant", grant: "brutalCrit", label: "Brutal" }],
-  polearms:  [], // Reach is already inherent via weapon maxRange
-  chains:    [{ key: "Status", status: "immobilize", action: "inflict", chance: 20, label: "Binding" }],
-  fist:      [{ key: "Modifier", selector: "mpCost", value: -1, mode: "flat", label: "Flow" }],
-  bows:      [{ key: "Grant", grant: "precision", label: "Precision" }],
-  firearms:  [{ key: "Grant", grant: "percentPiercing", percentPiercing: 30, label: "Penetrating" }],
-  grimoires: [], // Element affinity is already inherent via weapon element field
-  staves:    [{ key: "Modifier", selector: "damage", value: 2, mode: "flat", condition: "weaponIsMagical", label: "Arcane Conduit" }],
-  shields:   [], // Block chance is already inherent via weapon block field
-  natural:   [], // Species scaling is already inherent via natural weapon path
+  swords:    { label: "Versatile",      description: "Scales off max(STR, AGI)",
+               rules: [{ key: "Grant", grant: "versatile", label: "Versatile" }] },
+  daggers:   { label: "Swift",          description: "+5 P.EVA",
+               rules: [{ key: "Modifier", selector: "peva", value: 5, mode: "flat", label: "Swift" }] },
+  axes:      { label: "Brutal",         description: "Crits deal ×2.5 damage",
+               rules: [{ key: "Grant", grant: "brutalCrit", label: "Brutal" }] },
+  polearms:  { label: "Reach",          description: "Extended melee range",
+               rules: [] },
+  chains:    { label: "Binding",        description: "20% chance to Immobilize on hit",
+               rules: [{ key: "Status", status: "immobilize", action: "inflict", chance: 20, label: "Binding" }] },
+  fist:      { label: "Flow",           description: "Arts cost −1 MP (min 1)",
+               rules: [{ key: "Modifier", selector: "mpCost", value: -1, mode: "flat", label: "Flow" }] },
+  bows:      { label: "Precision",      description: "+10 Accuracy",
+               rules: [{ key: "Modifier", selector: "accuracy", value: 10, mode: "flat", label: "Precision" }] },
+  firearms:  { label: "Penetrating",    description: "Ignores 30% of DEF",
+               rules: [{ key: "Grant", grant: "percentPiercing", percentPiercing: 30, label: "Penetrating" }] },
+  grimoires: { label: "Elemental",      description: "Element affinity",
+               rules: [] },
+  staves:    { label: "Conduit",        description: "+2 magic damage/healing",
+               rules: [{ key: "Modifier", selector: "damage", value: 2, mode: "flat", condition: "weaponIsMagical", label: "Conduit" }] },
+  shields:   { label: "Guard",          description: "Block chance",
+               rules: [] },
+  natural:   { label: "Innate",         description: "Species-based",
+               rules: [] },
 };
 
 /**

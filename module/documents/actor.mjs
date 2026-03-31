@@ -1,6 +1,6 @@
 import { resolveAttack, executeCombatRolls, getElementalTierLabel, evaluateCombatNotes, gridDistance, validateAttackRange, applyBuffEffect, checkTargetRestrictions } from "../helpers/combat.mjs";
 import { scheduleSyncStatusEffects } from "../helpers/status-effects.mjs";
-import { MANASHARD } from "../helpers/config.mjs";
+import { MANASHARD, renderIconHtml } from "../helpers/config.mjs";
 import { syncTrapSenseDetection } from "../helpers/trap-sense.mjs";
 import { syncSenseDetection } from "../helpers/sense.mjs";
 import { showVsSplash } from "../helpers/vs-splash.mjs";
@@ -419,7 +419,7 @@ export class ManashardActor extends Actor {
     data.critical = system.critical ?? 0;
     data.peva = system.peva ?? 0;
     data.meva = system.meva ?? 0;
-    data.critAvoid = system.critAvoid ?? 0;
+    data.critEvo = system.critEvo ?? 0;
     data.mov = system.mov ?? 6;
     data.mpRegen = system.mpRegen ?? 0;
     data.carryingCapacity = system.carryingCapacity ?? 0;
@@ -520,13 +520,14 @@ export class ManashardActor extends Actor {
       const stats = system.stats;
       const wpnMight = weapon?.system?.might ?? 0;
       const wpnCrit = weapon?.system?.crit ?? 0;
-      // Swords (Versatile): physical damage uses max(STR, AGI)
+      // Scaling stat: Staves/Grimoires/magical → MAG, Swords → max(STR,AGI), else → STR
       const wpnCat = weapon?.system?.category;
+      const wpnMagCat = wpnCat === "staves" || wpnCat === "grimoires";
       const physStat = (damageType !== "magical" && wpnCat === "swords")
         ? Math.max(stats?.str?.value ?? 0, stats?.agi?.value ?? 0)
         : (stats?.str?.value ?? 0);
-      const scalingStat = damageType === "magical" ? (stats?.mag?.value ?? 0) : physStat;
-      baseDamage = (scalingStat * 2) + wpnMight;
+      const scalingStat = (damageType === "magical" || wpnMagCat) ? (stats?.mag?.value ?? 0) : physStat;
+      baseDamage = scalingStat + wpnMight;
       accuracy = 80 + (stats?.agi?.value ?? 0) * 2;
       critical = (stats?.luk?.value ?? 0) * 2 + wpnCrit;
     } else {
@@ -1471,7 +1472,7 @@ export class ManashardActor extends Actor {
         const sign = e.type === "damage" ? "-" : "+";
         const cls = e.type === "damage" ? "turn-effect-damage" : "turn-effect-heal";
         return `<div class="turn-effect-line ${cls}">
-          <i class="${e.icon}"></i>
+          ${renderIconHtml(e.icon)}
           <span class="turn-effect-label">${e.label}</span>
           <span class="turn-effect-value">${sign}${e.value} ${e.stat}</span>
         </div>`;

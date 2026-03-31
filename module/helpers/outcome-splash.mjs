@@ -1,3 +1,5 @@
+import { renderIconHtml } from "./config.mjs";
+
 /**
  * Victory / Defeat full-screen splash overlay — Fire Emblem-style.
  * Slides a dramatic banner across the screen, holds briefly, then fades out.
@@ -33,7 +35,7 @@ export function showOutcomeSplash(outcome = "victory", { objectiveLabel = "", ob
         <div class="outcome-splash-label">${isVictory ? "Victory" : "Defeat"}</div>
         ${objectiveLabel ? `
         <div class="outcome-splash-objective">
-          ${objectiveIcon ? `<i class="${objectiveIcon}"></i>` : ""}
+          ${objectiveIcon ? renderIconHtml(objectiveIcon) : ""}
           <span>${objectiveLabel}</span>
         </div>` : ""}
       </div>

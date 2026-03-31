@@ -1,0 +1,353 @@
+/* ═══════════════════════════════════════════════════════════════
+   PARTY HUD — Granblue Fantasy-style Floating Party Tracker
+   ═══════════════════════════════════════════════════════════════ */
+
+#manashard-party-hud {
+  position: fixed;
+  z-index: 60;
+  pointer-events: auto;
+  min-width: 200px;
+  max-width: 320px;
+  font-family: var(--manashard-font-body, "Nunito", sans-serif);
+  font-size: 12px;
+  color: var(--manashard-text, #2a3040);
+  transition: opacity 0.2s ease;
+}
+
+/* ─── Inner Container ─── */
+.phud-inner {
+  background: var(--manashard-glass-bg-strong, rgba(255,255,255,0.72));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--manashard-glass-border, rgba(255,255,255,0.70));
+  border-radius: 10px;
+  box-shadow: var(--manashard-shadow-elevated, 0 4px 20px rgba(0,40,80,0.12));
+  overflow: hidden;
+}
+
+/* ─── Header ─── */
+.phud-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: linear-gradient(135deg, rgba(196,154,42,0.12) 0%, rgba(196,154,42,0.04) 100%);
+  border-bottom: 1px solid var(--manashard-border, #b8cade);
+  cursor: grab;
+  user-select: none;
+}
+.phud-header:active { cursor: grabbing; }
+
+.phud-title {
+  font-family: var(--manashard-font-heading, "Cormorant Garamond", serif);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.phud-round {
+  font-family: var(--manashard-font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--manashard-accent, #c49a2a);
+  background: rgba(196,154,42,0.12);
+  padding: 1px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--manashard-accent-glow, rgba(196,154,42,0.30));
+}
+
+.phud-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.phud-btn {
+  background: none;
+  border: none;
+  color: var(--manashard-text-dim, #5a6a7d);
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 11px;
+  transition: color 0.2s, background 0.2s;
+}
+.phud-btn:hover {
+  color: var(--manashard-accent, #c49a2a);
+  background: rgba(196,154,42,0.08);
+}
+
+/* ─── Empty State ─── */
+.phud-empty {
+  padding: 12px;
+  text-align: center;
+  color: var(--manashard-text-muted, #8899ab);
+  font-style: italic;
+}
+
+/* ─── Members Container ─── */
+.phud-members {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px;
+}
+
+/* ─── Member Card ─── */
+.phud-member {
+  display: flex;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  align-items: flex-start;
+}
+.phud-member:hover {
+  background: rgba(0,30,60,0.04);
+}
+.phud-member--active {
+  background: rgba(196,154,42,0.08) !important;
+  border: 1px solid var(--manashard-accent, #c49a2a);
+  box-shadow: 0 0 6px var(--manashard-accent-glow, rgba(196,154,42,0.30));
+}
+.phud-member--defeated {
+  opacity: 0.5;
+}
+.phud-member--critical .phud-hp-fill {
+  animation: phud-pulse-critical 1s ease-in-out infinite;
+}
+
+@keyframes phud-pulse-critical {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ─── Portrait ─── */
+.phud-portrait {
+  position: relative;
+  flex-shrink: 0;
+}
+.phud-mode-full .phud-portrait {
+  width: 40px;
+  height: 40px;
+}
+.phud-mode-compact .phud-portrait {
+  width: 28px;
+  height: 28px;
+}
+.phud-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--manashard-glass-border, rgba(255,255,255,0.70));
+  box-shadow: 0 1px 4px rgba(0,30,60,0.10);
+}
+.phud-member--active .phud-portrait img {
+  border-color: var(--manashard-accent, #c49a2a);
+  box-shadow: 0 0 8px var(--manashard-accent-glow, rgba(196,154,42,0.30));
+}
+.phud-defeated-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--manashard-failure, #e84430);
+  font-size: 14px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* ─── Full Mode Info ─── */
+.phud-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.phud-name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px;
+}
+.phud-name {
+  font-weight: 600;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--manashard-text, #2a3040);
+}
+.phud-level {
+  font-family: var(--manashard-font-mono, monospace);
+  font-size: 10px;
+  color: var(--manashard-text-dim, #5a6a7d);
+  flex-shrink: 0;
+}
+.phud-job {
+  font-size: 10px;
+  color: var(--manashard-accent, #c49a2a);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Resource Bars ─── */
+.phud-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 14px;
+}
+.phud-bar-label {
+  font-family: var(--manashard-font-heading, serif);
+  font-size: 9px;
+  font-weight: 700;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.phud-hp-label { color: var(--manashard-hp, #2ecc71); }
+.phud-mp-label { color: var(--manashard-mp, #5599ee); }
+
+.phud-bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(0,30,60,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.phud-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.phud-hp-fill {
+  background: linear-gradient(180deg, #5eff8a 0%, #2ecc71 50%, #1fa85c 100%);
+  box-shadow: 0 0 4px rgba(46,204,113,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+.phud-hp-critical {
+  background: linear-gradient(180deg, #ff8844 0%, #e84430 50%, #cc2020 100%) !important;
+  box-shadow: 0 0 4px rgba(232,68,48,0.4), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+}
+.phud-mp-fill {
+  background: linear-gradient(180deg, #77bbff 0%, #5599ee 50%, #3377cc 100%);
+  box-shadow: 0 0 4px rgba(85,153,238,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+.phud-bar-value {
+  font-family: var(--manashard-font-mono, monospace);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--manashard-text, #2a3040);
+  min-width: 42px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.phud-bar-max {
+  color: var(--manashard-text-muted, #8899ab);
+  font-size: 9px;
+}
+
+/* ─── Status Effects ─── */
+.phud-statuses {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  margin-top: 1px;
+}
+.phud-status-icon {
+  font-size: 12px;
+  filter: drop-shadow(0 0 2px var(--manashard-sparkle-color, rgba(255,230,150,0.9)));
+}
+
+/* ─── Compact Mode ─── */
+.phud-mode-compact .phud-member {
+  align-items: center;
+  padding: 3px 6px;
+}
+
+.phud-compact-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.phud-compact-bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.phud-compact-bar-track {
+  height: 5px;
+  background: rgba(0,30,60,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.phud-compact-bar-track .phud-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.phud-compact-statuses {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.phud-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--manashard-text-muted, #8899ab);
+}
+.phud-status-dot--beguile { background: var(--manashard-beguile, #d63384); }
+.phud-status-dot--blight { background: var(--manashard-blight, #7c3aed); }
+.phud-status-dot--expose { background: var(--manashard-expose, #dc3545); }
+.phud-status-dot--immobilize { background: var(--manashard-immobilize, #8b5e34); }
+.phud-status-dot--impair { background: var(--manashard-impair, #6b7280); }
+.phud-status-dot--silence { background: var(--manashard-silence, #2563eb); }
+.phud-status-dot--stun { background: var(--manashard-stun, #d99e00); }
+.phud-status-dot--taunt { background: var(--manashard-taunt, #e06010); }
+
+/* ─── Barrier HP ─── */
+.phud-barrier-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(200,220,255,0.5) 100%);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.phud-barrier-text {
+  color: var(--manashard-mp, #5599ee);
+  font-size: 9px;
+}
+
+/* ─── Charging Indicator ─── */
+.phud-charging {
+  font-size: 10px;
+  color: var(--manashard-accent, #c49a2a);
+  font-style: italic;
+  margin-top: 1px;
+}
+.phud-charging i {
+  font-size: 9px;
+  animation: phud-pulse-critical 1.5s ease-in-out infinite;
+}
+
+/* ─── Minimized State ─── */
+.phud-minimized .phud-members,
+.phud-minimized .phud-empty {
+  display: none;
+}

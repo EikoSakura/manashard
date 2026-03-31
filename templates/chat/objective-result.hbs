@@ -1,41 +1,31 @@
-<div class="manashard objective-card objective-{{outcome}}">
-
-  {{!-- ═══ BANNER ═══ --}}
-  <div class="objc-banner">
-    <div class="objc-banner-line"></div>
-    <div class="objc-banner-text">
-      {{#if (eq outcome "victory")}}
-        <i class="fas fa-crown"></i>
-        <span>{{localize "MANASHARD.Objectives.Victory"}}</span>
-        <i class="fas fa-crown"></i>
-      {{else}}
-        <i class="fas fa-skull"></i>
-        <span>{{localize "MANASHARD.Objectives.Failure"}}</span>
-        <i class="fas fa-skull"></i>
-      {{/if}}
-    </div>
-    <div class="objc-banner-line"></div>
+<div class="ms-card card-objective objective-{{outcome}}">
+  <div class="ms-card-objective-banner">
+    {{#if (eq outcome "victory")}}
+      <i class="fas fa-crown"></i>
+      <span>{{localize "MANASHARD.Objectives.Victory"}}</span>
+      <i class="fas fa-crown"></i>
+    {{else}}
+      <i class="fas fa-skull"></i>
+      <span>{{localize "MANASHARD.Objectives.Failure"}}</span>
+      <i class="fas fa-skull"></i>
+    {{/if}}
   </div>
-
-  {{!-- ═══ OBJECTIVE INFO ═══ --}}
-  <div class="objc-body">
-    <div class="objc-objective-row">
-      <div class="objc-objective-icon"><i class="{{objectiveIcon}}"></i></div>
-      <div class="objc-objective-info">
-        <div class="objc-objective-label">{{objectiveLabel}}</div>
-        <div class="objc-objective-desc">{{objectiveDesc}}</div>
+  <div class="ms-card-objective-body">
+    <div class="ms-card-objective-row">
+      <div class="ms-card-objective-icon">{{{manashardIcon objectiveIcon}}}</div>
+      <div class="ms-card-objective-info">
+        <div class="ms-card-objective-label">{{objectiveLabel}}</div>
+        <div class="ms-card-objective-desc">{{objectiveDesc}}</div>
       </div>
     </div>
     {{#if hasProgress}}
-    <div class="objc-progress-bar-track">
-      <div class="objc-progress-bar-fill" style="width: {{progressPct}}%;"></div>
-      <span class="objc-progress-text">{{progressCurrent}} / {{progressTarget}}</span>
+    <div class="ms-card-progress-bar">
+      <div class="ms-card-progress-fill" style="width: {{progressPct}}%;"></div>
+      <span class="ms-card-progress-text">{{progressCurrent}} / {{progressTarget}}</span>
     </div>
     {{/if}}
   </div>
-
-  {{!-- ═══ RESULT LINE ═══ --}}
-  <div class="objc-result-line">
+  <div class="ms-card-objective-result">
     {{#if (eq outcome "victory")}}
       <i class="fas fa-check-circle"></i>
       <span>{{localize "MANASHARD.Objectives.VictoryMessage"}}</span>

@@ -26,7 +26,7 @@
 
       {{!-- Objective Modifier Badge --}}
       <div class="eb-obj-mod">
-        <i class="{{objectiveIcon}}"></i>
+        {{{manashardIcon objectiveIcon}}}
         <span class="eb-obj-mod-value">{{objectiveModifierDisplay}}</span>
       </div>
 
@@ -92,7 +92,7 @@
             <span class="eb-roster-meta">
               Lv {{this.level}}
               <span class="eb-rank-badge rank-{{this.rank}}">{{this.rankLabel}}</span>
-              <span class="eb-role-badge"><i class="{{this.roleIcon}}"></i> {{this.roleLabel}}</span>
+              <span class="eb-role-badge">{{{manashardIcon this.roleIcon}}} {{this.roleLabel}}</span>
             </span>
           </div>
           <span class="eb-roster-tl" title="Threat Level">TL {{this.threatLevel}}</span>
@@ -164,7 +164,7 @@
             <span class="eb-roster-meta">
               Lv {{this.level}}
               <span class="eb-rank-badge rank-{{this.rank}}">{{this.rankLabel}}</span>
-              <span class="eb-role-badge"><i class="{{this.roleIcon}}"></i> {{this.roleLabel}}</span>
+              <span class="eb-role-badge">{{{manashardIcon this.roleIcon}}} {{this.roleLabel}}</span>
             </span>
           </div>
           <span class="eb-roster-tl" title="Threat Level">TL {{this.threatLevel}}</span>

@@ -1,0 +1,1246 @@
+/* ═══════════════════════════════════════════════════════
+   MANASHARD CRYSTAL CHAT CARDS
+   Unified design system for all chat card types
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Base Card ── */
+.ms-card {
+  background: linear-gradient(135deg, #0d1525 0%, #0a1120 100%);
+  border: 1px solid rgba(78, 185, 212, .15);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #d0dde8;
+}
+.ms-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+/* Card type accent bars */
+.ms-card.card-attack::before,
+.ms-card.card-aoe::before      { background: linear-gradient(90deg, #e84393, #d4a842); }
+.ms-card.card-skill::before     { background: linear-gradient(90deg, #4eb9d4, #a78bfa); }
+.ms-card.card-item::before      { background: linear-gradient(90deg, #d4a842, #4eb9d4); }
+.ms-card.card-absorb::before    { background: linear-gradient(90deg, #a78bfa, #55efc4); }
+.ms-card.card-levelup::before   { background: linear-gradient(90deg, #d4a842, #e84393, #4eb9d4); }
+.ms-card.card-stat::before      { background: linear-gradient(90deg, #4eb9d4, #2ecc71); }
+.ms-card.card-consume::before   { background: linear-gradient(90deg, #2ecc71, #d4a842); }
+.ms-card.card-charge::before    { background: linear-gradient(90deg, #f39c12, #e84393); }
+.ms-card.card-status::before    { background: linear-gradient(90deg, #6c5ce7, #00cec9); }
+.ms-card.card-retaliate::before,
+.ms-card.card-retbuff::before   { background: linear-gradient(90deg, #ff6633, #e84393); }
+.ms-card.card-steal::before     { background: linear-gradient(90deg, #a78bfa, #e84393); }
+.ms-card.card-pillage::before   { background: linear-gradient(90deg, #e84393, #d4a842); }
+.ms-card.card-loot::before      { background: linear-gradient(90deg, #d4a842, #2ecc71); }
+.ms-card.card-objective::before { background: linear-gradient(90deg, #d4a842, #4eb9d4); }
+.ms-card.card-trigger::before   { background: linear-gradient(90deg, #2ecc71, #4eb9d4); }
+
+/* Charge phase variants */
+.ms-card.card-charge.charge-begin::before   { background: linear-gradient(90deg, #f39c12, #e84393); }
+.ms-card.card-charge.charge-resolve::before { background: linear-gradient(90deg, #2ecc71, #55efc4); }
+.ms-card.card-charge.charge-cancel::before  { background: linear-gradient(90deg, #e24b4a, #e84393); }
+
+/* Status removal source variants */
+.ms-card.card-status.removal-expired::before   { background: linear-gradient(90deg, #6c5ce7, #a78bfa); }
+.ms-card.card-status.removal-cleansed::before  { background: linear-gradient(90deg, #2ecc71, #55efc4); }
+.ms-card.card-status.removal-shattered::before { background: linear-gradient(90deg, #74b9ff, #00cec9); }
+
+/* Objective outcome variants */
+.ms-card.card-objective.objective-victory::before { background: linear-gradient(90deg, #d4a842, #f0c040, #d4a842); }
+.ms-card.card-objective.objective-defeat::before  { background: linear-gradient(90deg, #e24b4a, #e84393); }
+
+/* Element border accents for attack/aoe */
+.ms-card.element-fire    { border-color: rgba(255, 102, 51, .25); }
+.ms-card.element-ice     { border-color: rgba(116, 185, 255, .25); }
+.ms-card.element-water   { border-color: rgba(0, 206, 201, .25); }
+.ms-card.element-lightning { border-color: rgba(243, 156, 18, .25); }
+.ms-card.element-wind    { border-color: rgba(85, 239, 196, .25); }
+.ms-card.element-earth   { border-color: rgba(139, 90, 43, .25); }
+.ms-card.element-light   { border-color: rgba(253, 203, 110, .25); }
+.ms-card.element-dark    { border-color: rgba(108, 92, 231, .25); }
+
+/* ── Card Header ── */
+.ms-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 6px;
+}
+.ms-card-portrait {
+  width: 32px; height: 32px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.ms-card-portrait img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.ms-card-identity { flex: 1; min-width: 0; }
+.ms-card-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #e8d48b;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ms-card-subtitle {
+  font-size: 9px;
+  color: #6a8ba4;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ms-card-header-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+.ms-card-header-badge.badge-mp {
+  background: rgba(116, 185, 255, .12);
+  color: #74b9ff;
+}
+.ms-card-header-badge.badge-stat {
+  background: rgba(78, 185, 212, .12);
+  color: var(--sc-stat-color, #4eb9d4);
+}
+.ms-card-header-badge.badge-icon {
+  background: rgba(255, 255, 255, .06);
+  color: #8a9eb4;
+}
+
+/* ── Action Label ── */
+.ms-card-action {
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ms-card-action .action-gem {
+  width: 5px; height: 5px;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+.ms-card-action.attack        { color: #e84393; }
+.ms-card-action.attack .action-gem { background: #e84393; }
+.ms-card-action.skill         { color: #4eb9d4; }
+.ms-card-action.skill .action-gem  { background: #4eb9d4; }
+.ms-card-action.item          { color: #d4a842; }
+.ms-card-action.item .action-gem   { background: #d4a842; }
+.ms-card-action.absorb        { color: #a78bfa; }
+.ms-card-action.absorb .action-gem { background: #a78bfa; }
+.ms-card-action.levelup       { color: #d4a842; }
+.ms-card-action.levelup .action-gem { background: #d4a842; }
+.ms-card-action.stat          { color: #4eb9d4; }
+.ms-card-action.stat .action-gem   { background: #4eb9d4; }
+.ms-card-action.consume       { color: #2ecc71; }
+.ms-card-action.consume .action-gem { background: #2ecc71; }
+.ms-card-action.charge        { color: #f39c12; }
+.ms-card-action.charge .action-gem { background: #f39c12; }
+.ms-card-action.status        { color: #6c5ce7; }
+.ms-card-action.status .action-gem { background: #6c5ce7; }
+.ms-card-action.retaliate     { color: #ff6633; }
+.ms-card-action.retaliate .action-gem { background: #ff6633; }
+.ms-card-action.steal         { color: #a78bfa; }
+.ms-card-action.steal .action-gem { background: #a78bfa; }
+.ms-card-action.pillage       { color: #e84393; }
+.ms-card-action.pillage .action-gem { background: #e84393; }
+.ms-card-action.loot          { color: #d4a842; }
+.ms-card-action.loot .action-gem { background: #d4a842; }
+.ms-card-action.trigger       { color: #2ecc71; }
+.ms-card-action.trigger .action-gem { background: #2ecc71; }
+
+/* ── Target Line ── */
+.ms-card-target {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: #6a8ba4;
+}
+.ms-card-target-arrow {
+  color: #3a5a74;
+  font-size: 8px;
+}
+.ms-card-target-label {
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #5a7a94;
+}
+.ms-card-target-name {
+  font-weight: 600;
+  color: #8a9eb4;
+}
+.ms-card-target-badge {
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: auto;
+}
+.ms-card-target-badge.badge-aoe {
+  background: rgba(232, 67, 147, .1);
+  color: #e84393;
+}
+.ms-card-target-badge.badge-heal {
+  background: rgba(46, 204, 113, .1);
+  color: #2ecc71;
+}
+
+/* ── Tags ── */
+.ms-card-tags {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  padding: 6px 10px 4px;
+}
+.ms-card-tag {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 50%, calc(100% - 3px) 100%, 3px 100%, 0 50%);
+  text-transform: uppercase;
+}
+.ms-card-tag.tag-stat    { background: rgba(78, 185, 212, .1); color: #5aafca; }
+.ms-card-tag.tag-weapon  { background: rgba(232, 67, 147, .1); color: #d87aaa; }
+.ms-card-tag.tag-element { background: rgba(240, 192, 64, .1); color: #c8a850; }
+.ms-card-tag.tag-type    { background: rgba(167, 139, 250, .1); color: #9a8acc; }
+.ms-card-tag.tag-cost    { background: rgba(116, 185, 255, .1); color: #6aa0d0; }
+.ms-card-tag.tag-range   { background: rgba(46, 204, 113, .1); color: #40a870; }
+.ms-card-tag.tag-info    { background: rgba(255, 255, 255, .05); color: #7a92a8; }
+.ms-card-tag.tag-chant   { background: rgba(243, 156, 18, .1); color: #d4a842; }
+.ms-card-tag.tag-heal    { background: rgba(46, 204, 113, .1); color: #2ecc71; }
+.ms-card-tag.tag-self    { background: rgba(78, 185, 212, .1); color: #4eb9d4; }
+
+/* Custom-colored badges (for item cards) */
+.ms-card-tag.tag-custom {
+  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 50%, calc(100% - 3px) 100%, 3px 100%, 0 50%);
+}
+.ms-card-tag .tag-dot {
+  display: inline-block;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+/* ── Roll Area ── */
+.ms-card-roll { padding: 4px 10px; }
+.ms-card-roll-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+.ms-card-roll-row + .ms-card-roll-row { margin-top: 2px; }
+.ms-card-roll-row.roll-hit  { background: rgba(46, 204, 113, .05); }
+.ms-card-roll-row.roll-miss { background: rgba(226, 75, 74, .05); }
+.ms-card-roll-row.roll-crit { background: rgba(212, 168, 66, .06); }
+.ms-card-roll-row.roll-block { background: rgba(116, 185, 255, .05); }
+.ms-card-roll-row.roll-autohit { background: rgba(46, 204, 113, .04); }
+.ms-card-roll-icon {
+  font-size: 10px;
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.ms-card-roll-row.roll-hit .ms-card-roll-icon   { color: #2ecc71; }
+.ms-card-roll-row.roll-miss .ms-card-roll-icon  { color: #e24b4a; }
+.ms-card-roll-row.roll-crit .ms-card-roll-icon  { color: #f0c040; }
+.ms-card-roll-row.roll-block .ms-card-roll-icon { color: #74b9ff; }
+.ms-card-roll-row.roll-autohit .ms-card-roll-icon { color: #2ecc71; }
+.ms-card-roll-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #6a8ba4;
+  width: 36px;
+  flex-shrink: 0;
+}
+.ms-card-roll-values {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-weight: 600;
+  font-size: 12px;
+  margin-left: auto;
+}
+.ms-card-roll-result { color: #c8dce8; }
+.ms-card-roll-sep    { color: #3a5a74; font-size: 10px; }
+.ms-card-roll-threshold { color: #5a7a94; }
+
+/* ── Outcome Badges ── */
+.ms-card-outcome-badge {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 2px 10px;
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 50%, calc(100% - 4px) 100%, 4px 100%, 0 50%);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.ms-card-outcome-badge.badge-hit  { background: rgba(46, 204, 113, .12); color: #2ecc71; }
+.ms-card-outcome-badge.badge-miss { background: rgba(226, 75, 74, .12); color: #e24b4a; }
+.ms-card-outcome-badge.badge-crit { background: rgba(212, 168, 66, .15); color: #f0c040; }
+.ms-card-outcome-badge.badge-block { background: rgba(116, 185, 255, .12); color: #74b9ff; }
+.ms-card-outcome-badge.badge-pass { background: rgba(46, 204, 113, .12); color: #2ecc71; }
+.ms-card-outcome-badge.badge-fail { background: rgba(226, 75, 74, .12); color: #e24b4a; }
+
+/* Miss overlay */
+.ms-card-miss-zone {
+  display: flex;
+  justify-content: center;
+  padding: 6px 10px;
+}
+.ms-card-miss-text {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #e24b4a;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* ── Damage / Healing Display ── */
+.ms-card-damage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px 8px;
+}
+.ms-card-damage.dmg-healing .ms-card-dmg-val { color: #55efc4; text-shadow: 0 0 12px rgba(46, 204, 113, .3); }
+.ms-card-damage.dmg-crit .ms-card-dmg-val    { color: #f0c040; text-shadow: 0 0 12px rgba(212, 168, 66, .3); }
+.ms-card-damage.dmg-immune .ms-card-dmg-val   { color: #5a7a94; text-shadow: none; }
+.ms-card-damage.dmg-retaliatory .ms-card-dmg-val { color: #ff6633; text-shadow: 0 0 12px rgba(255, 102, 51, .3); }
+.ms-card-damage.dmg-barrier .ms-card-dmg-val  { color: #74b9ff; text-shadow: 0 0 12px rgba(116, 185, 255, .3); }
+.ms-card-dmg-val {
+  font-size: 20px;
+  font-weight: 900;
+  color: #f78dbc;
+  text-shadow: 0 0 12px rgba(232, 67, 147, .3);
+}
+.ms-card-dmg-label {
+  font-size: 8px;
+  color: #6a8ba4;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.ms-card-dmg-badges {
+  display: flex;
+  gap: 3px;
+  margin-top: 2px;
+}
+.ms-card-dmg-badge {
+  font-size: 7px;
+  font-weight: 700;
+  padding: 1px 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 50%, calc(100% - 3px) 100%, 3px 100%, 0 50%);
+}
+.ms-card-dmg-badge .badge-dot {
+  display: inline-block;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+.ms-card-dmg-badge.badge-physical { background: rgba(232, 67, 147, .1); color: #d87aaa; }
+.ms-card-dmg-badge.badge-physical .badge-dot { background: #d87aaa; }
+.ms-card-dmg-badge.badge-magical  { background: rgba(78, 185, 212, .1); color: #5aafca; }
+.ms-card-dmg-badge.badge-magical .badge-dot  { background: #5aafca; }
+.ms-card-dmg-badge.badge-barrier  { background: rgba(116, 185, 255, .1); color: #74b9ff; }
+.ms-card-dmg-badge.badge-barrier .badge-dot  { background: #74b9ff; }
+.ms-card-dmg-badge.badge-none     { background: rgba(255, 255, 255, .05); color: #7a92a8; }
+.ms-card-dmg-badge.badge-none .badge-dot     { background: #7a92a8; }
+.ms-card-dmg-badge.badge-retaliatory { background: rgba(255, 102, 51, .1); color: #ff6633; }
+.ms-card-dmg-badge.badge-retaliatory .badge-dot { background: #ff6633; }
+.ms-card-dmg-badge.badge-true-dmg { background: rgba(255, 102, 51, .1); color: #ff6633; }
+.ms-card-dmg-badge.badge-true-dmg .badge-dot { background: #ff6633; }
+/* Element badges */
+.ms-card-dmg-badge.badge-elem { background: rgba(240, 192, 64, .1); color: #c8a850; }
+.ms-card-dmg-badge.badge-elem .badge-dot { background: #c8a850; }
+.ms-card-dmg-badge.badge-elem.elem-fire { background: rgba(255, 102, 51, .1); color: #ff6633; }
+.ms-card-dmg-badge.badge-elem.elem-fire .badge-dot { background: #ff6633; }
+.ms-card-dmg-badge.badge-elem.elem-ice { background: rgba(116, 185, 255, .1); color: #74b9ff; }
+.ms-card-dmg-badge.badge-elem.elem-ice .badge-dot { background: #74b9ff; }
+.ms-card-dmg-badge.badge-elem.elem-water { background: rgba(0, 206, 201, .1); color: #00cec9; }
+.ms-card-dmg-badge.badge-elem.elem-water .badge-dot { background: #00cec9; }
+.ms-card-dmg-badge.badge-elem.elem-lightning { background: rgba(243, 156, 18, .1); color: #f39c12; }
+.ms-card-dmg-badge.badge-elem.elem-lightning .badge-dot { background: #f39c12; }
+.ms-card-dmg-badge.badge-elem.elem-wind { background: rgba(85, 239, 196, .1); color: #55efc4; }
+.ms-card-dmg-badge.badge-elem.elem-wind .badge-dot { background: #55efc4; }
+.ms-card-dmg-badge.badge-elem.elem-earth { background: rgba(139, 90, 43, .1); color: #8b5a2b; }
+.ms-card-dmg-badge.badge-elem.elem-earth .badge-dot { background: #8b5a2b; }
+.ms-card-dmg-badge.badge-elem.elem-light { background: rgba(253, 203, 110, .1); color: #fdcb6e; }
+.ms-card-dmg-badge.badge-elem.elem-light .badge-dot { background: #fdcb6e; }
+.ms-card-dmg-badge.badge-elem.elem-dark { background: rgba(108, 92, 231, .1); color: #6c5ce7; }
+.ms-card-dmg-badge.badge-elem.elem-dark .badge-dot { background: #6c5ce7; }
+.ms-card-dmg-badge.badge-elem.elem-neutral { background: rgba(255, 255, 255, .05); color: #7a92a8; }
+.ms-card-dmg-badge.badge-elem.elem-neutral .badge-dot { background: #7a92a8; }
+.ms-card-crit-mult {
+  font-size: 9px;
+  color: #f0c040;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ── Element Tier Badge ── */
+.ms-card-element-tier {
+  text-align: center;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 10px;
+}
+.ms-card-element-tier.tier-weak   { color: #2ecc71; }
+.ms-card-element-tier.tier-resist { color: #74b9ff; }
+.ms-card-element-tier.tier-immune { color: #a78bfa; }
+.ms-card-element-tier.tier-absorb { color: #f0c040; }
+
+/* ── Modifier Notes ── */
+.ms-card-modifier {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 10px;
+  font-size: 9px;
+  color: #6a8ba4;
+}
+.ms-card-modifier i { font-size: 8px; width: 12px; text-align: center; }
+
+/* ── Status Inflictions ── */
+.ms-card-status-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  font-size: 9px;
+}
+.ms-card-status-line.status-success {
+  color: #e84393;
+}
+.ms-card-status-line.status-failed {
+  color: #5a7a94;
+}
+.ms-card-status-line i { font-size: 8px; width: 12px; text-align: center; }
+
+/* ── Combat Notes ── */
+.ms-card-combat-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 2px 10px;
+  font-size: 9px;
+  color: #6a8ba4;
+}
+.ms-card-combat-note i { color: #5a7a94; margin-top: 1px; font-size: 8px; }
+.ms-card-note-source {
+  font-size: 8px;
+  color: #4a6a84;
+  font-style: italic;
+}
+
+/* ── Card Body / Item Row ── */
+.ms-card-body { padding: 6px 10px 8px; }
+.ms-card-item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, .02);
+  border: 1px solid rgba(255, 255, 255, .05);
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
+}
+.ms-card-item-icon {
+  width: 28px; height: 28px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: rgba(212, 168, 66, .1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ms-card-item-icon img {
+  width: 20px; height: 20px;
+  object-fit: cover;
+  border: none;
+}
+.ms-card-item-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c8dce8;
+  flex: 1;
+}
+.ms-card-item-detail {
+  font-size: 9px;
+  color: #5a7a94;
+  letter-spacing: 0.5px;
+}
+.ms-card-desc {
+  font-size: 10px;
+  color: #6a8ba4;
+  line-height: 1.5;
+  padding: 4px 0;
+}
+
+/* ── Effect Line (for item cards) ── */
+.ms-card-effect {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 10px;
+  color: #6a8ba4;
+}
+.ms-card-effect-icon { flex-shrink: 0; }
+.ms-card-effect-text { line-height: 1.4; }
+
+/* ── Stats Grid (for items, skills, absorption) ── */
+.ms-card-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  padding: 4px 10px;
+}
+.ms-card-stat-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 6px;
+  font-size: 10px;
+}
+.ms-card-stat-label {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #6a8ba4;
+  text-transform: uppercase;
+  font-size: 8px;
+}
+.ms-card-stat-value {
+  font-weight: 700;
+  color: #c8dce8;
+  font-size: 11px;
+}
+
+/* ── Stat Pips (for skill cards) ── */
+.ms-card-stat-pips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 4px 10px;
+}
+.ms-card-stat-pip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, .03);
+  border: 1px solid rgba(255, 255, 255, .06);
+  border-radius: 3px;
+  font-size: 10px;
+}
+.ms-card-stat-pip .pip-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #6a8ba4;
+}
+.ms-card-stat-pip .pip-value {
+  font-weight: 700;
+  color: #c8dce8;
+}
+.ms-card-stat-pip.pip-mp .pip-label { color: #74b9ff; }
+.ms-card-stat-pip.pip-mp .pip-value { color: #74b9ff; }
+.ms-card-stat-pip.pip-chant-swift .pip-label { color: #2ecc71; }
+.ms-card-stat-pip.pip-chant-full .pip-label  { color: #f39c12; }
+
+/* ── Divider ── */
+.ms-card-divider {
+  height: 1px;
+  margin: 2px 10px;
+  background: linear-gradient(90deg, transparent, rgba(78, 185, 212, .15), transparent);
+}
+
+/* ── Apply Buttons (compact) ── */
+.ms-card-apply-row {
+  padding: 4px 10px 6px;
+}
+.ms-card-apply-row button,
+.ms-card button.acc-apply-damage,
+.ms-card button.steal-apply-btn,
+.ms-card button.pillage-apply-btn,
+.ms-card button.loot-apply-btn,
+.ms-card button.con-apply-btn,
+.ms-card button.item-card-apply,
+.ms-card button.scc-apply-buff {
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid rgba(78, 185, 212, .15);
+  background: rgba(78, 185, 212, .06);
+  color: #8ab4c8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
+  transition: background 0.15s, color 0.15s;
+}
+.ms-card button.acc-apply-damage:hover,
+.ms-card button.steal-apply-btn:hover,
+.ms-card button.pillage-apply-btn:hover,
+.ms-card button.loot-apply-btn:hover,
+.ms-card button.con-apply-btn:hover,
+.ms-card button.item-card-apply:hover,
+.ms-card button.scc-apply-buff:hover {
+  background: rgba(78, 185, 212, .15);
+  color: #c8dce8;
+}
+.ms-card button.acc-apply-damage i,
+.ms-card button.steal-apply-btn i,
+.ms-card button.pillage-apply-btn i,
+.ms-card button.loot-apply-btn i,
+.ms-card button.con-apply-btn i,
+.ms-card button.item-card-apply i,
+.ms-card button.scc-apply-buff i {
+  font-size: 9px;
+}
+/* Healing variant */
+.ms-card.card-attack .ms-card-apply-row button.acc-apply-damage[data-healing="true"] {
+  border-color: rgba(46, 204, 113, .15);
+  background: rgba(46, 204, 113, .06);
+  color: #55efc4;
+}
+/* Disabled state */
+.ms-card button.acc-apply-damage:disabled,
+.ms-card button.steal-apply-btn:disabled,
+.ms-card button.pillage-apply-btn:disabled,
+.ms-card button.loot-apply-btn:disabled,
+.ms-card button.con-apply-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Formula Panel (right-click) ── */
+.ms-card .acc-formula-context,
+.ms-card .sc-formula-context {
+  display: none;
+  padding: 8px 10px;
+  background: rgba(0, 10, 20, .6);
+  border-top: 1px solid rgba(78, 185, 212, .1);
+}
+.ms-card .acc-formula-context.visible,
+.ms-card .sc-formula-context.visible {
+  display: block;
+}
+.ms-card .acc-formula-header,
+.ms-card .sc-formula-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #8a9eb4;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  margin-bottom: 4px;
+}
+.ms-card .acc-formula-header i,
+.ms-card .sc-formula-header i { color: #5a7a94; font-size: 9px; }
+.ms-card .acc-formula-section,
+.ms-card .sc-formula-section { margin-top: 4px; }
+.ms-card .acc-formula-section-label,
+.ms-card .sc-formula-section-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #4a6a84;
+  padding-bottom: 2px;
+}
+.ms-card .acc-formula-row,
+.ms-card .sc-formula-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 1px 0;
+  font-size: 10px;
+}
+.ms-card .acc-formula-label,
+.ms-card .sc-formula-label { color: #6a8ba4; }
+.ms-card .acc-formula-value,
+.ms-card .sc-formula-value {
+  font-weight: 700;
+  color: #8a9eb4;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+.ms-card .acc-formula-divider,
+.ms-card .sc-formula-divider {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, .06);
+  margin: 3px 0;
+}
+.ms-card .acc-formula-total,
+.ms-card .sc-formula-total { font-weight: 800; }
+.ms-card .acc-formula-total .acc-formula-value,
+.ms-card .sc-formula-total .sc-formula-value { color: #c8dce8; }
+.ms-card .acc-formula-crit-row .acc-formula-value { color: #f0c040; }
+.ms-card .sc-formula-sub { padding-left: 10px; }
+.ms-card .sc-conditional-detail { font-style: italic; color: #4a6a84; }
+
+/* Inspect hint */
+.ms-card-inspect-hint {
+  text-align: center;
+  padding: 2px 10px 4px;
+  font-size: 8px;
+  color: #3a5a74;
+  letter-spacing: 0.5px;
+}
+.ms-card-inspect-hint .hint-key {
+  font-weight: 700;
+  color: #4a6a84;
+}
+
+/* ── Absorption Effect ── */
+.ms-card-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #6a8ba4;
+  letter-spacing: 0.5px;
+  border-top: 1px solid rgba(255, 255, 255, .04);
+}
+.ms-card.card-absorb .ms-card-confirm { color: #c4a7fa; }
+.ms-card.card-consume .ms-card-confirm { color: #55efc4; }
+.ms-card.card-levelup .ms-card-confirm { color: #f0c040; }
+.ms-card.card-retbuff .ms-card-confirm { color: #ff6633; }
+.ms-card-confirm i { font-size: 10px; }
+
+/* ── Level Up ── */
+.ms-card-level-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 6px 10px;
+}
+.ms-card-level-num {
+  font-size: 20px;
+  font-weight: 900;
+  padding: 3px 14px;
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
+}
+.ms-card-level-num.old { background: rgba(255, 255, 255, .04); color: #5a7a94; }
+.ms-card-level-num.new { background: rgba(212, 168, 66, .1); color: #f0c040; }
+.ms-card-level-arrow   { color: #d4a842; font-size: 14px; }
+
+.ms-card-stat-gains {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  padding: 4px 10px;
+}
+.ms-card-stat-gain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 6px;
+  font-size: 10px;
+}
+.ms-card-stat-gain .sg-label { font-weight: 700; letter-spacing: 0.5px; color: #6a8ba4; font-size: 9px; }
+.ms-card-stat-gain .sg-rate  { font-size: 8px; color: #4a6a84; margin-left: 4px; }
+.ms-card-stat-gain .sg-result { font-weight: 700; }
+
+/* ── VS Divider (contested stat checks) ── */
+.ms-card-vs-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+}
+.ms-card-vs-text {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #e84393;
+  text-transform: uppercase;
+  padding: 2px 12px;
+  background: rgba(232, 67, 147, .08);
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 50%, calc(100% - 4px) 100%, 4px 100%, 0 50%);
+}
+
+/* Winner banner */
+.ms-card-winner-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #f0c040;
+  border-top: 1px solid rgba(212, 168, 66, .1);
+}
+.ms-card-winner-banner i { font-size: 12px; }
+
+/* ── Context Line (stat checks) ── */
+.ms-card-context-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  font-size: 10px;
+  color: #6a8ba4;
+}
+.ms-card-context-line .ctx-icon { color: #3a5a74; font-size: 8px; }
+
+/* ── Charge Card Status Bar ── */
+.ms-card-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #6a8ba4;
+  border-top: 1px solid rgba(255, 255, 255, .04);
+}
+.ms-card-status-bar i { font-size: 11px; }
+.ms-card.card-charge.charge-begin .ms-card-status-bar { color: #f39c12; }
+.ms-card.card-charge.charge-resolve .ms-card-status-bar { color: #2ecc71; }
+.ms-card.card-charge.charge-cancel .ms-card-status-bar { color: #e24b4a; }
+
+/* ── Status Removal Card ── */
+.ms-card-status-list {
+  padding: 4px 10px;
+}
+.ms-card-status-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 10px;
+}
+.ms-card-status-entry img,
+.ms-card-status-entry svg {
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+}
+.ms-card-status-entry .status-label {
+  font-weight: 600;
+  color: #c8dce8;
+}
+.ms-card-status-entry .status-tag {
+  font-size: 8px;
+  color: #5a7a94;
+  margin-left: auto;
+  letter-spacing: 0.5px;
+}
+.ms-card-source-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 10px 6px;
+  font-size: 9px;
+  color: #5a7a94;
+  border-top: 1px solid rgba(255, 255, 255, .04);
+}
+.ms-card-source-bar i { font-size: 10px; }
+
+/* ── Retaliation Card ── */
+.ms-card-ret-target {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, .02);
+}
+.ms-card-ret-target img {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.ms-card-ret-target-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.ms-card-ret-target-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #c8dce8;
+}
+.ms-card-ret-hp-change {
+  font-size: 9px;
+  color: #e24b4a;
+}
+.ms-card-ret-source {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 10px 6px;
+  font-size: 9px;
+  color: #ff6633;
+  font-weight: 600;
+}
+
+/* ── Retaliate Buff Effect Zone ── */
+.ms-card-effect-zone {
+  padding: 4px 10px;
+}
+.ms-card-effect-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+  font-size: 10px;
+}
+.ms-card-effect-label {
+  font-weight: 700;
+  color: #6a8ba4;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.ms-card-effect-value {
+  color: #c8dce8;
+}
+
+/* ── AOE Card Extensions ── */
+.ms-card-aoe-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 9px;
+}
+.ms-card-aoe-badge {
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+.ms-card-aoe-badge.aoe-shape {
+  background: rgba(232, 67, 147, .1);
+  color: #e84393;
+}
+.ms-card-aoe-badge.aoe-size {
+  background: rgba(255, 255, 255, .05);
+  color: #7a92a8;
+}
+.ms-card-aoe-summary {
+  margin-left: auto;
+  font-weight: 600;
+  color: #8a9eb4;
+}
+
+/* AOE per-target block */
+.ms-card-aoe-target {
+  margin: 3px 10px;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, .02);
+  border: 1px solid rgba(255, 255, 255, .04);
+  border-radius: 3px;
+}
+.ms-card-aoe-target.aoe-miss {
+  opacity: 0.6;
+}
+.ms-card-aoe-target-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 3px;
+}
+.ms-card-aoe-target-portrait {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.ms-card-aoe-target-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: #c8dce8;
+}
+/* Compact rolls inside AOE blocks */
+.ms-card-aoe-target .ms-card-roll { padding: 2px 0; }
+.ms-card-aoe-target .ms-card-roll-row { padding: 2px 4px; font-size: 10px; }
+/* Compact damage inside AOE blocks */
+.ms-card-aoe-damage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  font-size: 10px;
+}
+.ms-card-aoe-damage-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #6a8ba4;
+}
+.ms-card-aoe-damage-value {
+  font-size: 14px;
+  font-weight: 900;
+  color: #f78dbc;
+}
+.ms-card-aoe-target.aoe-crit .ms-card-aoe-damage-value { color: #f0c040; }
+.ms-card-aoe-target .ms-card-aoe-damage.dmg-healing .ms-card-aoe-damage-value { color: #55efc4; }
+.ms-card-aoe-target .ms-card-aoe-damage.dmg-immune .ms-card-aoe-damage-value { color: #5a7a94; }
+.ms-card-aoe-target .ms-card-aoe-damage.dmg-barrier .ms-card-aoe-damage-value { color: #74b9ff; }
+/* Compact apply button inside AOE */
+.ms-card-aoe-target .ms-card-apply-row { padding: 2px 0 0; }
+/* Compact miss label */
+.ms-card-aoe-miss-label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #e24b4a;
+  opacity: 0.5;
+  padding: 2px 0;
+}
+
+/* ── Steal/Pillage Card ── */
+.ms-card-steal-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: 10px;
+}
+.ms-card-steal-row.steal-success { color: #2ecc71; }
+.ms-card-steal-row.steal-fail   { color: #5a7a94; }
+.ms-card-steal-row i { width: 14px; text-align: center; font-size: 10px; }
+.ms-card-steal-flavor {
+  padding: 2px 10px;
+  font-size: 9px;
+  color: #4a6a84;
+  font-style: italic;
+}
+
+/* ── Loot Card ── */
+.ms-card-loot-eiress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+}
+.ms-card-loot-eiress i { color: #d4a842; }
+.ms-card-loot-eiress-amount {
+  font-weight: 700;
+  color: #f0c040;
+}
+.ms-card-loot-eiress-breakdown {
+  font-size: 8px;
+  color: #5a7a94;
+  margin-left: auto;
+}
+.ms-card-loot-section {
+  padding: 2px 10px;
+}
+.ms-card-loot-section-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #5a7a94;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .04);
+}
+.ms-card-loot-section-header i { font-size: 8px; }
+.ms-card-loot-member {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 10px;
+}
+.ms-card-loot-member img {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.ms-card-loot-member-name {
+  font-weight: 600;
+  color: #8a9eb4;
+  min-width: 60px;
+}
+.ms-card-loot-item-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 600;
+  color: #f0c040;
+}
+.ms-card-loot-item-badge img {
+  width: 14px; height: 14px;
+  border: none;
+}
+.ms-card-loot-roll {
+  font-size: 9px;
+  color: #5a7a94;
+  font-family: 'Consolas', 'Courier New', monospace;
+  margin-left: auto;
+}
+.ms-card-loot-miss {
+  color: #4a6a84;
+  font-style: italic;
+  margin-left: auto;
+}
+
+/* ── Objective Card ── */
+.ms-card-objective-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.ms-card.objective-victory .ms-card-objective-banner {
+  color: #f0c040;
+  text-shadow: 0 0 12px rgba(212, 168, 66, .3);
+}
+.ms-card.objective-defeat .ms-card-objective-banner {
+  color: #e24b4a;
+  text-shadow: 0 0 12px rgba(226, 75, 74, .3);
+}
+.ms-card-objective-body {
+  padding: 4px 10px;
+}
+.ms-card-objective-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+}
+.ms-card-objective-icon {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ms-card-objective-icon img,
+.ms-card-objective-icon svg {
+  width: 20px; height: 20px;
+}
+.ms-card-objective-info { flex: 1; }
+.ms-card-objective-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #c8dce8;
+}
+.ms-card-objective-desc {
+  font-size: 9px;
+  color: #6a8ba4;
+  line-height: 1.4;
+}
+.ms-card-progress-bar {
+  height: 12px;
+  background: rgba(255, 255, 255, .04);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  margin: 4px 0;
+}
+.ms-card-progress-fill {
+  height: 100%;
+  border-radius: 6px;
+}
+.ms-card.objective-victory .ms-card-progress-fill { background: linear-gradient(90deg, #d4a842, #f0c040); }
+.ms-card.objective-defeat .ms-card-progress-fill  { background: linear-gradient(90deg, #e24b4a, #e84393); }
+.ms-card-progress-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: #c8dce8;
+  letter-spacing: 0.5px;
+}
+.ms-card-objective-result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 10px 6px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.ms-card.objective-victory .ms-card-objective-result { color: #2ecc71; }
+.ms-card.objective-defeat .ms-card-objective-result  { color: #e24b4a; }
+
+/* ── Trigger Card ── */
+.ms-card-trigger-result {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 6px;
+  font-size: 10px;
+}
+.ms-card-trigger-result img {
+  width: 18px; height: 18px;
+  border: none;
+}
+
+/* ── Element pip (for skill header) ── */
+.ms-card-element-pip {
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+  text-transform: capitalize;
+  flex-shrink: 0;
+}

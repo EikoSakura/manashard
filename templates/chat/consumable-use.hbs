@@ -1,51 +1,45 @@
-<div class="manashard absorption-chat-card consumable-chat-card">
-
-  {{!-- ═══ HEADER: Portrait + Actor Name ═══ --}}
-  <div class="abc-header">
-    <div class="abc-portrait-frame con-portrait-frame">
-      <img src="{{actorImg}}" class="abc-portrait" />
-    </div>
-    <div class="abc-header-text">
-      <span class="abc-actor-name">{{actorName}}</span>
-      <span class="abc-action con-action">used</span>
+<div class="ms-card card-consume">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">used</div>
     </div>
   </div>
-
-  {{!-- ═══ ITEM DISPLAY ═══ --}}
-  <div class="abc-skill-row con-item-row">
-    <div class="abc-skill-icon-frame con-icon-frame">
-      <img src="{{itemImg}}" class="abc-skill-icon" alt="{{itemName}}" />
-    </div>
-    <div class="abc-skill-info">
-      <div class="abc-skill-name">{{itemName}}</div>
-      <div class="abc-badges">
-        <span class="abc-badge">{{upper categoryLabel}}</span>
-        {{#if targetName}}
-        <span class="abc-badge con-target-badge">ON {{upper targetName}}</span>
-        {{/if}}
+  <div class="ms-card-action consume">
+    <div class="action-gem"></div>
+    Consumable
+  </div>
+  <div class="ms-card-body">
+    <div class="ms-card-item-row" style="border-color: rgba(46, 204, 113, .1);">
+      <div class="ms-card-item-icon" style="background: rgba(46, 204, 113, .1);">
+        <img src="{{itemImg}}" alt="{{itemName}}" />
+      </div>
+      <div>
+        <div class="ms-card-item-name">{{itemName}}</div>
+        <div class="ms-card-tags" style="padding: 2px 0 0;">
+          <span class="ms-card-tag tag-type">{{upper categoryLabel}}</span>
+          {{#if targetName}}<span class="ms-card-tag tag-info">ON {{upper targetName}}</span>{{/if}}
+        </div>
       </div>
     </div>
   </div>
-
-  {{!-- ═══ RESTORE STAT ═══ --}}
   {{#if restoreAmount}}
-  <div class="abc-stats">
-    <div class="abc-stat-cell">
-      <span class="abc-stat-label">RESTORES</span>
-      <span class="abc-stat-value con-restore-value {{restoreType}}">+{{restoreAmount}} {{upper restoreType}}</span>
+  <div class="ms-card-stats">
+    <div class="ms-card-stat-cell">
+      <span class="ms-card-stat-label">RESTORES</span>
+      <span class="ms-card-stat-value" style="color: {{#if (eq restoreType 'hp')}}#2ecc71{{else}}#74b9ff{{/if}};">+{{restoreAmount}} {{upper restoreType}}</span>
     </div>
     {{#if remaining}}
-    <div class="abc-stat-cell">
-      <span class="abc-stat-label">REMAINING</span>
-      <span class="abc-stat-value">{{remaining}}</span>
+    <div class="ms-card-stat-cell">
+      <span class="ms-card-stat-label">REMAINING</span>
+      <span class="ms-card-stat-value">{{remaining}}</span>
     </div>
     {{/if}}
   </div>
   {{/if}}
-
-  {{!-- ═══ APPLY BUTTON ═══ --}}
   {{#unless applied}}
-  <div class="abc-confirm con-apply-row">
+  <div class="ms-card-apply-row">
     <button type="button" class="con-apply-btn"
             data-target-token-id="{{targetTokenId}}"
             data-user-actor-id="{{userActorId}}"
@@ -57,9 +51,8 @@
     </button>
   </div>
   {{else}}
-  <div class="abc-confirm con-applied-row">
+  <div class="ms-card-confirm">
     <i class="fas fa-check"></i> {{appliedSummary}}
   </div>
   {{/unless}}
-
 </div>

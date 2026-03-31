@@ -1,237 +1,221 @@
+{{!-- Crystal Combat Tab --}}
 <section class="tab-content {{tab.cssClass}}" data-tab="stats">
 
   {{#if isCharacter}}
-  {{!-- Adventurer: Combat Profile + Status + Effects (core stats and elements are in the sidebar) --}}
+  {{!-- ════════════════════════════════════════════════ --}}
+  {{!-- Adventurer: Combat Profile                      --}}
+  {{!-- ════════════════════════════════════════════════ --}}
 
-  {{!-- Combat Profile (Derived Stats) --}}
-  <div class="adv-combat-profile">
-    <div class="adv-section-title">Combat Profile</div>
-
-    {{!-- Offense --}}
-    <div class="adv-derived-group">
-      <div class="adv-derived-group-label"><i class="fas fa-swords"></i> Offense</div>
-      <div class="adv-combat-main-grid">
-        <div class="adv-cm-cell highlight" data-stat="damage">
-          <div class="adv-cm-val {{derivedModifiers.damage.modClass}}">{{system.damage}}</div>
-          <div class="adv-cm-lbl">DMG</div>
-          {{#if derivedSources.damage}}<div class="adv-cm-source">{{derivedSources.damage}}</div>{{/if}}
-        </div>
-        <div class="adv-cm-cell" data-stat="accuracy">
-          <div class="adv-cm-val {{derivedModifiers.accuracy.modClass}}">{{system.accuracy}}</div>
-          <div class="adv-cm-lbl">ACC</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="critical">
-          <div class="adv-cm-val {{derivedModifiers.critical.modClass}}">{{system.critical}}</div>
-          <div class="adv-cm-lbl">CRIT</div>
-        </div>
+  {{!-- Offense --}}
+  <div class="ms-section">
+    <div class="ms-section-header off"><div class="sh-gem"></div>Offense</div>
+    <div class="ms-offense-grid">
+      <div class="ms-hero-stat primary" data-stat="damage">
+        <div class="hero-val {{derivedModifiers.damage.modClass}}">{{system.damage}}</div>
+        <div class="hero-label">DMG</div>
+        {{#if derivedSources.damage}}<div class="hero-source">{{derivedSources.damage}}</div>{{/if}}
+      </div>
+      <div class="ms-hero-stat secondary" data-stat="accuracy">
+        <div class="hero-val {{derivedModifiers.accuracy.modClass}}">{{system.accuracy}}</div>
+        <div class="hero-label">ACC</div>
+      </div>
+      <div class="ms-hero-stat secondary" data-stat="critical">
+        <div class="hero-val {{derivedModifiers.critical.modClass}}">{{system.critical}}</div>
+        <div class="hero-label">CRIT</div>
       </div>
     </div>
+  </div>
 
-    {{!-- Defense --}}
-    <div class="adv-derived-group">
-      <div class="adv-derived-group-label"><i class="fas fa-shield"></i> Defense</div>
-      <div class="adv-combat-defense-grid">
-        <div class="adv-cm-cell" data-stat="peva">
-          <div class="adv-cm-val {{derivedModifiers.peva.modClass}}">{{system.peva}}</div>
-          <div class="adv-cm-lbl">P.EVA</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="meva">
-          <div class="adv-cm-val {{derivedModifiers.meva.modClass}}">{{system.meva}}</div>
-          <div class="adv-cm-lbl">M.EVA</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="critAvoid">
-          <div class="adv-cm-val {{derivedModifiers.critAvoid.modClass}}">{{system.critAvoid}}</div>
-          <div class="adv-cm-lbl">C.AVO</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="pdef">
-          <div class="adv-cm-val {{derivedModifiers.pdef.modClass}}">{{system.pdef}}</div>
-          <div class="adv-cm-lbl">P.DEF</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="mdef">
-          <div class="adv-cm-val {{derivedModifiers.mdef.modClass}}">{{system.mdef}}</div>
-          <div class="adv-cm-lbl">M.DEF</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="blockChance">
-          <div class="adv-cm-val {{derivedModifiers.blockChance.modClass}}">{{system.blockChance}}%</div>
-          <div class="adv-cm-lbl">BLK</div>
-        </div>
+  {{!-- Defense --}}
+  <div class="ms-section">
+    <div class="ms-section-header def"><div class="sh-gem"></div>Defense</div>
+    <div class="ms-defense-grid">
+      <div class="ms-def-cell" data-stat="peva">
+        <div class="def-val {{derivedModifiers.peva.modClass}}">{{system.peva}}</div>
+        <div class="def-label">P.EVA</div>
+      </div>
+      <div class="ms-def-cell" data-stat="meva">
+        <div class="def-val {{derivedModifiers.meva.modClass}}">{{system.meva}}</div>
+        <div class="def-label">M.EVA</div>
+      </div>
+      <div class="ms-def-cell" data-stat="critEvo">
+        <div class="def-val {{derivedModifiers.critEvo.modClass}}">{{system.critEvo}}</div>
+        <div class="def-label">C.EVO</div>
+      </div>
+      <div class="ms-def-cell" data-stat="pdef">
+        <div class="def-val {{derivedModifiers.pdef.modClass}}">{{system.pdef}}</div>
+        <div class="def-label">P.DEF</div>
+      </div>
+      <div class="ms-def-cell" data-stat="mdef">
+        <div class="def-val {{derivedModifiers.mdef.modClass}}">{{system.mdef}}</div>
+        <div class="def-label">M.DEF</div>
+      </div>
+      <div class="ms-def-cell" data-stat="blockChance">
+        <div class="def-val {{derivedModifiers.blockChance.modClass}}">{{system.blockChance}}%</div>
+        <div class="def-label">BLK</div>
       </div>
     </div>
+  </div>
 
-    {{!-- Tactical --}}
-    <div class="adv-derived-group">
-      <div class="adv-derived-group-label"><i class="fas fa-compass"></i> Tactical</div>
-      <div class="adv-combat-secondary">
-        <div class="adv-cm-small" data-stat="mov">
-          <span class="adv-cm-small-lbl">MOV</span>
-          <span class="adv-cm-small-val {{derivedModifiers.mov.modClass}}">{{system.mov}}</span>
-        </div>
-        <div class="adv-cm-small" data-stat="vision">
-          <span class="adv-cm-small-lbl">VIS</span>
-          <span class="adv-cm-small-val {{derivedModifiers.vision.modClass}}">{{system.vision}}</span>
-        </div>
-        <div class="adv-cm-small" data-stat="mpRegen">
-          <span class="adv-cm-small-lbl">MP RGN</span>
-          <span class="adv-cm-small-val {{derivedModifiers.mpRegen.modClass}}">{{system.mpRegen}}</span>
-        </div>
-        <div class="adv-cm-small" data-stat="carry">
-          <span class="adv-cm-small-lbl">CARRY</span>
-          <span class="adv-cm-small-val {{#if system.overencumbered}}overencumbered{{/if}}">{{system.totalWeight}} / {{system.carryingCapacity}}</span>
-        </div>
+  {{!-- Tactical --}}
+  <div class="ms-section">
+    <div class="ms-section-header tac"><div class="sh-gem"></div>Tactical</div>
+    <div class="ms-tactical-row">
+      <div class="ms-tac-chip" data-stat="mov">
+        <span class="tac-label">MOV</span>
+        <span class="tac-val {{derivedModifiers.mov.modClass}}">{{system.mov}}</span>
       </div>
-      <div class="adv-tactical-tags">
-        <div class="adv-tactical-tag-group">
-          <span class="adv-tactical-tag-label">Move</span>
-          <div class="adv-tactical-tag-chips">{{{movementModeTags}}}</div>
-        </div>
-        <div class="adv-tactical-tag-group">
-          <span class="adv-tactical-tag-label">Type</span>
-          <div class="adv-tactical-tag-chips">{{{creatureTypeTags}}}</div>
-        </div>
+      <div class="ms-tac-chip" data-stat="vision">
+        <span class="tac-label">VIS</span>
+        <span class="tac-val {{derivedModifiers.vision.modClass}}">{{system.vision}}</span>
+      </div>
+      <div class="ms-tac-chip" data-stat="mpRegen">
+        <span class="tac-label">MP RGN</span>
+        <span class="tac-val {{derivedModifiers.mpRegen.modClass}}">{{system.mpRegen}}</span>
+      </div>
+      <div class="ms-tac-chip" data-stat="carry">
+        <span class="tac-label">CARRY</span>
+        <span class="tac-val {{#if system.overencumbered}}overencumbered{{/if}}">{{system.totalWeight}}/{{system.carryingCapacity}}</span>
+      </div>
+      <div class="ms-tac-chip tag-group">
+        <span class="tac-label">MOVE</span>
+        <span class="tac-val">{{{movementModeTags}}}</span>
+      </div>
+      <div class="ms-tac-chip tag-group">
+        <span class="tac-label">TYPE</span>
+        <span class="tac-val">{{{creatureTypeTags}}}</span>
       </div>
     </div>
   </div>
 
   {{!-- Status Effects --}}
-  <div class="adv-status-section">
-    <div class="adv-section-title">Status Effects</div>
-    <div class="lh-status-bar">
+  <div class="ms-section">
+    <div class="ms-section-header sts"><div class="sh-gem"></div>Status Effects</div>
+    <div class="ms-status-row">
       {{#each statusEffectEntries}}
-      <a class="lh-status-badge {{#if active}}active{{else}}inactive{{/if}} condition-{{key}}"
-         data-action="toggleStatus" data-status="{{key}}">
-        <span class="lh-status-label">{{label}}</span>
-        {{#if duration}}<span class="lh-status-duration">{{duration}}</span>{{/if}}
-      </a>
+      <span class="ms-status-tag {{#if this.active}}active{{/if}}"
+            data-action="toggleStatus" data-status="{{this.key}}">
+        {{this.label}}
+        {{#if this.duration}}<span class="ms-status-duration">{{this.duration}}</span>{{/if}}
+      </span>
       {{/each}}
     </div>
   </div>
 
-  {{!-- ═══ Weapon Attack ═══ --}}
-  <div class="combat-section">
-    <h3><i class="fas fa-sword"></i> Weapon Attack</h3>
-    <div class="adv-tile-grid">
+  {{!-- Weapons --}}
+  <div class="ms-section">
+    <div class="ms-section-header wpn"><div class="sh-gem"></div>Weapons</div>
+    <div class="ms-skill-grid">
       {{#if equippedWeapon}}
-      <details class="adv-tile" data-item-id="{{equippedWeapon.id}}">
-        <summary>
-          <img src="{{equippedWeapon.img}}" class="adv-tile-img" data-action="editItem" />
-          <span class="adv-tile-name">{{equippedWeapon.name}}</span>
-          <a class="adv-tile-action attack-button" data-action="rollAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
-        </summary>
-        <div class="adv-tile-details">
-          <div class="adv-tile-stats">
-            <span class="adv-tile-stat">Mt {{equippedWeapon.system.might}}</span>
-            <span class="adv-tile-stat">Crit {{equippedWeapon.system.crit}}</span>
-            {{#if equippedWeapon.system.element}}<span class="adv-tile-stat element-pip element-{{equippedWeapon.system.element}}">{{equippedWeapon.system.element}}</span>{{/if}}
+      <div class="ms-skill-card wpn inventory-grid-card" data-item-id="{{equippedWeapon.id}}">
+        <div class="ms-skill-icon wpn-i">
+          <img src="{{equippedWeapon.img}}" alt="{{equippedWeapon.name}}" data-action="editItem" />
+        </div>
+        <div class="ms-skill-info">
+          <span class="ms-skill-name">{{equippedWeapon.name}}</span>
+          <div class="ms-skill-meta">
+            <span class="ms-meta-tag">Mt {{equippedWeapon.system.might}}</span>
+            <span class="ms-meta-tag">Crit {{equippedWeapon.system.crit}}</span>
           </div>
         </div>
-      </details>
+        <a class="ms-skill-action" data-action="rollAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+      </div>
       {{else}}
-      <div class="adv-tile">
-        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;">
-          <i class="fas fa-sword" style="color:var(--manashard-text-muted);"></i>
-          <span class="adv-tile-name" style="color:var(--manashard-text-muted);">Unarmed</span>
+      <div class="ms-skill-card wpn empty">
+        <div class="ms-skill-icon wpn-i">
+          <i class="fas fa-sword"></i>
         </div>
+        <span class="ms-skill-name muted">Unarmed</span>
       </div>
       {{/if}}
-    </div>
-  </div>
-
-  {{!-- ═══ Natural Weapons ═══ --}}
-  {{#if naturalWeapons.length}}
-  <div class="combat-section">
-    <h3><i class="fas fa-paw"></i> Natural Weapons</h3>
-    <div class="adv-tile-grid">
       {{#each naturalWeapons}}
-      <details class="adv-tile" data-item-id="{{this.id}}">
-        <summary>
-          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
-          <span class="adv-tile-name">{{this.name}}</span>
-          <a class="adv-tile-action attack-button" data-action="rollNaturalAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
-        </summary>
-        <div class="adv-tile-details">
-          <div class="adv-tile-stats">
-            <span class="adv-tile-stat">Mt {{this.system.might}}</span>
-            <span class="adv-tile-stat">Crit {{this.system.crit}}</span>
-            {{#if this.system.element}}<span class="adv-tile-stat element-pip element-{{this.system.element}}">{{this.system.element}}</span>{{/if}}
+      <div class="ms-skill-card wpn inventory-grid-card" data-item-id="{{this.id}}">
+        <div class="ms-skill-icon wpn-i">
+          <img src="{{this.img}}" alt="{{this.name}}" data-action="editItem" />
+        </div>
+        <div class="ms-skill-info">
+          <span class="ms-skill-name">{{this.name}}</span>
+          <div class="ms-skill-meta">
+            <span class="ms-meta-tag">Mt {{this.system.might}}</span>
+            <span class="ms-meta-tag">Crit {{this.system.crit}}</span>
           </div>
         </div>
-      </details>
+        <a class="ms-skill-action" data-action="rollNaturalAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+      </div>
       {{/each}}
     </div>
   </div>
-  {{/if}}
 
-  {{!-- ═══ Skills ═══ --}}
-  <div class="combat-section">
-    <h3><i class="fas fa-magic-wand-sparkles"></i> Skills</h3>
-    <div class="skill-card-grid">
-
-      {{#each combatSkills}}
-      <details class="skill-grid-card {{this.system.skillType}} {{#if this._isTaught}}taught{{/if}}" data-item-id="{{this.id}}">
-        <summary class="skill-grid-card-summary">
-          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
-          <span class="skill-grid-card-name">{{this.name}}</span>
-          {{#if (eq this.system.skillType "magic")}}
-          <a class="skill-card-action cast-button" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
-          {{else}}
-          <a class="skill-card-action activate-button" data-action="useSkill" title="Activate"><i class="fas fa-dice-d20"></i></a>
-          {{/if}}
-        </summary>
-        <div class="skill-grid-card-desc">
-          {{#if this.system.mpCost}}<span class="skill-stat mp-cost">MP {{this.system.mpCost}}</span> {{/if}}
-          {{#if this.system.element}}<span class="skill-stat element-pip element-{{this.system.element}}">{{this.system.element}}</span>{{/if}}
-          {{#if this._enrichedDescription}}<div style="margin-top:4px;">{{{this._enrichedDescription}}}</div>{{/if}}
-        </div>
-      </details>
-      {{/each}}
-
+  {{!-- Combat Skills --}}
+  <div class="ms-section">
+    <div class="ms-section-header skl"><div class="sh-gem"></div>Skills
+      {{#if combatSkills.length}}<span class="ms-count-badge">{{combatSkills.length}}</span>{{/if}}
     </div>
-
-    {{#unless combatSkills.length}}
-    <div class="adv-empty-state">
+    {{#if combatSkills.length}}
+    <div class="ms-skill-grid">
+      {{#each combatSkills}}
+      <div class="ms-skill-card act skill-grid-card {{this.system.skillType}} {{#if this._isTaught}}taught{{/if}}" data-item-id="{{this.id}}">
+        <div class="ms-skill-icon act-i">
+          <img src="{{this.img}}" alt="{{this.name}}" data-action="postItemToChat" title="Post to chat" />
+        </div>
+        <div class="ms-skill-info">
+          <span class="ms-skill-name">{{this.name}}</span>
+          <div class="ms-skill-meta">
+            {{#if this.system.mpCost}}<span class="ms-meta-tag mp">MP {{this.system.mpCost}}</span>{{/if}}
+            {{#if this.system.element}}<span class="ms-meta-tag element-pip element-{{this.system.element}}">{{this.system.element}}</span>{{/if}}
+          </div>
+        </div>
+        {{#if (eq this.system.skillType "magic")}}
+        <a class="ms-skill-action cast" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
+        {{else}}
+        <a class="ms-skill-action activate" data-action="useSkill" title="Activate"><i class="fas fa-dice-d20"></i></a>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="ms-empty-state">
       <i class="fas fa-magic-wand-sparkles"></i>
       <span>No Skills Available</span>
     </div>
-    {{/unless}}
+    {{/if}}
   </div>
 
-  {{!-- ═══ Passives ═══ --}}
+  {{!-- Passives --}}
   {{#if passiveAbilities.length}}
-  <div class="combat-section">
-    <h3><i class="fas fa-star"></i> Passives</h3>
-    <div class="skill-card-grid">
+  <div class="ms-section">
+    <div class="ms-section-header pas"><div class="sh-gem"></div>Passives
+      <span class="ms-count-badge">{{passiveAbilities.length}}</span>
+    </div>
+    <div class="ms-passive-grid">
       {{#each passiveAbilities}}
-      <details class="skill-grid-card passive" data-item-id="{{this.id}}">
-        <summary class="skill-grid-card-summary">
-          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
-          <span class="skill-grid-card-name">{{this.name}}</span>
-        </summary>
-        <div class="skill-grid-card-desc">
-          {{#if this._enrichedDescription}}<div>{{{this._enrichedDescription}}}</div>{{/if}}
+      <div class="ms-skill-card pas skill-grid-card" data-item-id="{{this.id}}">
+        <div class="ms-skill-icon pas-i">
+          <img src="{{this.img}}" alt="{{this.name}}" data-action="postItemToChat" title="Post to chat" />
         </div>
-      </details>
+        <span class="ms-skill-name">{{this.name}}</span>
+      </div>
       {{/each}}
     </div>
   </div>
   {{/if}}
 
-  {{!-- ═══ Consumables ═══ --}}
+  {{!-- Consumables --}}
   {{#if consumables.length}}
-  <div class="combat-section">
-    <h3><i class="fas fa-flask"></i> Items</h3>
-    <div class="adv-tile-grid">
+  <div class="ms-section">
+    <div class="ms-section-header itm"><div class="sh-gem"></div>Items</div>
+    <div class="ms-skill-grid">
       {{#each consumables}}
-      <details class="adv-tile" data-item-id="{{this.id}}">
-        <summary>
-          <img src="{{this.img}}" class="adv-tile-img" />
-          <span class="adv-tile-name">{{this.name}}</span>
-          <span class="adv-tile-badge">x{{this.system.quantity}}</span>
-          <a class="adv-tile-action consumable-button" data-action="useConsumable" title="Use"><i class="fas fa-flask"></i></a>
-        </summary>
-        <div class="adv-tile-details">
-          {{#if this._enrichedDescription}}<div>{{{this._enrichedDescription}}}</div>{{/if}}
+      <div class="ms-skill-card itm inventory-grid-card" data-item-id="{{this.id}}">
+        <div class="ms-skill-icon itm-i">
+          <img src="{{this.img}}" alt="{{this.name}}" />
         </div>
-      </details>
+        <div class="ms-skill-info">
+          <span class="ms-skill-name">{{this.name}}</span>
+          <span class="ms-item-qty">x{{this.system.quantity}}</span>
+        </div>
+        <a class="ms-skill-action consume" data-action="useConsumable" title="Use"><i class="fas fa-flask"></i></a>
+      </div>
       {{/each}}
     </div>
   </div>
@@ -240,229 +224,216 @@
   {{else}}
 
   {{#if isThreat}}
-  {{!-- Threat: Combat profile + Status + Effects (core stats & elements in sidebar) --}}
+  {{!-- ════════════════════════════════════════════════ --}}
+  {{!-- Threat: Combat Profile                          --}}
+  {{!-- ════════════════════════════════════════════════ --}}
 
-  {{!-- Combat Profile (Derived Stats) --}}
-  <div class="adv-combat-profile">
-    <div class="adv-section-title">Combat Profile</div>
-
-    {{!-- Offense --}}
-    <div class="adv-derived-group">
-      <div class="adv-derived-group-label"><i class="fas fa-swords"></i> Offense</div>
-      <div class="adv-combat-main-grid">
-        <div class="adv-cm-cell highlight" data-stat="damage">
-          <div class="adv-cm-val {{derivedModifiers.damage.modClass}}">{{system.damage}}</div>
-          <div class="adv-cm-lbl">DMG</div>
-          {{#if derivedSources.damage}}<div class="adv-cm-source">{{derivedSources.damage}}</div>{{/if}}
-        </div>
-        <div class="adv-cm-cell" data-stat="accuracy">
-          <div class="adv-cm-val {{derivedModifiers.accuracy.modClass}}">{{system.accuracy}}</div>
-          <div class="adv-cm-lbl">ACC</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="critical">
-          <div class="adv-cm-val {{derivedModifiers.critical.modClass}}">{{system.critical}}</div>
-          <div class="adv-cm-lbl">CRIT</div>
-        </div>
+  {{!-- Offense --}}
+  <div class="ms-section">
+    <div class="ms-section-header off"><div class="sh-gem"></div>Offense</div>
+    <div class="ms-offense-grid">
+      <div class="ms-hero-stat primary" data-stat="damage">
+        <div class="hero-val {{derivedModifiers.damage.modClass}}">{{system.damage}}</div>
+        <div class="hero-label">DMG</div>
+        {{#if derivedSources.damage}}<div class="hero-source">{{derivedSources.damage}}</div>{{/if}}
+      </div>
+      <div class="ms-hero-stat secondary" data-stat="accuracy">
+        <div class="hero-val {{derivedModifiers.accuracy.modClass}}">{{system.accuracy}}</div>
+        <div class="hero-label">ACC</div>
+      </div>
+      <div class="ms-hero-stat secondary" data-stat="critical">
+        <div class="hero-val {{derivedModifiers.critical.modClass}}">{{system.critical}}</div>
+        <div class="hero-label">CRIT</div>
       </div>
     </div>
+  </div>
 
-    {{!-- Defense --}}
-    <div class="adv-derived-group">
-      <div class="adv-derived-group-label"><i class="fas fa-shield"></i> Defense</div>
-      <div class="adv-combat-defense-grid">
-        <div class="adv-cm-cell" data-stat="peva">
-          <div class="adv-cm-val {{derivedModifiers.peva.modClass}}">{{system.peva}}</div>
-          <div class="adv-cm-lbl">P.EVA</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="meva">
-          <div class="adv-cm-val {{derivedModifiers.meva.modClass}}">{{system.meva}}</div>
-          <div class="adv-cm-lbl">M.EVA</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="critAvoid">
-          <div class="adv-cm-val {{derivedModifiers.critAvoid.modClass}}">{{system.critAvoid}}</div>
-          <div class="adv-cm-lbl">C.AVO</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="pdef">
-          <div class="adv-cm-val {{derivedModifiers.pdef.modClass}}">{{system.pdef}}</div>
-          <div class="adv-cm-lbl">P.DEF</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="mdef">
-          <div class="adv-cm-val {{derivedModifiers.mdef.modClass}}">{{system.mdef}}</div>
-          <div class="adv-cm-lbl">M.DEF</div>
-        </div>
-        <div class="adv-cm-cell" data-stat="blockChance">
-          <div class="adv-cm-val {{derivedModifiers.blockChance.modClass}}">{{system.blockChance}}%</div>
-          <div class="adv-cm-lbl">BLK</div>
-        </div>
+  {{!-- Defense --}}
+  <div class="ms-section">
+    <div class="ms-section-header def"><div class="sh-gem"></div>Defense</div>
+    <div class="ms-defense-grid">
+      <div class="ms-def-cell" data-stat="peva">
+        <div class="def-val {{derivedModifiers.peva.modClass}}">{{system.peva}}</div>
+        <div class="def-label">P.EVA</div>
+      </div>
+      <div class="ms-def-cell" data-stat="meva">
+        <div class="def-val {{derivedModifiers.meva.modClass}}">{{system.meva}}</div>
+        <div class="def-label">M.EVA</div>
+      </div>
+      <div class="ms-def-cell" data-stat="critEvo">
+        <div class="def-val {{derivedModifiers.critEvo.modClass}}">{{system.critEvo}}</div>
+        <div class="def-label">C.EVO</div>
+      </div>
+      <div class="ms-def-cell" data-stat="pdef">
+        <div class="def-val {{derivedModifiers.pdef.modClass}}">{{system.pdef}}</div>
+        <div class="def-label">P.DEF</div>
+      </div>
+      <div class="ms-def-cell" data-stat="mdef">
+        <div class="def-val {{derivedModifiers.mdef.modClass}}">{{system.mdef}}</div>
+        <div class="def-label">M.DEF</div>
+      </div>
+      <div class="ms-def-cell" data-stat="blockChance">
+        <div class="def-val {{derivedModifiers.blockChance.modClass}}">{{system.blockChance}}%</div>
+        <div class="def-label">BLK</div>
       </div>
     </div>
+  </div>
 
-    {{!-- Tactical --}}
-    <div class="adv-derived-group">
-      <div class="adv-derived-group-label"><i class="fas fa-compass"></i> Tactical</div>
-      <div class="adv-combat-secondary">
-        <div class="adv-cm-small" data-stat="mov">
-          <span class="adv-cm-small-lbl">MOV</span>
-          <span class="adv-cm-small-val {{derivedModifiers.mov.modClass}}">{{system.mov}}</span>
-        </div>
-        <div class="adv-cm-small" data-stat="vision">
-          <span class="adv-cm-small-lbl">VIS</span>
-          <span class="adv-cm-small-val {{derivedModifiers.vision.modClass}}">{{system.vision}}</span>
-        </div>
-        <div class="adv-cm-small" data-stat="mpRegen">
-          <span class="adv-cm-small-lbl">MP RGN</span>
-          <span class="adv-cm-small-val {{derivedModifiers.mpRegen.modClass}}">{{system.mpRegen}}</span>
-        </div>
-        <div class="adv-cm-small" data-stat="carry">
-          <span class="adv-cm-small-lbl">CARRY</span>
-          <span class="adv-cm-small-val {{#if system.overencumbered}}overencumbered{{/if}}">{{system.totalWeight}} / {{system.carryingCapacity}}</span>
-        </div>
+  {{!-- Tactical --}}
+  <div class="ms-section">
+    <div class="ms-section-header tac"><div class="sh-gem"></div>Tactical</div>
+    <div class="ms-tactical-row">
+      <div class="ms-tac-chip" data-stat="mov">
+        <span class="tac-label">MOV</span>
+        <span class="tac-val {{derivedModifiers.mov.modClass}}">{{system.mov}}</span>
       </div>
-      <div class="adv-tactical-tags">
-        <div class="adv-tactical-tag-group">
-          <span class="adv-tactical-tag-label">Move</span>
-          <div class="adv-tactical-tag-chips">{{{movementModeTags}}}</div>
-        </div>
+      <div class="ms-tac-chip" data-stat="vision">
+        <span class="tac-label">VIS</span>
+        <span class="tac-val {{derivedModifiers.vision.modClass}}">{{system.vision}}</span>
+      </div>
+      <div class="ms-tac-chip" data-stat="mpRegen">
+        <span class="tac-label">MP RGN</span>
+        <span class="tac-val {{derivedModifiers.mpRegen.modClass}}">{{system.mpRegen}}</span>
+      </div>
+      <div class="ms-tac-chip" data-stat="carry">
+        <span class="tac-label">CARRY</span>
+        <span class="tac-val {{#if system.overencumbered}}overencumbered{{/if}}">{{system.totalWeight}}/{{system.carryingCapacity}}</span>
+      </div>
+      <div class="ms-tac-chip tag-group">
+        <span class="tac-label">MOVE</span>
+        <span class="tac-val">{{{movementModeTags}}}</span>
       </div>
     </div>
   </div>
 
   {{!-- Status Effects --}}
-  <div class="adv-status-section">
-    <div class="adv-section-title">Status Effects</div>
-    <div class="lh-status-bar">
+  <div class="ms-section">
+    <div class="ms-section-header sts"><div class="sh-gem"></div>Status Effects</div>
+    <div class="ms-status-row">
       {{#each statusEffectEntries}}
-      <a class="lh-status-badge {{#if active}}active{{else}}inactive{{/if}} condition-{{key}}"
-         data-action="toggleStatus" data-status="{{key}}">
-        <span class="lh-status-label">{{label}}</span>
-        {{#if duration}}<span class="lh-status-duration">{{duration}}</span>{{/if}}
-      </a>
+      <span class="ms-status-tag {{#if this.active}}active{{/if}}"
+            data-action="toggleStatus" data-status="{{this.key}}">
+        {{this.label}}
+        {{#if this.duration}}<span class="ms-status-duration">{{this.duration}}</span>{{/if}}
+      </span>
       {{/each}}
     </div>
   </div>
 
-  {{!-- ═══ Weapon Attack ═══ --}}
-  <div class="combat-section">
-    <h3><i class="fas fa-sword"></i> Weapon Attack</h3>
-    <div class="adv-tile-grid">
+  {{!-- Weapons --}}
+  <div class="ms-section">
+    <div class="ms-section-header wpn"><div class="sh-gem"></div>Weapons</div>
+    <div class="ms-skill-grid">
       {{#if equippedWeapon}}
-      <details class="adv-tile" data-item-id="{{equippedWeapon.id}}">
-        <summary>
-          <img src="{{equippedWeapon.img}}" class="adv-tile-img" data-action="editItem" />
-          <span class="adv-tile-name">{{equippedWeapon.name}}</span>
-          <a class="adv-tile-action attack-button" data-action="rollAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
-        </summary>
-        <div class="adv-tile-details">
-          <div class="adv-tile-stats">
-            <span class="adv-tile-stat">Mt {{equippedWeapon.system.might}}</span>
-            <span class="adv-tile-stat">Crit {{equippedWeapon.system.crit}}</span>
-            {{#if equippedWeapon.system.element}}<span class="adv-tile-stat element-pip element-{{equippedWeapon.system.element}}">{{equippedWeapon.system.element}}</span>{{/if}}
+      <div class="ms-skill-card wpn inventory-grid-card" data-item-id="{{equippedWeapon.id}}">
+        <div class="ms-skill-icon wpn-i">
+          <img src="{{equippedWeapon.img}}" alt="{{equippedWeapon.name}}" data-action="editItem" />
+        </div>
+        <div class="ms-skill-info">
+          <span class="ms-skill-name">{{equippedWeapon.name}}</span>
+          <div class="ms-skill-meta">
+            <span class="ms-meta-tag">Mt {{equippedWeapon.system.might}}</span>
+            <span class="ms-meta-tag">Crit {{equippedWeapon.system.crit}}</span>
           </div>
         </div>
-      </details>
+        <a class="ms-skill-action" data-action="rollAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+      </div>
       {{else}}
-      <div class="adv-tile">
-        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;">
-          <i class="fas fa-sword" style="color:var(--manashard-text-muted);"></i>
-          <span class="adv-tile-name" style="color:var(--manashard-text-muted);">Unarmed</span>
+      <div class="ms-skill-card wpn empty">
+        <div class="ms-skill-icon wpn-i">
+          <i class="fas fa-sword"></i>
         </div>
+        <span class="ms-skill-name muted">Unarmed</span>
       </div>
       {{/if}}
-    </div>
-  </div>
-
-  {{!-- ═══ Natural Weapons ═══ --}}
-  {{#if naturalWeapons.length}}
-  <div class="combat-section">
-    <h3><i class="fas fa-paw"></i> Natural Weapons</h3>
-    <div class="adv-tile-grid">
       {{#each naturalWeapons}}
-      <details class="adv-tile" data-item-id="{{this.id}}">
-        <summary>
-          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
-          <span class="adv-tile-name">{{this.name}}</span>
-          <a class="adv-tile-action attack-button" data-action="rollNaturalAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
-        </summary>
-        <div class="adv-tile-details">
-          <div class="adv-tile-stats">
-            <span class="adv-tile-stat">Mt {{this.system.might}}</span>
-            <span class="adv-tile-stat">Crit {{this.system.crit}}</span>
-            {{#if this.system.element}}<span class="adv-tile-stat element-pip element-{{this.system.element}}">{{this.system.element}}</span>{{/if}}
+      <div class="ms-skill-card wpn inventory-grid-card" data-item-id="{{this.id}}">
+        <div class="ms-skill-icon wpn-i">
+          <img src="{{this.img}}" alt="{{this.name}}" data-action="editItem" />
+        </div>
+        <div class="ms-skill-info">
+          <span class="ms-skill-name">{{this.name}}</span>
+          <div class="ms-skill-meta">
+            <span class="ms-meta-tag">Mt {{this.system.might}}</span>
+            <span class="ms-meta-tag">Crit {{this.system.crit}}</span>
           </div>
         </div>
-      </details>
+        <a class="ms-skill-action" data-action="rollNaturalAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
+      </div>
       {{/each}}
     </div>
   </div>
-  {{/if}}
 
-  {{!-- ═══ Skills ═══ --}}
-  <div class="combat-section">
-    <h3><i class="fas fa-magic-wand-sparkles"></i> Skills
-      {{#if allActiveSkills.length}}<span class="section-count-badge">{{allActiveSkills.length}}</span>{{/if}}
-    </h3>
-    <div class="skill-card-grid">
-
+  {{!-- Skills --}}
+  <div class="ms-section">
+    <div class="ms-section-header skl"><div class="sh-gem"></div>Skills
+      {{#if allActiveSkills.length}}<span class="ms-count-badge">{{allActiveSkills.length}}</span>{{/if}}
+    </div>
+    {{#if allActiveSkills.length}}
+    <div class="ms-skill-grid">
       {{#each allActiveSkills}}
-      <div class="skill-grid-card {{this.skillType}} {{#if this._isTaught}}taught{{/if}}" data-item-id="{{this.id}}">
-        <div class="skill-grid-card-summary">
-          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
-          <span class="skill-grid-card-name">{{this.name}}</span>
-          {{#if (eq this.skillType "magic")}}
-          <a class="skill-card-action cast-button" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
-          {{else}}
-          <a class="skill-card-action activate-button" data-action="useSkill" title="Activate"><i class="fas fa-dice-d20"></i></a>
-          {{/if}}
+      <div class="ms-skill-card act skill-grid-card {{this.skillType}} {{#if this._isTaught}}taught{{/if}}" data-item-id="{{this.id}}">
+        <div class="ms-skill-icon act-i">
+          <img src="{{this.img}}" alt="{{this.name}}" data-action="postItemToChat" title="Post to chat" />
         </div>
+        <div class="ms-skill-info">
+          <span class="ms-skill-name">{{this.name}}</span>
+          <div class="ms-skill-meta">
+            {{#if this.system.mpCost}}<span class="ms-meta-tag mp">MP {{this.system.mpCost}}</span>{{/if}}
+            {{#if this.system.element}}<span class="ms-meta-tag element-pip element-{{this.system.element}}">{{this.system.element}}</span>{{/if}}
+          </div>
+        </div>
+        {{#if (eq this.skillType "magic")}}
+        <a class="ms-skill-action cast" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
+        {{else}}
+        <a class="ms-skill-action activate" data-action="useSkill" title="Activate"><i class="fas fa-dice-d20"></i></a>
+        {{/if}}
       </div>
       {{/each}}
-
     </div>
-
-    {{#unless allActiveSkills.length}}
-    <div class="adv-empty-state">
+    {{else}}
+    <div class="ms-empty-state">
       <i class="fas fa-magic-wand-sparkles"></i>
       <span>No Skills Available</span>
     </div>
-    {{/unless}}
+    {{/if}}
   </div>
 
-  {{!-- ═══ Passives ═══ --}}
+  {{!-- Passives --}}
   {{#if passiveAbilities.length}}
-  <div class="combat-section">
-    <h3><i class="fas fa-star"></i> Passives
-      <span class="section-count-badge">{{passiveAbilities.length}}</span>
-    </h3>
-    <div class="skill-card-grid">
+  <div class="ms-section">
+    <div class="ms-section-header pas"><div class="sh-gem"></div>Passives
+      <span class="ms-count-badge">{{passiveAbilities.length}}</span>
+    </div>
+    <div class="ms-passive-grid">
       {{#each passiveAbilities}}
-      <div class="skill-grid-card passive" data-item-id="{{this.id}}">
-        <div class="skill-grid-card-summary">
-          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
-          <span class="skill-grid-card-name">{{this.name}}</span>
+      <div class="ms-skill-card pas skill-grid-card" data-item-id="{{this.id}}">
+        <div class="ms-skill-icon pas-i">
+          <img src="{{this.img}}" alt="{{this.name}}" data-action="postItemToChat" title="Post to chat" />
         </div>
+        <span class="ms-skill-name">{{this.name}}</span>
       </div>
       {{/each}}
     </div>
   </div>
   {{/if}}
 
-  {{!-- ═══ Consumables ═══ --}}
+  {{!-- Consumables --}}
   {{#if consumables.length}}
-  <div class="combat-section">
-    <h3><i class="fas fa-flask"></i> Items</h3>
-    <div class="adv-tile-grid">
+  <div class="ms-section">
+    <div class="ms-section-header itm"><div class="sh-gem"></div>Items</div>
+    <div class="ms-skill-grid">
       {{#each consumables}}
-      <details class="adv-tile" data-item-id="{{this.id}}">
-        <summary>
-          <img src="{{this.img}}" class="adv-tile-img" />
-          <span class="adv-tile-name">{{this.name}}</span>
-          <span class="adv-tile-badge">x{{this.system.quantity}}</span>
-          <a class="adv-tile-action consumable-button" data-action="useConsumable" title="Use"><i class="fas fa-flask"></i></a>
-        </summary>
-        <div class="adv-tile-details">
-          {{#if this._enrichedDescription}}<div>{{{this._enrichedDescription}}}</div>{{/if}}
+      <div class="ms-skill-card itm inventory-grid-card" data-item-id="{{this.id}}">
+        <div class="ms-skill-icon itm-i">
+          <img src="{{this.img}}" alt="{{this.name}}" />
         </div>
-      </details>
+        <div class="ms-skill-info">
+          <span class="ms-skill-name">{{this.name}}</span>
+          <span class="ms-item-qty">x{{this.system.quantity}}</span>
+        </div>
+        <a class="ms-skill-action consume" data-action="useConsumable" title="Use"><i class="fas fa-flask"></i></a>
+      </div>
       {{/each}}
     </div>
   </div>

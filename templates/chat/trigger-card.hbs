@@ -1,25 +1,20 @@
-<div class="manashard attack-chat-card trigger-card">
-  {{!-- ═══ HEADER BAR ═══ --}}
-  <div class="acc-header">
-    <div class="acc-portrait-frame">
-      <div class="acc-portrait-diamond">
-        <img src="{{actorImg}}" class="acc-portrait" />
-      </div>
+<div class="ms-card card-trigger">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">triggers <strong>{{skillName}}</strong></div>
     </div>
-    <div class="acc-header-text">
-      <span class="acc-actor-name">{{actorName}}</span>
-      <span class="acc-action">triggers <strong>{{skillName}}</strong></span>
-    </div>
-    <span class="acc-target-badge acc-target-trigger"><i class="fas fa-bolt"></i></span>
+    <span class="ms-card-header-badge badge-icon"><i class="fas fa-bolt"></i></span>
   </div>
-
-  {{!-- ═══ SKILL ICON + NAME ═══ --}}
+  <div class="ms-card-action trigger">
+    <div class="action-gem"></div>
+    Trigger
+  </div>
   {{#if skillImg}}
-  <div class="acc-rolls">
-    <div class="acc-roll-row acc-hit acc-success">
-      <img src="{{skillImg}}" width="20" height="20" style="border:none;margin-right:6px;" />
-      <span class="acc-roll-label">{{{resultText}}}</span>
-    </div>
+  <div class="ms-card-trigger-result">
+    <img src="{{skillImg}}" />
+    <span>{{{resultText}}}</span>
   </div>
   {{/if}}
 </div>

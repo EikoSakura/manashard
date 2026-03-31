@@ -1,56 +1,33 @@
-<div class="manashard status-removal-card removal-{{source}}">
-
-  {{!-- ═══ HEADER ═══ --}}
-  <div class="acc-header">
-    <div class="acc-portrait-frame">
-      <div class="acc-portrait-diamond">
-        <img src="{{actorImg}}" class="acc-portrait" />
-      </div>
-    </div>
-    <div class="acc-header-info">
-      <div class="acc-actor-name">{{actorName}}</div>
-      <div class="acc-action-line">
-        {{#if (eq source "expired")}}
-          status effects wore off
-        {{else if (eq source "cleansed")}}
-          statuses cleansed
-        {{else if (eq source "shattered")}}
-          Frozen shattered!
-        {{/if}}
+<div class="ms-card card-status removal-{{source}}">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">
+        {{#if (eq source "expired")}}status effects wore off
+        {{else if (eq source "cleansed")}}statuses cleansed
+        {{else if (eq source "shattered")}}Frozen shattered!{{/if}}
       </div>
     </div>
   </div>
-
-  {{!-- ═══ STATUS LIST ═══ --}}
-  <div class="src-body">
+  <div class="ms-card-action status">
+    <div class="action-gem"></div>
+    {{#if (eq source "expired")}}Expired
+    {{else if (eq source "cleansed")}}Cleansed
+    {{else if (eq source "shattered")}}Shattered{{/if}}
+  </div>
+  <div class="ms-card-status-list">
     {{#each statuses}}
-    <div class="src-status-line">
-      <i class="{{this.icon}}"></i>
-      <span class="src-status-label">{{this.label}}</span>
-      <span class="src-status-tag">{{this.tag}}</span>
+    <div class="ms-card-status-entry">
+      {{{manashardIcon this.icon}}}
+      <span class="status-label">{{this.label}}</span>
+      <span class="status-tag">{{this.tag}}</span>
     </div>
     {{/each}}
   </div>
-
-  {{!-- ═══ SOURCE INDICATOR ═══ --}}
-  <div class="src-source-bar">
-    <div class="src-source-icon">
-      {{#if (eq source "expired")}}
-        <i class="fas fa-hourglass-end"></i>
-      {{else if (eq source "cleansed")}}
-        <i class="fas fa-hand-sparkles"></i>
-      {{else if (eq source "shattered")}}
-        <i class="fas fa-snowflake"></i>
-      {{/if}}
-    </div>
-    <span>
-      {{#if (eq source "expired")}}
-        Duration expired
-      {{else if (eq source "cleansed")}}
-        Cleansed by item
-      {{else if (eq source "shattered")}}
-        Ice shattered by attack
-      {{/if}}
-    </span>
+  <div class="ms-card-source-bar">
+    {{#if (eq source "expired")}}<i class="fas fa-hourglass-end"></i><span>Duration expired</span>
+    {{else if (eq source "cleansed")}}<i class="fas fa-hand-sparkles"></i><span>Cleansed by item</span>
+    {{else if (eq source "shattered")}}<i class="fas fa-snowflake"></i><span>Ice shattered by attack</span>{{/if}}
   </div>
 </div>

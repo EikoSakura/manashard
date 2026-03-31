@@ -17,7 +17,7 @@ import { recalculateForecast } from "./forecast.mjs";
  * @param {object} [options={}]
  * @param {string} [options.title] - Dialog window title override
  * @returns {Promise<object|null>} User selections or null if cancelled
- *   { eva, def, critAvoid, chantMode, castingModActive }
+ *   { eva, def, critEvo, chantMode, castingModActive }
  */
 export async function showForecastDialog(ctx, options = {}) {
   // Render the Handlebars template
@@ -52,13 +52,13 @@ export async function showForecastDialog(ctx, options = {}) {
           const el = dialog.element;
           const castingModActive = !!el.querySelector(".cf-casting-mod-cb")?.checked;
           if (ctx.healMode) {
-            return { eva: 0, def: 0, critAvoid: 0, chantMode: selectedChant, castingModActive };
+            return { eva: 0, def: 0, critEvo: 0, chantMode: selectedChant, castingModActive };
           }
           const eva = Number(el.querySelector(".cf-eva")?.value) || 0;
           const def = Number(el.querySelector(".cf-def")?.value) || 0;
-          const critAvoid = Number(el.querySelector(".cf-critavoid")?.value) || 0;
+          const critEvo = Number(el.querySelector(".cf-critavoid")?.value) || 0;
           const offhand = !!el.querySelector(".cf-offhand-cb")?.checked;
-          return { eva, def, critAvoid, chantMode: selectedChant, castingModActive, offhand };
+          return { eva, def, critEvo, chantMode: selectedChant, castingModActive, offhand };
         }
       },
       { action: "cancel", label: "Cancel" }
@@ -101,7 +101,7 @@ export async function showForecastDialog(ctx, options = {}) {
         if (!ctx.healMode) {
           overrides.eva = Number(el.querySelector(".cf-eva")?.value) || 0;
           overrides.def = Number(el.querySelector(".cf-def")?.value) || 0;
-          overrides.critAvoid = Number(el.querySelector(".cf-critavoid")?.value) || 0;
+          overrides.critEvo = Number(el.querySelector(".cf-critavoid")?.value) || 0;
         }
         overrides.chantKey = selectedChant;
 

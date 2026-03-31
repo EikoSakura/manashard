@@ -19,16 +19,10 @@
     </div>
   </header>
   {{else if isThreat}}
-  {{!-- HostileUnit: Thin header bar with hostile badge and threat pips --}}
+  {{!-- HostileUnit: Thin header bar with hostile badge --}}
   <header class="sheet-header hu-header-bar">
     <span class="hu-hostile-badge">THREAT</span>
     <span class="hu-sheet-title">{{actor.name}}</span>
-    <div class="hu-threat-pips">
-      <span class="hu-threat-label">THREAT</span>
-      {{#each threatPips}}
-      <span class="hu-threat-pip {{#if this}}filled{{/if}}"></span>
-      {{/each}}
-    </div>
   </header>
   {{else}}
   {{!-- Other NPC: Full header --}}

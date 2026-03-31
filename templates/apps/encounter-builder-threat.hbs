@@ -56,9 +56,6 @@
           {{/each}}
         </select>
       </label>
-      <button class="eb-btn eb-btn-accent" data-action="applySuggestion">
-        <i class="fas fa-magic"></i> {{localize "MANASHARD.EncBuilder.ApplySuggestion"}}
-      </button>
     </div>
 
     {{!-- HP / MP --}}
@@ -115,7 +112,7 @@
         <button class="eb-tier-btn eb-status-btn tier-{{this.tier}}"
                 data-action="cycleStatusTier" data-condition="{{this.key}}"
                 title="{{this.label}}: {{this.tier}}">
-          <i class="{{this.icon}}"></i>
+          {{{manashardIcon this.icon}}}
           <span class="eb-tier-value">{{upper (substring this.tier 0 3)}}</span>
         </button>
         {{/each}}
@@ -287,8 +284,8 @@
       <span class="eb-preview-value" data-preview="meva">{{preview.meva}}</span>
     </div>
     <div class="eb-preview-stat">
-      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.CritAvoid"}}</span>
-      <span class="eb-preview-value" data-preview="critAvoid">{{preview.critAvoid}}</span>
+      <span class="eb-preview-label">{{localize "MANASHARD.EncBuilder.CritEvo"}}</span>
+      <span class="eb-preview-value" data-preview="critEvo">{{preview.critEvo}}</span>
     </div>
 
     <hr class="eb-divider" />

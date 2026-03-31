@@ -68,6 +68,10 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       portraitOffsetY: new NumberField({ required: true, initial: 0, min: 0, max: 100 }),
       portraitMirrored: new BooleanField({ initial: false }),
 
+      // Sheet accent color
+      sheetAccentPreset: new StringField({ required: true, initial: "crimson" }),
+      sheetAccentCustom: new StringField({ required: false, blank: true, initial: "" }),
+
       biography: new HTMLField({ required: false, blank: true }),
       level: new NumberField({ required: true, integer: true, min: 1, initial: 1 }),
       size: new NumberField({ required: true, integer: true, min: 1, max: 5, initial: 1 }),
@@ -254,15 +258,16 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     const weaponCrit = equippedWeapon?.crit ?? 0;
     const weaponDamageType = equippedWeapon?.damageType ?? "physical";
 
-    // Swords (Versatile): physical damage uses max(STR, AGI)
+    // Scaling stat: Staves/Grimoires/magical → MAG, Swords → max(STR,AGI), else → STR
     const weaponCategory = equippedWeapon?.category ?? null;
+    const isMagicCategory = weaponCategory === "staves" || weaponCategory === "grimoires";
     const physScaling = weaponCategory === "swords" ? Math.max(stats.str.value, stats.agi.value) : stats.str.value;
-    this.damage = (weaponDamageType === "magical" ? stats.mag.value * 2 : physScaling * 2) + weaponMight;
-    this.accuracy = 80 + (stats.agi.value * 2);
-    this.critical = (stats.luk.value * 2) + weaponCrit;
-    this.peva = stats.agi.value;
-    this.meva = stats.spi.value;
-    this.critAvoid = stats.luk.value * 2;
+    this.damage = ((weaponDamageType === "magical" || isMagicCategory) ? stats.mag.value : physScaling) + weaponMight;
+    this.accuracy = 60 + (stats.agi.value * 2) + stats.luk.value;
+    this.critical = Math.floor(stats.agi.value / 2) + Math.floor(stats.luk.value / 2) + weaponCrit;
+    this.peva = 20 + (stats.agi.value * 2);
+    this.meva = 20 + (stats.spi.value * 2);
+    this.critEvo = 5 + stats.luk.value;
 
     this.armorPdef = equippedArmor?.pdef ?? 0;
     this.armorMdef = equippedArmor?.mdef ?? 0;
@@ -274,7 +279,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     this.blockChance = 0;
     const blockSource = equippedOffhand?.block ? equippedOffhand : equippedWeapon;
     if (blockSource?.block) {
-      this.blockChance = blockSource.block + Math.floor(stats.end.value / 2);
+      this.blockChance = blockSource.block + stats.end.value;
     }
 
     // Reach = max(Size, weapon Range) — only melee weapons extend reach
@@ -304,7 +309,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       critical: this.critical - engine.tracker.getTotal("critical"),
       peva: this.peva - engine.tracker.getTotal("peva"),
       meva: this.meva - engine.tracker.getTotal("meva"),
-      critAvoid: this.critAvoid - engine.tracker.getTotal("critAvoid"),
+      critEvo: this.critEvo - engine.tracker.getTotal("critEvo"),
       mov: this.mov - engine.tracker.getTotal("mov"),
       blockChance: this.blockChance - engine.tracker.getTotal("blockChance"),
       mpRegen: this.mpRegen - engine.tracker.getTotal("mpRegen"),

@@ -36,7 +36,6 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
 
       // Threat Builder
       editImage:          EncounterBuilder.#onEditImage,
-      applySuggestion:    EncounterBuilder.#onApplySuggestion,
       cycleElementTier:   EncounterBuilder.#onCycleElementTier,
       cycleStatusTier:    EncounterBuilder.#onCycleStatusTier,
       toggleMovement:     EncounterBuilder.#onToggleMovement,
@@ -602,15 +601,16 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     const weaponCrit = weapon?.system?.crit ?? 0;
     const weaponDamageType = weapon?.system?.damageType ?? "physical";
 
-    // Swords (Versatile): physical damage uses max(STR, AGI)
+    // Scaling stat: Staves/Grimoires/magical → MAG, Swords → max(STR,AGI), else → STR
     const wpnCat = weapon?.system?.category;
+    const isMagicCategory = wpnCat === "staves" || wpnCat === "grimoires";
     const physScaling = (wpnCat === "swords") ? Math.max(stats.str, stats.agi) : stats.str;
-    const damage = (weaponDamageType === "magical" ? stats.mag * 2 : physScaling * 2) + weaponMight;
-    const accuracy = 80 + (stats.agi * 2);
-    const critical = (stats.luk * 2) + weaponCrit;
-    const peva = stats.agi;
-    const meva = stats.spi;
-    const critAvoid = stats.luk * 2;
+    const damage = ((weaponDamageType === "magical" || isMagicCategory) ? stats.mag : physScaling) + weaponMight;
+    const accuracy = 60 + (stats.agi * 2) + stats.luk;
+    const critical = Math.floor(stats.agi / 2) + Math.floor(stats.luk / 2) + weaponCrit;
+    const peva = 20 + (stats.agi * 2);
+    const meva = 20 + (stats.spi * 2);
+    const critEvo = 5 + stats.luk;
     const pdef = (armor?.system?.pdef ?? 0) + stats.end;
     const mdef = (armor?.system?.mdef ?? 0) + stats.spi;
     const mpRegen = Math.floor(stats.spi / 4);
@@ -618,7 +618,7 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     let blockChance = 0;
     const blockSource = offhand?.system?.block ? offhand.system : weapon?.system;
     if (blockSource?.block) {
-      blockChance = blockSource.block + Math.floor(stats.end / 2);
+      blockChance = blockSource.block + stats.end;
     }
 
     const reach = Math.max(s.size, weapon?.system?.maxRange ?? 1);
@@ -627,7 +627,7 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     const threatLevel = this.#calculateThreatLevel(s.level, s.rank, s.role);
 
     return {
-      damage, accuracy, critical, peva, meva, critAvoid,
+      damage, accuracy, critical, peva, meva, critEvo,
       pdef, mdef, mpRegen, blockChance, reach, vision,
       actionsPerTurn, threatLevel
     };
@@ -725,21 +725,25 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       this.#refreshPreview();
     });
 
-    // Rank — need full re-render to update cap bars
+    // Rank — apply suggestion + full re-render to update cap bars
     el.querySelector('select[name="threat-rank"]')?.addEventListener("change", (e) => {
       this.#threatState.rank = e.target.value;
+      this.#applySuggestion();
       this.#renderPreservingScroll();
     });
 
-    // Role
+    // Role — apply suggestion + refresh preview
     el.querySelector('select[name="threat-role"]')?.addEventListener("change", (e) => {
       this.#threatState.role = e.target.value;
-      this.#refreshPreview();
+      this.#applySuggestion();
+      this.#renderPreservingScroll();
     });
 
-    // Archetype
+    // Archetype — apply suggestion + refresh
     el.querySelector('select[name="threat-archetype"]')?.addEventListener("change", (e) => {
       this.#threatState.archetype = e.target.value;
+      this.#applySuggestion();
+      this.#renderPreservingScroll();
     });
 
     // MOV
@@ -858,7 +862,7 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       critical: preview.critical,
       peva: preview.peva,
       meva: preview.meva,
-      critAvoid: preview.critAvoid,
+      critEvo: preview.critEvo,
       pdef: preview.pdef,
       mdef: preview.mdef,
       blockChance: preview.blockChance,
@@ -922,12 +926,11 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     fp.render(true);
   }
 
-  static #onApplySuggestion() {
+  #applySuggestion() {
     const s = this.#threatState;
     const suggested = this.#suggestStats(s.rank, s.role, s.archetype);
     if (suggested) {
       Object.assign(s.stats, suggested);
-      this.#renderPreservingScroll();
     }
   }
 
@@ -1107,27 +1110,41 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   static async #onLoadThreat() {
-    // Show a dialog to pick an existing Threat actor
-    const threats = game.actors.filter(a => a.type === "threat");
-    if (!threats.length) {
+    // Gather threats from world actors and the Threats compendium
+    const worldThreats = game.actors.filter(a => a.type === "threat");
+    const pack = game.packs.get("manashard.threats");
+    let compendiumThreats = [];
+    if (pack) {
+      const docs = await pack.getDocuments();
+      compendiumThreats = docs.filter(a => a.type === "threat");
+    }
+
+    if (!worldThreats.length && !compendiumThreats.length) {
       ui.notifications.warn("No threat actors found.");
       return;
     }
 
-    const options = threats.map(a => `<option value="${a.id}">${a.name} (Lv${a.system.level} ${a.system.rank.toUpperCase()} ${a.system.role})</option>`).join("");
-    const content = `<form><div class="form-group"><label>Select Threat</label><select name="actorId">${options}</select></div></form>`;
+    const optionHtml = (a) => `<option value="${a.uuid}">${a.name} (Lv${a.system.level} ${a.system.rank.toUpperCase()} ${a.system.role})</option>`;
+    let options = "";
+    if (worldThreats.length) {
+      options += `<optgroup label="World">${worldThreats.map(optionHtml).join("")}</optgroup>`;
+    }
+    if (compendiumThreats.length) {
+      options += `<optgroup label="Compendium">${compendiumThreats.map(optionHtml).join("")}</optgroup>`;
+    }
+    const content = `<form><div class="form-group"><label>Select Threat</label><select name="actorUuid">${options}</select></div></form>`;
 
-    const actorId = await foundry.applications.api.DialogV2.prompt({
+    const actorUuid = await foundry.applications.api.DialogV2.prompt({
       window: { title: game.i18n.localize("MANASHARD.EncBuilder.LoadThreat") },
       content,
       ok: {
         label: "Load",
-        callback: (event, btn) => btn.form.elements.actorId.value
+        callback: (event, btn) => btn.form.elements.actorUuid.value
       }
     });
 
-    if (!actorId) return;
-    const actor = game.actors.get(actorId);
+    if (!actorUuid) return;
+    const actor = await fromUuid(actorUuid);
     if (!actor) return;
 
     const sys = actor.system;

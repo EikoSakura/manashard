@@ -27,15 +27,15 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
 
   static PARTS = {
     header: { template: "systems/manashard/templates/actor/parts/actor-header.hbs" },
-    sidebar: { template: "systems/manashard/templates/actor/parts/actor-sidebar.hbs" },
+    sidebar: { template: "systems/manashard/templates/actor/parts/actor-sidebar.hbs", scrollable: [""] },
     tabs: { template: "systems/manashard/templates/actor/parts/actor-tabs.hbs" },
-    stats: { template: "systems/manashard/templates/actor/parts/actor-stats.hbs" },
-    equipment: { template: "systems/manashard/templates/actor/parts/actor-equipment.hbs" },
-    skills: { template: "systems/manashard/templates/actor/parts/actor-skills.hbs" },
-    combat: { template: "systems/manashard/templates/actor/parts/actor-combat.hbs" },
-    loot: { template: "systems/manashard/templates/actor/parts/actor-loot.hbs" },
-    biography: { template: "systems/manashard/templates/actor/parts/actor-biography.hbs" },
-    trap: { template: "systems/manashard/templates/actor/parts/actor-trap.hbs" }
+    stats: { template: "systems/manashard/templates/actor/parts/actor-stats.hbs", scrollable: [""] },
+    equipment: { template: "systems/manashard/templates/actor/parts/actor-equipment.hbs", scrollable: [""] },
+    skills: { template: "systems/manashard/templates/actor/parts/actor-skills.hbs", scrollable: [""] },
+    combat: { template: "systems/manashard/templates/actor/parts/actor-combat.hbs", scrollable: [""] },
+    loot: { template: "systems/manashard/templates/actor/parts/actor-loot.hbs", scrollable: [""] },
+    biography: { template: "systems/manashard/templates/actor/parts/actor-biography.hbs", scrollable: [""] },
+    trap: { template: "systems/manashard/templates/actor/parts/actor-trap.hbs", scrollable: [""] }
   };
 
   static DEFAULT_OPTIONS = {
@@ -87,7 +87,9 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       openManaciteManager: ManashardActorSheet.#onOpenManaciteManager,
       openSpatialInventory: ManashardActorSheet.#onOpenSpatialInventory,
       stowInSpatial: ManashardActorSheet.#onStowInSpatial,
-      adjustEiress: ManashardActorSheet.#onAdjustEiress
+      adjustEiress: ManashardActorSheet.#onAdjustEiress,
+      setAccentPreset: ManashardActorSheet.#onSetAccentPreset,
+      setAccentCustom: ManashardActorSheet.#onSetAccentCustom
     }
   };
 
@@ -137,7 +139,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     const tabs = [
       { id: "stats", label: "Combat", icon: "fa-swords" },
       { id: "skills", label: "Loadout", icon: "fa-backpack" },
-      { id: "loot", label: "Loot", icon: "fa-gem" },
+      { id: "loot", label: "Loot", icon: "fa-shield-halved" },
       { id: "biography", label: "Bio", icon: "fa-book-open" },
     ];
     for (const tab of tabs) {
@@ -340,7 +342,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
 
     // Derived stat modifier info for coloring
     context.derivedModifiers = {};
-    const derivedKeys = ["damage", "accuracy", "critical", "peva", "meva", "critAvoid",
+    const derivedKeys = ["damage", "accuracy", "critical", "peva", "meva", "critEvo",
       "blockChance", "mov", "mpRegen", "carryingCapacity", "vision", "pdef", "mdef"];
     for (const key of derivedKeys) {
       const total = modifiers?.getTotal(key) ?? 0;
@@ -603,6 +605,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     // Growth rate toggle state (character only, persisted per-actor)
     if (context.isCharacter) {
       context.showGrowth = actor.getFlag("manashard", "showGrowth") ?? false;
+      context.canLevelUp = system.exp >= 100 && system.level < 40;
     }
 
     // Passive abilities for character/hostile/companion profile
@@ -698,8 +701,68 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     return super._renderHTML(context, options);
   }
 
+  /**
+   * Resolve the sheet accent color and apply CSS custom properties.
+   */
+  _applySheetAccent() {
+    const sys = this.actor.system;
+    const presets = CONFIG.MANASHARD.sheetAccentPresets;
+    const preset = presets[sys.sheetAccentPreset] ?? presets.gold;
+    const color = (sys.sheetAccentPreset === "custom" && sys.sheetAccentCustom)
+      ? sys.sheetAccentCustom
+      : (preset.color ?? "#c49a2a");
+
+    const el = this.element;
+    el.style.setProperty("--sheet-accent", color);
+    el.style.setProperty("--sheet-accent-light", this._lightenColor(color, 30));
+    el.style.setProperty("--sheet-accent-dim", this._hexToRgba(color, 0.25));
+    el.style.setProperty("--sheet-accent-glow", this._hexToRgba(color, 0.3));
+    el.style.setProperty("--sheet-accent-glow-strong", this._hexToRgba(color, 0.5));
+    el.style.setProperty("--sheet-accent-border", this._hexToRgba(color, 0.35));
+  }
+
+  /** Convert hex to rgba string. */
+  _hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  /** Lighten a hex color by a percentage. */
+  _lightenColor(hex, percent) {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    r = Math.min(255, Math.round(r + (255 - r) * (percent / 100)));
+    g = Math.min(255, Math.round(g + (255 - g) * (percent / 100)));
+    b = Math.min(255, Math.round(b + (255 - b) * (percent / 100)));
+    return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+  }
+
   _onRender(context, options) {
     super._onRender(context, options);
+
+    // ── Set initial tab visibility via hidden attribute on part wrappers ──
+    // Also sync .active on inner .tab-content for the CSS visibility rule
+    const tabPartNames = ['stats', 'equipment', 'skills', 'biography', 'combat', 'loot', 'trap'];
+    for (const partName of tabPartNames) {
+      const wrapper = this.element.querySelector(`[data-application-part="${partName}"]`);
+      if (wrapper) {
+        const isActive = partName === this._activeTab;
+        wrapper.hidden = !isActive;
+        // In V13, data-application-part is on the root <section class="tab-content"> itself,
+        // so toggle .active directly on the wrapper (not a child).
+        wrapper.classList.toggle('active', isActive);
+      }
+    }
+    // Set initial active tab button
+    this.element.querySelectorAll('.ms-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === this._activeTab);
+    });
+
+    // ── Sheet accent color injection ──
+    this._applySheetAccent();
 
     // Add layout class for two-column sidebar layouts
     if (this.actor.type === "character") {
@@ -776,7 +839,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     const sys = this.actor.system;
     const newStats = {
       damage: sys.damage, accuracy: sys.accuracy, critical: sys.critical,
-      peva: sys.peva, meva: sys.meva, critAvoid: sys.critAvoid, mov: sys.mov,
+      peva: sys.peva, meva: sys.meva, critEvo: sys.critEvo, mov: sys.mov,
       blockChance: sys.blockChance, mpRegen: sys.mpRegen
     };
     if (this._previousDerivedStats) {
@@ -858,7 +921,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     });
 
     // --- Elemental Profile Right-Click Reverse Cycling ---
-    this.element.querySelectorAll(".elemental-entry[data-action='cycleElementTier']").forEach(entry => {
+    this.element.querySelectorAll(".elemental-entry[data-action='cycleElementTier'], .ms-el-cell[data-action='cycleElementTier']").forEach(entry => {
       entry.addEventListener("contextmenu", (e) => {
         e.preventDefault();
         ManashardActorSheet.#onCycleElementTier.call(this, e, entry);
@@ -948,18 +1011,17 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       el.addEventListener("mouseleave", () => this.#hideInfoTooltip());
     });
     // Core stats (sidebar + NPC)
-    this.element.querySelectorAll(".lh-stat-abbr, .adv-stat-abbr, .stat-abbr").forEach(el => {
+    this.element.querySelectorAll(".ms-stat[data-stat]").forEach(el => {
       el.addEventListener("mouseenter", (e) => {
-        const statKey = el.dataset.stat ?? el.closest("[data-stat-key]")?.dataset.statKey
-          ?? el.closest(".lh-stat-item, .adv-stat-row")?.querySelector("input[data-stat-key]")?.dataset.statKey;
+        const statKey = el.dataset.stat ?? el.closest("[data-stat-key]")?.dataset.statKey;
         if (!statKey) return;
         const html = this.#buildStatTooltip(statKey);
         if (html) this.#showInfoTooltip(e, el, html);
       });
       el.addEventListener("mouseleave", () => this.#hideInfoTooltip());
     });
-    // Combat stats (PlayerUnit + NPC)
-    this.element.querySelectorAll(".lh-cm-cell, .lh-cm-small, .adv-cm-cell, .adv-cm-small, .derived-cell").forEach(el => {
+    // Combat stats (PlayerUnit + NPC + Crystal sheet)
+    this.element.querySelectorAll(".ms-hero-stat[data-stat], .ms-def-cell[data-stat], .ms-tac-chip[data-stat]").forEach(el => {
       el.addEventListener("mouseenter", (e) => {
         const statKey = el.dataset.stat;
         if (!statKey) return;
@@ -969,7 +1031,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       el.addEventListener("mouseleave", () => this.#hideInfoTooltip());
     });
     // Inventory items
-    this.element.querySelectorAll(".inventory-grid-card[data-item-id], .inventory-section .adv-tile[data-item-id]").forEach(el => {
+    this.element.querySelectorAll(".inventory-grid-card[data-item-id], .ms-inv-card[data-item-id], .inventory-section .adv-tile[data-item-id]").forEach(el => {
       el.addEventListener("mouseenter", (e) => {
         const item = this.actor.items.get(el.dataset.itemId);
         if (!item) return;
@@ -1037,7 +1099,24 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
   /** @override */
   async _onDrop(event) {
     event.preventDefault();
-    const target = event.currentTarget;
+
+    // Foundry V2 uses event delegation — event.currentTarget is the form,
+    // so we must resolve the actual drop target from event.target upward.
+    const dropSelectors = [
+      "weapon-card", "offhand-card", "armor-card",
+      "loadout-accessories", "paperdoll-accessory-slot",
+      "skill-loadout-zone"
+    ];
+    const resolveDropTarget = (el) => {
+      while (el && el !== event.currentTarget) {
+        for (const cls of dropSelectors) {
+          if (el.classList.contains(cls)) return el;
+        }
+        el = el.parentElement;
+      }
+      return event.currentTarget;
+    };
+    const target = resolveDropTarget(event.target);
     target.classList.remove("drop-target-highlight");
 
     let data;
@@ -1175,10 +1254,26 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
    * Switch the active tab.
    */
   static #onSwitchTab(event, target) {
-    const tabId = target.dataset.tab;
-    if (!tabId || tabId === this._activeTab) return;
-    this._activeTab = tabId;
-    this.render();
+    const tab = target.dataset.tab;
+    if (!tab) return;
+    this._activeTab = tab;
+
+    // Toggle tab bar button active state
+    this.element.querySelectorAll('.ms-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === tab);
+    });
+
+    // Toggle PART section visibility using the hidden attribute
+    // Also toggle .active directly on the wrapper (which IS the .tab-content element in V13)
+    const tabPartNames = ['stats', 'equipment', 'skills', 'biography', 'combat', 'loot', 'trap'];
+    for (const partName of tabPartNames) {
+      const wrapper = this.element.querySelector(`[data-application-part="${partName}"]`);
+      if (wrapper) {
+        const isActive = partName === tab;
+        wrapper.hidden = !isActive;
+        wrapper.classList.toggle('active', isActive);
+      }
+    }
   }
 
   /**
@@ -1390,7 +1485,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       defenderEvasion: result.eva,
       defenderDef: isMagical ? 0 : result.def,
       defenderSpi: isMagical ? result.def : 0,
-      defenderCritAvoid: result.critAvoid,
+      defenderCritAvoid: result.critEvo,
       defenderBlockChance: defBlockChance,
       targetTokenId: targeted?.id ?? null,
       weaponOverride: wpn
@@ -1409,7 +1504,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
           defenderEvasion: result.eva,
           defenderDef: offhandIsMagical ? 0 : result.def,
           defenderSpi: offhandIsMagical ? result.def : 0,
-          defenderCritAvoid: result.critAvoid,
+          defenderCritAvoid: result.critEvo,
           defenderBlockChance: defBlockChance,
           targetTokenId: targeted?.id ?? null,
           weaponOverride: offhandWeapon,
@@ -1450,7 +1545,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       defenderEvasion: result.eva,
       defenderDef: isMagical ? 0 : result.def,
       defenderSpi: isMagical ? result.def : 0,
-      defenderCritAvoid: result.critAvoid,
+      defenderCritAvoid: result.critEvo,
       defenderBlockChance: defBlockChance,
       targetTokenId: targeted?.id ?? null
     };
@@ -1695,25 +1790,25 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
 
   static #STAT_INFO = {
     str: { name: "Strength", hint: "Physical DMG" },
-    agi: { name: "Agility", hint: "P.EVA, ACC" },
+    agi: { name: "Agility", hint: "ACC, CRIT, P.EVA" },
     mag: { name: "Magic", hint: "Magical DMG, MP Regen" },
     end: { name: "Endurance", hint: "P.DEF, BLOCK, CARRY" },
     spi: { name: "Spirit", hint: "M.EVA, M.DEF" },
-    luk: { name: "Luck", hint: "ACC, CRIT, C.AVO" },
+    luk: { name: "Luck", hint: "ACC, CRIT, C.EVO" },
     int: { name: "Intelligence", hint: "Skill checks" },
     chm: { name: "Charisma", hint: "Skill checks" }
   };
 
   static #COMBAT_STAT_INFO = {
-    damage:      { name: "Damage",     formula: "STR/MAG + Weapon Might" },
-    accuracy:    { name: "Accuracy",   formula: "AGI\u00d72 + LUK + Weapon Hit" },
+    damage:      { name: "Damage",     formula: "STR/MAG + Might" },
+    accuracy:    { name: "Accuracy",   formula: "60 + AGI\u00d72 + LUK" },
     critical:    { name: "Critical",   formula: "AGI/2 + LUK/2 + Weapon Crit" },
-    peva:        { name: "P.EVA",      formula: "AGI × 2" },
-    meva:        { name: "M.EVA",      formula: "SPI × 2" },
-    critAvoid:   { name: "Crit Avoid", formula: "LUK" },
+    peva:        { name: "P.EVA",      formula: "20 + AGI×2" },
+    meva:        { name: "M.EVA",      formula: "20 + SPI×2" },
+    critEvo:     { name: "C.EVO",      formula: "5 + LUK" },
     pdef:        { name: "P.DEF",      formula: "Armor + END" },
     mdef:        { name: "M.DEF",      formula: "Armor + SPI" },
-    blockChance: { name: "Block",      formula: "Shield Block + END/2" },
+    blockChance: { name: "Block",      formula: "Shield + END" },
     mov:         { name: "Movement",   formula: "Base 6 + modifiers" },
     vision:      { name: "Vision",     formula: "Base 6 + modifiers" },
     mpRegen:     { name: "MP Regen",   formula: "SPI / 4" },
@@ -1901,10 +1996,17 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       // Comparison deltas
       if (actorStats) {
         const deltas = [];
+        // Helper: resolve scaling stat for a weapon's category and damageType
+        const resolveScaling = (cat, dt) => {
+          const magCat = cat === "staves" || cat === "grimoires";
+          if (dt === "magical" || magCat) return actorStats.mag.value;
+          if (cat === "swords") return Math.max(actorStats.str.value, actorStats.agi.value);
+          return actorStats.str.value;
+        };
         if (sys.equipped) {
-          const scalingStat = (sys.damageType === "magical" ? actorStats.mag.value : actorStats.str.value);
-          const unarmedDmg = scalingStat * 2;
-          const equippedDmg = (scalingStat * 2) + (sys.might ?? 0);
+          const scalingStat = resolveScaling(sys.category, sys.damageType);
+          const unarmedDmg = scalingStat;
+          const equippedDmg = scalingStat + (sys.might ?? 0);
           deltas.push({ label: "DMG", delta: equippedDmg - unarmedDmg });
           // Accuracy no longer depends on weapon hit — no ACC delta for equipped weapon
           deltas.push({ label: "ACC", delta: 0 });
@@ -1914,11 +2016,10 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
         } else {
           const cur = this.actor.items.find(i => i.type === "weapon" && i.system.equipped);
           const curMight = cur?.system.might ?? 0, curCrit = cur?.system.crit ?? 0, curWt = cur?.system.weight ?? 0;
-          const curType = cur?.system.damageType ?? "physical";
-          const curScaling = curType === "magical" ? actorStats.mag.value : actorStats.str.value;
-          const newScaling = sys.damageType === "magical" ? actorStats.mag.value : actorStats.str.value;
-          const curDmg = (curScaling * 2) + curMight;
-          const newDmg = (newScaling * 2) + (sys.might ?? 0);
+          const curScaling = resolveScaling(cur?.system.category, cur?.system.damageType ?? "physical");
+          const newScaling = resolveScaling(sys.category, sys.damageType);
+          const curDmg = curScaling + curMight;
+          const newDmg = newScaling + (sys.might ?? 0);
           deltas.push({ label: "DMG", delta: newDmg - curDmg });
           // Accuracy no longer depends on weapon hit — no ACC delta for weapon swap
           deltas.push({ label: "ACC", delta: 0 });
@@ -2184,9 +2285,9 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       const ruleBonus = system._growthRuleBonuses?.[key] ?? 0;
       const effectiveGrowth = Math.min(200, stat.growth + jobContribution + ruleBonus + growthBonus);
 
-      // Check rank stat cap — skip growth if already at cap
+      // Check rank stat cap using base stats (excludes temporary bonuses from jobs/equipment)
       const cap = rankStatCaps[key];
-      const currentVal = (key === "hp" || key === "mp") ? stat.max : stat.value;
+      const currentVal = system._baseStats?.[key] ?? ((key === "hp" || key === "mp") ? stat.max : stat.value);
       const atCap = cap !== undefined && currentVal >= cap;
 
       // Growth rates > 100% mean guaranteed +1 with (rate-100)% chance of +2
@@ -2600,7 +2701,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       defenderEvasion: skipAllDef ? 0 : result.eva,
       defenderDef: (skipAllDef || isNoneDamageSk) ? 0 : (isMagical ? 0 : result.def),
       defenderSpi: (skipAllDef || isNoneDamageSk) ? 0 : (isMagical ? result.def : 0),
-      defenderCritAvoid: skipAllDef ? 0 : result.critAvoid,
+      defenderCritAvoid: skipAllDef ? 0 : result.critEvo,
       defenderBlockChance: (skipAllDef || isNoneDamageSk) ? 0 : defBlockChance,
       targetTokenId: targeted?.id ?? null,
       mpCost: effectiveMpCost,
@@ -2922,7 +3023,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
   // --- Elemental Profile Tier Cycling ---
 
   static #onCycleElementTier(event, target) {
-    const entry = target.closest(".elemental-entry");
+    const entry = target.closest(".elemental-entry") ?? target.closest(".ms-el-cell");
     if (!entry) return;
     const element = entry.dataset.element;
     if (!element) return;
@@ -3180,6 +3281,16 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     const delta = parseInt(target.dataset.delta) || 0;
     const current = this.actor.system.eiress ?? 0;
     await this.actor.update({ "system.eiress": Math.max(0, current + delta) });
+  }
+
+  static async #onSetAccentPreset(event, target) {
+    const preset = target.dataset.preset;
+    if (preset) await this.actor.update({ "system.sheetAccentPreset": preset });
+  }
+
+  static async #onSetAccentCustom(event, target) {
+    const color = target.value;
+    if (color) await this.actor.update({ "system.sheetAccentPreset": "custom", "system.sheetAccentCustom": color });
   }
 
 }

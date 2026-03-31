@@ -180,7 +180,7 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     } else if (ssKey !== "none") {
       scalingStatVal = system.stats?.[ssKey]?.value ?? 0;
     }
-    baseDmg = (scalingStatVal * 2) + effectiveBaseRate + (condBonuses.damage ?? 0);
+    baseDmg = scalingStatVal + effectiveBaseRate + (condBonuses.damage ?? 0);
     // Accuracy: fixed-mode skills with skillHit use 80 base + scaling stat instead of AGI
     const skillHitVal = skillData.skillHit ?? 0;
     if (skillData.baseRateMode === "fixed" && skillHitVal > 0) {
@@ -193,20 +193,23 @@ export function buildForecastContext(actor, targetToken, options = {}) {
   } else if (isNatural && weaponItem) {
     // Natural weapon: custom formula
     const stats = system.stats;
-    const scalingStat = isMagical ? (stats?.mag?.value ?? 0) : (stats?.str?.value ?? 0);
-    baseDmg = (scalingStat * 2) + (weaponItem.system?.might ?? 0) + (condBonuses.damage ?? 0);
+    const natCat = weaponItem.system?.category;
+    const natMagCat = natCat === "staves" || natCat === "grimoires";
+    const scalingStat = (isMagical || natMagCat) ? (stats?.mag?.value ?? 0) : (stats?.str?.value ?? 0);
+    baseDmg = scalingStat + (weaponItem.system?.might ?? 0) + (condBonuses.damage ?? 0);
     acc = 80 + (stats?.agi?.value ?? 0) * 2 + (condBonuses.accuracy ?? 0);
     crit = (stats?.luk?.value ?? 0) * 2 + (weaponItem.system?.crit ?? 0) + (condBonuses.critical ?? 0);
   } else if (weaponItem) {
     // Explicit weapon (e.g. off-hand) — compute from weapon stats directly
     const stats = system.stats;
-    // Swords (Versatile): physical damage uses max(STR, AGI)
+    // Scaling stat: Staves/Grimoires/magical → MAG, Swords → max(STR,AGI), else → STR
     const wpnCat = weaponItem.system?.category;
+    const wpnMagCat = wpnCat === "staves" || wpnCat === "grimoires";
     const physStat = (!isMagical && wpnCat === "swords")
       ? Math.max(stats?.str?.value ?? 0, stats?.agi?.value ?? 0)
       : (stats?.str?.value ?? 0);
-    const scalingStat = isMagical ? (stats?.mag?.value ?? 0) : physStat;
-    baseDmg = (scalingStat * 2) + (weaponItem.system?.might ?? 0) + (condBonuses.damage ?? 0);
+    const scalingStat = (isMagical || wpnMagCat) ? (stats?.mag?.value ?? 0) : physStat;
+    baseDmg = scalingStat + (weaponItem.system?.might ?? 0) + (condBonuses.damage ?? 0);
     acc = 80 + (stats?.agi?.value ?? 0) * 2 + (condBonuses.accuracy ?? 0);
     crit = (stats?.luk?.value ?? 0) * 2 + (weaponItem.system?.crit ?? 0) + (condBonuses.critical ?? 0);
   } else {
@@ -232,13 +235,7 @@ export function buildForecastContext(actor, targetToken, options = {}) {
   const piercingAmount = condBonuses.piercing ?? 0;
   const atkGrants = ruleCache.grants ?? {};
 
-  // Bows (Precision): target the lower of P.EVA or M.EVA
-  let baseDefEva;
-  if (atkGrants.precision && defActor?.system) {
-    baseDefEva = Math.min(defActor.system.peva ?? 0, defActor.system.meva ?? 0);
-  } else {
-    baseDefEva = isMagical ? (defActor?.system?.meva ?? 0) : (defActor?.system?.peva ?? 0);
-  }
+  const baseDefEva = isMagical ? (defActor?.system?.meva ?? 0) : (defActor?.system?.peva ?? 0);
   const defEvaBonus = isMagical ? (defCondBonuses.meva ?? 0) : (defCondBonuses.peva ?? 0);
   const isNoneDamage = skillData?.damageType === "none";
   const skipDefenses = healMode || isRetaliatory;
@@ -250,7 +247,7 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     defDefRaw = Math.floor(defDefRaw * (1 - pct / 100));
   }
   const defDef = defDefRaw;
-  const defCritAvoid = skipDefenses ? 0 : (defActor?.system?.critAvoid ?? 0) + (defCondBonuses.critAvoid ?? 0);
+  const defCritAvoid = skipDefenses ? 0 : (defActor?.system?.critEvo ?? 0) + (defCondBonuses.critEvo ?? 0);
   const defBlockChance = (skipDefenses || isNoneDamage) ? 0 : (defActor?.system?.blockChance ?? 0) + (defCondBonuses.blockChance ?? 0);
   const defHealBonus = healMode ? (defCondBonuses.damage ?? 0) : 0;
 
@@ -433,7 +430,7 @@ export function buildForecastContext(actor, targetToken, options = {}) {
       projectedHpPct: projectedDefHpPct,
       eva: defEva,
       def: defDef,
-      critAvoid: defCritAvoid,
+      critEvo: defCritAvoid,
       defLabel: isMagical ? "SPI" : "DEF",
       evaLabel: isMagical ? "M.EVA" : "P.EVA"
     },
@@ -517,13 +514,13 @@ export function buildForecastContext(actor, targetToken, options = {}) {
  * Recalculate forecast values from raw data + current input overrides.
  * Used by the dialog's live-update callback.
  * @param {object} raw - The _raw object from buildForecastContext
- * @param {object} overrides - { eva, def, critAvoid, chantKey }
+ * @param {object} overrides - { eva, def, critEvo, chantKey }
  * @returns {object} Updated forecast values
  */
 export function recalculateForecast(raw, overrides = {}) {
   const eva = overrides.eva ?? raw.defEva;
   const def = overrides.def ?? raw.defDef;
-  const critAvoid = overrides.critAvoid ?? raw.defCritAvoid;
+  const critEvo = overrides.critEvo ?? raw.defCritAvoid;
   const chantKey = overrides.chantKey ?? "normal";
   const chantData = CONFIG.MANASHARD.chantModes[chantKey] ?? CONFIG.MANASHARD.chantModes.normal;
   const effectMod = chantData.effectModifier;
@@ -568,7 +565,7 @@ export function recalculateForecast(raw, overrides = {}) {
 
   return {
     hit: raw.healMode ? 100 : Math.max(0, raw.acc - eva),
-    crit: raw.healMode ? raw.crit : Math.max(0, raw.crit - critAvoid),
+    crit: raw.healMode ? raw.crit : Math.max(0, raw.crit - critEvo),
     damage: forecastDmg,
     projectedDefHpPct,
     chantMpCost,

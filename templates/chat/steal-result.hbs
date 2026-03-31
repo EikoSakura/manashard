@@ -1,67 +1,63 @@
-<div class="manashard attack-chat-card steal-card">
-  {{!-- ═══ HEADER BAR ═══ --}}
-  <div class="acc-header">
-    <div class="acc-portrait-frame">
-      <div class="acc-portrait-diamond">
-        <img src="{{actorImg}}" class="acc-portrait" />
-      </div>
+<div class="ms-card card-steal">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">uses <strong>{{skillName}}</strong></div>
     </div>
-    <div class="acc-header-text">
-      <span class="acc-actor-name">{{actorName}}</span>
-      <span class="acc-action">uses <strong>{{skillName}}</strong></span>
-    </div>
-    <span class="acc-target-badge acc-target-steal"><i class="fas fa-hand-sparkles"></i></span>
+    <span class="ms-card-header-badge badge-icon"><i class="fas fa-hand-sparkles"></i></span>
   </div>
-
-  {{!-- ═══ TARGET LINE ═══ --}}
+  <div class="ms-card-action steal">
+    <div class="action-gem"></div>
+    Steal
+  </div>
   {{#if targetName}}
-  <div class="acc-target-line">
-    <i class="fas fa-arrow-right acc-target-arrow"></i>
-    <span class="acc-target-name">{{targetName}}</span>
+  <div class="ms-card-target">
+    <span class="ms-card-target-arrow"><i class="fas fa-arrow-right"></i></span>
+    <span class="ms-card-target-name">{{targetName}}</span>
   </div>
   {{/if}}
-
-  {{!-- ═══ ROLL RESULTS ═══ --}}
-  <div class="acc-rolls">
-    {{!-- Hit Roll --}}
-    <div class="acc-roll-row acc-hit {{#if hit}}acc-success{{else}}acc-fail{{/if}}">
-      <i class="acc-roll-icon fas {{#if hit}}fa-check{{else}}fa-times{{/if}}"></i>
-      <span class="acc-roll-label">{{#if hit}}Hit!{{else}}Miss{{/if}}</span>
-      <span class="acc-roll-dice"><i class="fas fa-dice-d20"></i> {{hitRoll}} / {{hitChance}}</span>
+  <div class="ms-card-roll">
+    <div class="ms-card-roll-row {{#if hit}}roll-hit{{else}}roll-miss{{/if}}">
+      <i class="ms-card-roll-icon fas {{#if hit}}fa-check{{else}}fa-times{{/if}}"></i>
+      <span class="ms-card-roll-label">{{#if hit}}Hit!{{else}}Miss{{/if}}</span>
+      <div class="ms-card-roll-values">
+        <span class="ms-card-roll-result"><i class="fas fa-dice-d20"></i> {{hitRoll}}</span>
+        <span class="ms-card-roll-sep">/</span>
+        <span class="ms-card-roll-threshold">{{hitChance}}</span>
+      </div>
     </div>
-
-    {{!-- Steal Outcome (only if hit) --}}
     {{#if hit}}
       {{#if stolen}}
-        <div class="acc-roll-row acc-hit acc-success steal-success-row">
-          <i class="acc-roll-icon fas fa-gem"></i>
-          <span class="acc-roll-label">Stole <strong>{{itemName}}</strong>!</span>
-          <span class="acc-roll-dice"><i class="fas fa-dice-d20"></i> {{lootRoll}} / {{lootChance}}{{#if lukBonus}} <small>({{baseChance}}+{{lukBonus}} LUK)</small>{{/if}}</span>
+        <div class="ms-card-roll-row roll-hit">
+          <i class="ms-card-roll-icon fas fa-gem"></i>
+          <span class="ms-card-roll-label">Stole <strong>{{itemName}}</strong>!</span>
+          <div class="ms-card-roll-values">
+            <span class="ms-card-roll-result"><i class="fas fa-dice-d20"></i> {{lootRoll}}</span>
+            <span class="ms-card-roll-sep">/</span>
+            <span class="ms-card-roll-threshold">{{lootChance}}{{#if lukBonus}} <small>({{baseChance}}+{{lukBonus}} LUK)</small>{{/if}}</span>
+          </div>
         </div>
       {{else}}
         {{#if noLoot}}
-          <div class="acc-roll-row acc-hit acc-fail steal-noloot-row">
-            <i class="acc-roll-icon fas fa-ban"></i>
-            <span class="acc-roll-label">No loot available!</span>
+          <div class="ms-card-roll-row roll-miss">
+            <i class="ms-card-roll-icon fas fa-ban"></i>
+            <span class="ms-card-roll-label">No loot available!</span>
           </div>
         {{else}}
-          <div class="acc-roll-row acc-hit acc-fail steal-noloot-row">
-            <i class="acc-roll-icon fas fa-hand-holding"></i>
-            <span class="acc-roll-label">Found nothing to steal!</span>
+          <div class="ms-card-roll-row roll-miss">
+            <i class="ms-card-roll-icon fas fa-hand-holding"></i>
+            <span class="ms-card-roll-label">Found nothing to steal!</span>
           </div>
         {{/if}}
       {{/if}}
     {{else}}
-      <div class="acc-roll-row steal-miss-flavor">
-        <span class="acc-roll-label steal-flavor-text">Couldn't get close enough!</span>
-      </div>
+      <div class="ms-card-steal-flavor">Couldn't get close enough!</div>
     {{/if}}
   </div>
-
-  {{!-- ═══ APPLY STEAL BUTTON ═══ --}}
   {{#if stolen}}
     {{#if targetTokenId}}
-      <div class="acc-apply-row">
+      <div class="ms-card-apply-row">
         <button type="button" class="steal-apply-btn"
                 data-target-token-id="{{targetTokenId}}"
                 data-thief-token-id="{{thiefTokenId}}"

@@ -1,40 +1,32 @@
-<div class="manashard retaliation-chat-card">
-
-  {{!-- ═══ HEADER ═══ --}}
-  <div class="ret-header">
-    <div class="ret-portrait-frame">
-      <img src="{{defenderImg}}" class="ret-portrait" />
-    </div>
-    <div class="ret-header-text">
-      <span class="ret-actor-name">{{defenderName}}</span>
-      <span class="ret-action">retaliates!</span>
+<div class="ms-card card-retaliate">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{defenderImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{defenderName}}</div>
+      <div class="ms-card-subtitle">retaliates!</div>
     </div>
   </div>
-
-  {{!-- ═══ DAMAGE DISPLAY ═══ --}}
-  <div class="ret-damage-zone">
-    <div class="ret-damage-label">RETALIATION</div>
-    <div class="ret-damage-value">{{retDamage}}</div>
-    <div class="ret-damage-badges">
-      <span class="ret-badge ret-badge-true-dmg"><span class="ret-badge-dot"></span>TRUE DAMAGE</span>
+  <div class="ms-card-action retaliate">
+    <div class="action-gem"></div>
+    Retaliation
+  </div>
+  <div class="ms-card-damage">
+    <div class="ms-card-dmg-val">{{retDamage}}</div>
+    <div class="ms-card-dmg-label">RETALIATION</div>
+    <div class="ms-card-dmg-badges">
+      <span class="ms-card-dmg-badge badge-true-dmg"><span class="badge-dot"></span>TRUE DAMAGE</span>
     </div>
   </div>
-
-  {{!-- ═══ TARGET ═══ --}}
-  <div class="ret-target-zone">
-    <div class="ret-target-row">
-      <img src="{{attackerImg}}" class="ret-target-portrait" />
-      <div class="ret-target-info">
-        <span class="ret-target-name">{{attackerName}}</span>
-        <span class="ret-hp-change">{{attackerOldHp}} &rarr; {{attackerNewHp}} HP</span>
-      </div>
+  <div class="ms-card-divider"></div>
+  <div class="ms-card-ret-target">
+    <img src="{{attackerImg}}" />
+    <div class="ms-card-ret-target-info">
+      <span class="ms-card-ret-target-name">{{attackerName}}</span>
+      <span class="ms-card-ret-hp-change">{{attackerOldHp}} &rarr; {{attackerNewHp}} HP</span>
     </div>
   </div>
-
-  {{!-- ═══ EFFECT SOURCE ═══ --}}
-  <div class="ret-source">
+  <div class="ms-card-ret-source">
     <i class="fas fa-fire-flame-curved"></i>
     <span>{{effectName}}</span>
   </div>
-
 </div>

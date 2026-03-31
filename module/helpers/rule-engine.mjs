@@ -14,8 +14,8 @@ import { migrateRule } from "./rule-migration.mjs";
 const CORE_STATS = new Set(["agi", "chm", "end", "int", "luk", "mag", "spi", "str"]);
 
 const DERIVED_STATS = new Set([
-  "accuracy", "blockChance", "carryingCapacity", "critAvoid", "critical",
-  "damage", "mdef", "meva", "mov", "mpRegen", "pdef", "peva",
+  "accuracy", "blockChance", "carryingCapacity", "critEvo", "critical",
+  "damage", "loadoutSlots", "mdef", "meva", "mov", "mpRegen", "pdef", "peva",
   "piercing", "reach", "throwRange", "vision"
 ]);
 
@@ -187,7 +187,7 @@ export function collectRules(actor) {
   );
   const wpnCategory = mainhandWeapon?.system.category;
   if (wpnCategory) {
-    const categoryRules = CONFIG.MANASHARD?.weaponCategoryRules?.[wpnCategory] ?? [];
+    const categoryRules = CONFIG.MANASHARD?.weaponCategoryRules?.[wpnCategory]?.rules ?? [];
     for (const rule of categoryRules) {
       const catLabel = CONFIG.MANASHARD.weaponCategories?.[wpnCategory];
       const catName = catLabel ? game.i18n.localize(catLabel) : wpnCategory;

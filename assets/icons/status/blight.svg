@@ -1,17 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#bb44bb" stroke-width="4"/>
-  <!-- Biohazard – three arcs around a center ring -->
-  <circle cx="128" cy="128" r="14" fill="none" stroke="#bb44bb" stroke-width="6"/>
-  <!-- Top lobe -->
-  <path d="M128 60 A40 40 0 0 1 160 100" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
-  <path d="M128 60 A40 40 0 0 0 96 100" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
-  <!-- Bottom-left lobe -->
-  <path d="M75 170 A40 40 0 0 1 72 125" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
-  <path d="M75 170 A40 40 0 0 0 118 148" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
-  <!-- Bottom-right lobe -->
-  <path d="M181 170 A40 40 0 0 1 138 148" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
-  <path d="M181 170 A40 40 0 0 0 184 125" fill="none" stroke="#bb44bb" stroke-width="8" stroke-linecap="round"/>
-  <!-- Drip drops -->
-  <circle cx="128" cy="200" r="8" fill="#bb44bb"/>
-  <circle cx="108" cy="215" r="5" fill="#bb44bb"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.08"/>
+    </radialGradient>
+    <linearGradient id="dropGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg)" stroke="#7c3aed" stroke-width="10" stroke-opacity="0.7"/>
+  <!-- Main poison drop -->
+  <path d="M256 80 C256 80 160 220 160 300 C160 355 204 400 256 400 C308 400 352 355 352 300 C352 220 256 80 256 80 Z"
+        fill="url(#dropGrad)" fill-opacity="0.4" stroke="#7c3aed" stroke-width="14" stroke-linejoin="round" filter="url(#glow)"/>
+  <!-- White highlight -->
+  <path d="M210 260 C200 230 220 200 240 190" fill="none" stroke="white" stroke-width="8" stroke-opacity="0.45" stroke-linecap="round"/>
+  <!-- Toxic swirl inside drop -->
+  <path d="M256 320 C240 320 225 305 230 285 C235 265 260 260 270 275 C280 290 265 310 250 305"
+        fill="none" stroke="white" stroke-width="7" stroke-opacity="0.7" stroke-linecap="round"/>
+  <!-- Skull-like eyes in drop -->
+  <circle cx="230" cy="300" r="12" fill="white" fill-opacity="0.3" stroke="white" stroke-width="4" stroke-opacity="0.6"/>
+  <circle cx="282" cy="300" r="12" fill="white" fill-opacity="0.3" stroke="white" stroke-width="4" stroke-opacity="0.6"/>
+  <circle cx="230" cy="302" r="5" fill="#7c3aed" fill-opacity="0.8"/>
+  <circle cx="282" cy="302" r="5" fill="#7c3aed" fill-opacity="0.8"/>
+  <!-- Dripping drops below -->
+  <ellipse cx="220" cy="420" rx="10" ry="14" fill="#a855f7" fill-opacity="0.5"/>
+  <ellipse cx="290" cy="435" rx="8" ry="11" fill="#a855f7" fill-opacity="0.4"/>
+  <ellipse cx="256" cy="445" rx="6" ry="8" fill="#a855f7" fill-opacity="0.3"/>
+  <!-- Bubble accents -->
+  <circle cx="300" cy="240" r="8" fill="white" fill-opacity="0.3"/>
+  <circle cx="320" cy="280" r="5" fill="white" fill-opacity="0.25"/>
+  <!-- Small toxic particles -->
+  <circle cx="140" cy="180" r="6" fill="#a855f7" fill-opacity="0.4"/>
+  <circle cx="370" cy="160" r="5" fill="#a855f7" fill-opacity="0.35"/>
 </svg>

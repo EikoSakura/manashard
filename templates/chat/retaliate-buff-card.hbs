@@ -1,66 +1,53 @@
-<div class="manashard retaliate-buff-card">
-
-  {{!-- ═══ HEADER: Portrait + Caster Info ═══ --}}
-  <div class="rbc-header">
-    <div class="rbc-portrait-frame">
-      <img src="{{actorImg}}" class="rbc-portrait" />
+<div class="ms-card card-retbuff">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">casts retaliate</div>
     </div>
-    <div class="rbc-header-text">
-      <span class="rbc-actor-name">{{actorName}}</span>
-      <span class="rbc-action">casts retaliate</span>
-    </div>
-    {{#if (gt mpCost 0)}}
-      <div class="rbc-mp-badge">MP &minus;{{mpCost}}</div>
-    {{/if}}
+    {{#if (gt mpCost 0)}}<span class="ms-card-header-badge badge-mp">MP &minus;{{mpCost}}</span>{{/if}}
   </div>
-
-  {{!-- ═══ SKILL ROW: Icon + Skill Name + Badges ═══ --}}
-  <div class="rbc-skill-row">
-    <div class="rbc-skill-icon-frame">
-      <img src="{{skillImg}}" class="rbc-skill-icon" alt="{{skillName}}" />
-    </div>
-    <div class="rbc-skill-info">
-      <div class="rbc-skill-name">{{skillName}}</div>
-      <div class="rbc-badges">
-        <span class="rbc-badge rbc-badge-retaliatory"><i class="fas fa-fire-flame-curved"></i> Retaliatory</span>
-        {{#if element}}
-          <span class="rbc-badge rbc-badge-elem">{{upper element}}</span>
-        {{/if}}
+  <div class="ms-card-action retaliate">
+    <div class="action-gem"></div>
+    Retaliate Buff
+  </div>
+  <div class="ms-card-body">
+    <div class="ms-card-item-row" style="border-color: rgba(255, 102, 51, .12);">
+      <div class="ms-card-item-icon" style="background: rgba(255, 102, 51, .12);">
+        <img src="{{skillImg}}" alt="{{skillName}}" />
+      </div>
+      <div>
+        <div class="ms-card-item-name" style="color: #ff6633;">{{skillName}}</div>
+        <div class="ms-card-tags" style="padding: 2px 0 0;">
+          <span class="ms-card-tag tag-weapon"><i class="fas fa-fire-flame-curved"></i> Retaliatory</span>
+          {{#if element}}<span class="ms-card-tag tag-element">{{upper element}}</span>{{/if}}
+        </div>
       </div>
     </div>
   </div>
-
-  {{!-- ═══ EFFECT DETAIL ═══ --}}
-  <div class="rbc-effect-zone">
-    <div class="rbc-effect-row">
-      <span class="rbc-effect-label">Effect</span>
-      <span class="rbc-effect-value">
-        {{#if (eq retaliationMode "flat")}}
-          {{retaliationValue}} true damage when hit
-        {{else if (eq retaliationMode "percent")}}
-          {{retaliationValue}}% of damage taken
-        {{else if (eq retaliationMode "stat")}}
-          {{retaliationStatLabel}}-scaled true damage when hit
-        {{/if}}
+  <div class="ms-card-effect-zone">
+    <div class="ms-card-effect-row">
+      <span class="ms-card-effect-label">Effect</span>
+      <span class="ms-card-effect-value">
+        {{#if (eq retaliationMode "flat")}}{{retaliationValue}} true damage when hit
+        {{else if (eq retaliationMode "percent")}}{{retaliationValue}}% of damage taken
+        {{else if (eq retaliationMode "stat")}}{{retaliationStatLabel}}-scaled true damage when hit{{/if}}
       </span>
     </div>
     {{#if (gt buffDuration 0)}}
-    <div class="rbc-effect-row">
-      <span class="rbc-effect-label">Duration</span>
-      <span class="rbc-effect-value">{{buffDuration}} {{#if (eq buffDuration 1)}}turn{{else}}turns{{/if}}</span>
+    <div class="ms-card-effect-row">
+      <span class="ms-card-effect-label">Duration</span>
+      <span class="ms-card-effect-value">{{buffDuration}} {{#if (eq buffDuration 1)}}turn{{else}}turns{{/if}}</span>
     </div>
     {{/if}}
     {{#if targetName}}
-    <div class="rbc-effect-row">
-      <span class="rbc-effect-label">Target</span>
-      <span class="rbc-effect-value">{{targetName}}</span>
+    <div class="ms-card-effect-row">
+      <span class="ms-card-effect-label">Target</span>
+      <span class="ms-card-effect-value">{{targetName}}</span>
     </div>
     {{/if}}
   </div>
-
-  {{!-- ═══ CONFIRMATION FOOTER ═══ --}}
-  <div class="rbc-confirm">
+  <div class="ms-card-confirm">
     <i class="fas fa-shield-halved"></i> Retaliate buff applied
   </div>
-
 </div>

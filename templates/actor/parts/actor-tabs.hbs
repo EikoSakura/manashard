@@ -1,8 +1,16 @@
-<nav class="sheet-tabs">
+{{!-- Crystal Tab Bar --}}
+<nav class="ms-tab-bar">
   {{#each tabs}}
-  <a class="tab {{cssClass}}" data-action="switchTab" data-tab="{{id}}">
-    <i class="fas {{icon}}"></i>
-    <span>{{label}}</span>
-  </a>
+  <div class="ms-tab tab-{{this.id}} {{#if (eq this.id "stats")}}tab-combat{{/if}}{{#if (eq this.id "equipment")}}tab-equip{{/if}}{{#if (eq this.id "skills")}}tab-skills{{/if}}{{#if (eq this.id "biography")}}tab-bio{{/if}} {{this.cssClass}}"
+       data-action="switchTab" data-tab="{{this.id}}">
+    <span class="tab-icon">
+      {{#if (eq this.id "stats")}}⚔{{/if}}
+      {{#if (eq this.id "equipment")}}◆{{/if}}
+      {{#if (eq this.id "loot")}}◆{{/if}}
+      {{#if (eq this.id "skills")}}✧{{/if}}
+      {{#if (eq this.id "biography")}}☯{{/if}}
+    </span>
+    <span class="tab-label">{{this.label}}</span>
+  </div>
   {{/each}}
 </nav>

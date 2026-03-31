@@ -1,13 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#6688bb" stroke-width="4"/>
-  <!-- Anchor -->
-  <circle cx="128" cy="65" r="16" fill="none" stroke="#6688bb" stroke-width="7"/>
-  <line x1="128" y1="81" x2="128" y2="195" stroke="#6688bb" stroke-width="8" stroke-linecap="round"/>
-  <!-- Anchor arms -->
-  <path d="M80 195 Q80 160 128 160 Q176 160 176 195" fill="none" stroke="#6688bb" stroke-width="8" stroke-linecap="round"/>
-  <!-- Anchor tips -->
-  <line x1="80" y1="195" x2="95" y2="180" stroke="#6688bb" stroke-width="7" stroke-linecap="round"/>
-  <line x1="176" y1="195" x2="161" y2="180" stroke="#6688bb" stroke-width="7" stroke-linecap="round"/>
-  <!-- Crossbar -->
-  <line x1="100" y1="105" x2="156" y2="105" stroke="#6688bb" stroke-width="7" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8b5e34" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#8b5e34" stop-opacity="0.08"/>
+    </radialGradient>
+    <linearGradient id="chainGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c08050"/>
+      <stop offset="100%" stop-color="#8b5e34"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg)" stroke="#8b5e34" stroke-width="10" stroke-opacity="0.7"/>
+  <!-- Boot/foot shape -->
+  <path d="M190 200 L190 340 L170 360 L170 390 L340 390 L340 360 L310 340 L310 200 Z"
+        fill="url(#chainGrad)" fill-opacity="0.2" stroke="#8b5e34" stroke-width="10" stroke-linejoin="round"/>
+  <!-- White highlight on boot -->
+  <path d="M210 220 L210 250" fill="none" stroke="white" stroke-width="6" stroke-opacity="0.35" stroke-linecap="round"/>
+  <!-- Chain link 1 - wrapping left -->
+  <ellipse cx="200" cy="260" rx="55" ry="28" fill="none" stroke="#8b5e34" stroke-width="14" filter="url(#glow)" transform="rotate(-15,200,260)"/>
+  <ellipse cx="200" cy="260" rx="55" ry="28" fill="none" stroke="white" stroke-width="5" stroke-opacity="0.3" transform="rotate(-15,200,260)"/>
+  <!-- Chain link 2 - center -->
+  <ellipse cx="256" cy="290" rx="50" ry="26" fill="none" stroke="#8b5e34" stroke-width="14" filter="url(#glow)" transform="rotate(10,256,290)"/>
+  <ellipse cx="256" cy="290" rx="50" ry="26" fill="none" stroke="white" stroke-width="5" stroke-opacity="0.3" transform="rotate(10,256,290)"/>
+  <!-- Chain link 3 - wrapping right -->
+  <ellipse cx="310" cy="320" rx="55" ry="28" fill="none" stroke="#8b5e34" stroke-width="14" filter="url(#glow)" transform="rotate(-10,310,320)"/>
+  <ellipse cx="310" cy="320" rx="55" ry="28" fill="none" stroke="white" stroke-width="5" stroke-opacity="0.3" transform="rotate(-10,310,320)"/>
+  <!-- Chain connecting segments going up -->
+  <ellipse cx="160" cy="180" rx="22" ry="35" fill="none" stroke="#8b5e34" stroke-width="12" transform="rotate(30,160,180)"/>
+  <ellipse cx="350" cy="190" rx="22" ry="35" fill="none" stroke="#8b5e34" stroke-width="12" transform="rotate(-30,350,190)"/>
+  <!-- Lock at top center -->
+  <rect x="236" y="110" width="40" height="35" rx="5" fill="url(#chainGrad)" fill-opacity="0.5" stroke="#8b5e34" stroke-width="8"/>
+  <path d="M244 110 L244 90 C244 72 268 72 268 90 L268 110" fill="none" stroke="#8b5e34" stroke-width="8" stroke-linecap="round"/>
+  <!-- Lock keyhole -->
+  <circle cx="256" cy="125" r="6" fill="white" fill-opacity="0.6"/>
+  <!-- Metallic shine dots -->
+  <circle cx="180" cy="240" r="5" fill="white" fill-opacity="0.4"/>
+  <circle cx="330" cy="300" r="4" fill="white" fill-opacity="0.35"/>
 </svg>

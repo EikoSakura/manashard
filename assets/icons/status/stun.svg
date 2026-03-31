@@ -1,11 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#ffd740" stroke-width="4"/>
-  <!-- Stars indicating dazed/stunned -->
-  <polygon points="128,40 138,80 178,80 145,105 158,145 128,118 98,145 111,105 78,80 118,80" fill="#ffd740"/>
-  <!-- Spiral/dizzy eyes -->
-  <path d="M88 175 Q88 160 100 160 Q112 160 112 175 Q112 190 100 190" fill="none" stroke="#ffd740" stroke-width="5" stroke-linecap="round"/>
-  <path d="M168 175 Q168 160 156 160 Q144 160 144 175 Q144 190 156 190" fill="none" stroke="#ffd740" stroke-width="5" stroke-linecap="round"/>
-  <!-- Small accent stars -->
-  <polygon points="60,55 64,67 76,67 66,75 70,87 60,79 50,87 54,75 44,67 56,67" fill="#ffd740"/>
-  <polygon points="196,55 200,67 212,67 202,75 206,87 196,79 186,87 190,75 180,67 192,67" fill="#ffd740"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d99e00" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#d99e00" stop-opacity="0.08"/>
+    </radialGradient>
+    <linearGradient id="boltGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d99e00"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg)" stroke="#d99e00" stroke-width="10" stroke-opacity="0.7"/>
+  <!-- Central lightning bolt -->
+  <path d="M290 60 L210 240 L270 240 L200 460 L340 210 L275 210 Z"
+        fill="url(#boltGrad)" fill-opacity="0.5" stroke="#d99e00" stroke-width="12" stroke-linejoin="round" filter="url(#glow)"/>
+  <!-- White highlight on bolt -->
+  <path d="M275 100 L245 190 L270 195" fill="none" stroke="white" stroke-width="7" stroke-opacity="0.45" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Star 1 - top left -->
+  <polygon points="110,120 120,148 148,148 126,166 134,194 110,176 86,194 94,166 72,148 100,148"
+           fill="#fbbf24" fill-opacity="0.6" stroke="#d99e00" stroke-width="5" filter="url(#glow)"/>
+  <polygon points="110,120 115,138 130,138 118,150 122,165 110,156 98,165 102,150 90,138 105,138"
+           fill="white" fill-opacity="0.35"/>
+  <!-- Star 2 - top right -->
+  <polygon points="400,140 408,162 430,162 412,176 418,198 400,184 382,198 388,176 370,162 392,162"
+           fill="#fbbf24" fill-opacity="0.55" stroke="#d99e00" stroke-width="4" filter="url(#glow)"/>
+  <polygon points="400,140 405,155 418,155 408,164 411,177 400,170 389,177 392,164 382,155 395,155"
+           fill="white" fill-opacity="0.3"/>
+  <!-- Star 3 - left -->
+  <polygon points="80,300 87,318 106,318 92,330 96,348 80,338 64,348 68,330 54,318 73,318"
+           fill="#fbbf24" fill-opacity="0.45" stroke="#d99e00" stroke-width="4"/>
+  <!-- Star 4 - right -->
+  <polygon points="430,280 436,295 452,295 440,305 444,320 430,312 416,320 420,305 408,295 424,295"
+           fill="#fbbf24" fill-opacity="0.4" stroke="#d99e00" stroke-width="3"/>
+  <!-- Small sparkle dots -->
+  <circle cx="150" cy="220" r="6" fill="white" fill-opacity="0.5"/>
+  <circle cx="370" cy="350" r="5" fill="white" fill-opacity="0.4"/>
+  <circle cx="130" cy="380" r="4" fill="#fbbf24" fill-opacity="0.4"/>
+  <circle cx="380" cy="100" r="5" fill="#fbbf24" fill-opacity="0.35"/>
+  <!-- Electric arcs -->
+  <path d="M170 260 L155 250 L165 240" fill="none" stroke="#fbbf24" stroke-width="4" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M350 270 L365 260 L355 250" fill="none" stroke="#fbbf24" stroke-width="4" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

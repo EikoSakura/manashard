@@ -1,19 +1,19 @@
-<div class="manashard item-chat-card">
+<div class="ms-card card-item">
 
   {{!-- ═══ HEADER: Icon + Name + Type Badges ═══ --}}
-  <div class="ic-header">
-    <div class="ic-icon-frame {{iconFrameClass}}">
+  <div class="ms-card-header">
+    <div class="ms-card-item-icon {{iconFrameClass}}">
       {{#if (eq iconFrameClass "diamond")}}
-        <img src="{{itemImg}}" class="ic-icon-img ic-diamond-inner" alt="{{itemName}}" />
+        <img src="{{itemImg}}" class="ms-card-item-icon-img ic-diamond-inner" alt="{{itemName}}" />
       {{else}}
-        <img src="{{itemImg}}" class="ic-icon-img" alt="{{itemName}}" />
+        <img src="{{itemImg}}" class="ms-card-item-icon-img" alt="{{itemName}}" />
       {{/if}}
     </div>
-    <div class="ic-header-info">
-      <div class="ic-name">{{itemName}}</div>
-      <div class="ic-meta">
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{itemName}}</div>
+      <div class="ms-card-tags">
         {{#each typeBadges}}
-          <span class="ic-type-badge">{{this}}</span>
+          <span class="ms-card-tag">{{this}}</span>
         {{/each}}
       </div>
     </div>
@@ -21,20 +21,20 @@
 
   {{!-- ═══ STATS ZONE ═══ --}}
   {{#if stats.length}}
-  <div class="ic-stats">
+  <div class="ms-card-stats">
     {{#each stats}}
-    <div class="ic-stat-cell">
-      <span class="ic-stat-label">{{this.label}}</span>
-      <span class="ic-stat-value">{{this.value}}</span>
+    <div class="ms-card-stat-cell">
+      <span class="ms-card-stat-label">{{this.label}}</span>
+      <span class="ms-card-stat-value">{{this.value}}</span>
     </div>
     {{/each}}
 
     {{!-- Badges --}}
     {{#if ../badges.length}}
-    <div class="ic-badges">
+    <div class="ms-card-tags">
       {{#each ../badges}}
-      <span class="ic-badge" style="background:{{this.bg}}; border-color:{{this.border}}; color:{{this.text}};">
-        <span class="ic-badge-dot" style="background:{{this.text}};"></span>{{this.label}}
+      <span class="ms-card-tag" style="background:{{this.bg}}; border-color:{{this.border}}; color:{{this.text}};">
+        <span class="tag-dot" style="background:{{this.text}};"></span>{{this.label}}
       </span>
       {{/each}}
     </div>
@@ -44,24 +44,22 @@
 
   {{!-- ═══ EFFECT LINE ═══ --}}
   {{#if effectLine}}
-  <div class="ic-effect">
-    <span class="ic-effect-icon">{{effectLine.icon}}</span>
-    <span class="ic-effect-text">{{{effectLine.text}}}</span>
+  <div class="ms-card-effect">
+    <span class="ms-card-effect-icon">{{effectLine.icon}}</span>
+    <span class="ms-card-effect-text">{{{effectLine.text}}}</span>
   </div>
   {{/if}}
 
   {{!-- ═══ DESCRIPTION ═══ --}}
   {{#if description}}
-  <div class="ic-description">
-    <div class="ic-desc-inner">
-      <div class="ic-flavor">{{description}}</div>
-    </div>
+  <div class="ms-card-body">
+    <div class="ms-card-desc">{{description}}</div>
   </div>
   {{/if}}
 
   {{!-- ═══ APPLY BUTTON ═══ --}}
   {{#if hasApply}}
-  <div class="ic-apply-row">
+  <div class="ms-card-apply-row">
     <button type="button" class="item-card-apply"
             data-apply-type="{{applyType}}"
             data-actor-id="{{actorId}}"

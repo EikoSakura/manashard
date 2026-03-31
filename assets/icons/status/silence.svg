@@ -1,7 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#b0bec5" stroke-width="4"/>
-  <!-- Speech bubble -->
-  <path d="M60 70 L196 70 C200 70, 205 75, 205 80 L205 155 C205 160, 200 165, 196 165 L140 165 L110 200 L115 165 L60 165 C55 165, 50 160, 50 155 L50 80 C50 75, 55 70, 60 70Z" fill="none" stroke="#b0bec5" stroke-width="8"/>
-  <!-- Slash through -->
-  <line x1="55" y1="55" x2="200" y2="200" stroke="#b0bec5" stroke-width="10" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity="0.08"/>
+    </radialGradient>
+    <linearGradient id="scrollGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg)" stroke="#2563eb" stroke-width="10" stroke-opacity="0.7"/>
+  <!-- Scroll body -->
+  <rect x="150" y="130" width="212" height="260" rx="8" fill="url(#scrollGrad)" fill-opacity="0.25" stroke="#2563eb" stroke-width="12" filter="url(#glow)"/>
+  <!-- Scroll top roll -->
+  <ellipse cx="256" cy="130" rx="120" ry="20" fill="url(#scrollGrad)" fill-opacity="0.35" stroke="#2563eb" stroke-width="10"/>
+  <!-- Scroll bottom roll -->
+  <ellipse cx="256" cy="390" rx="120" ry="20" fill="url(#scrollGrad)" fill-opacity="0.35" stroke="#2563eb" stroke-width="10"/>
+  <!-- Magic text lines (faded) -->
+  <line x1="190" y1="190" x2="322" y2="190" stroke="white" stroke-width="6" stroke-opacity="0.25" stroke-linecap="round"/>
+  <line x1="190" y1="225" x2="300" y2="225" stroke="white" stroke-width="6" stroke-opacity="0.2" stroke-linecap="round"/>
+  <line x1="190" y1="260" x2="310" y2="260" stroke="white" stroke-width="6" stroke-opacity="0.2" stroke-linecap="round"/>
+  <line x1="190" y1="295" x2="280" y2="295" stroke="white" stroke-width="6" stroke-opacity="0.15" stroke-linecap="round"/>
+  <line x1="190" y1="330" x2="320" y2="330" stroke="white" stroke-width="6" stroke-opacity="0.15" stroke-linecap="round"/>
+  <!-- White highlight on scroll -->
+  <path d="M170 155 L170 200" fill="none" stroke="white" stroke-width="5" stroke-opacity="0.3" stroke-linecap="round"/>
+  <!-- Large X seal over scroll -->
+  <line x1="140" y1="140" x2="372" y2="380" stroke="#2563eb" stroke-width="22" stroke-linecap="round" stroke-opacity="0.85"/>
+  <line x1="372" y1="140" x2="140" y2="380" stroke="#2563eb" stroke-width="22" stroke-linecap="round" stroke-opacity="0.85"/>
+  <!-- White X highlight -->
+  <line x1="145" y1="145" x2="367" y2="375" stroke="white" stroke-width="8" stroke-linecap="round" stroke-opacity="0.35"/>
+  <line x1="367" y1="145" x2="145" y2="375" stroke="white" stroke-width="8" stroke-linecap="round" stroke-opacity="0.35"/>
+  <!-- Seal circle at intersection -->
+  <circle cx="256" cy="260" r="35" fill="#2563eb" fill-opacity="0.6" stroke="white" stroke-width="6" stroke-opacity="0.5"/>
+  <!-- Seal symbol inside -->
+  <line x1="245" y1="248" x2="267" y2="272" stroke="white" stroke-width="6" stroke-opacity="0.8" stroke-linecap="round"/>
+  <line x1="267" y1="248" x2="245" y2="272" stroke="white" stroke-width="6" stroke-opacity="0.8" stroke-linecap="round"/>
+  <!-- Magic particles dissipating -->
+  <circle cx="110" cy="180" r="5" fill="#60a5fa" fill-opacity="0.4"/>
+  <circle cx="400" cy="200" r="4" fill="#60a5fa" fill-opacity="0.35"/>
+  <circle cx="120" cy="340" r="4" fill="#60a5fa" fill-opacity="0.3"/>
+  <circle cx="395" cy="330" r="5" fill="#60a5fa" fill-opacity="0.35"/>
 </svg>

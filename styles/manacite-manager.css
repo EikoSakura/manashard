@@ -5,14 +5,14 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .manacite-manager {
-  --mm-bg: var(--manashard-bg-dark, #1a1520);
-  --mm-surface: var(--manashard-bg-mid, #211b2a);
-  --mm-surface-light: var(--manashard-bg-light, #2a2335);
-  --mm-input: var(--manashard-bg-input, #16111e);
-  --mm-border: var(--manashard-border, #3d3250);
+  --mm-bg: var(--manashard-bg-dark, #e0ecf6);
+  --mm-surface: var(--manashard-bg-mid, #e8f0f8);
+  --mm-surface-light: var(--manashard-bg-light, #f0f5fb);
+  --mm-input: var(--manashard-bg-input, #ffffff);
+  --mm-border: var(--manashard-border, #b8cade);
   --mm-border-glow: rgba(212, 160, 48, 0.13);
-  --mm-text: var(--manashard-text, #ede4d4);
-  --mm-text-dim: var(--manashard-text-dim, #b8a898);
+  --mm-text: var(--manashard-text, #2a3040);
+  --mm-text-dim: var(--manashard-text-dim, #5a6a7d);
   --mm-text-label: var(--manashard-text-label, #9a8b7a);
   --mm-accent: var(--manashard-accent, #d4a030);
   --mm-accent-glow: var(--manashard-accent-glow, rgba(212, 160, 48, 0.35));
@@ -276,19 +276,19 @@
 .manacite-manager .manager-filter-chip.filter-magic.active {
   background: var(--mm-magic) !important;
   border-color: var(--mm-magic) !important;
-  color: #16111e !important;
+  color: var(--manashard-text-bright) !important;
   box-shadow: 0 0 8px rgba(78, 205, 196, 0.4);
 }
 .manacite-manager .manager-filter-chip.filter-art.active {
   background: var(--mm-art) !important;
   border-color: var(--mm-art) !important;
-  color: #16111e !important;
+  color: var(--manashard-text-bright) !important;
   box-shadow: 0 0 8px rgba(249, 202, 36, 0.4);
 }
 .manacite-manager .manager-filter-chip.filter-passive.active {
   background: var(--mm-passive) !important;
   border-color: var(--mm-passive) !important;
-  color: #fff !important;
+  color: var(--manashard-text-on-accent) !important;
   box-shadow: 0 0 8px rgba(155, 89, 182, 0.4);
 }
 
@@ -406,7 +406,7 @@
   object-fit: cover !important;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 4px rgba(0, 30, 60, 0.05);
 }
 
 .manacite-manager .manager-skill-icon:hover {
@@ -460,17 +460,17 @@
 
 .manacite-manager .manager-badge.badge-magic {
   background: var(--mm-magic);
-  color: #16111e;
+  color: var(--manashard-text-bright);
   box-shadow: 0 0 6px rgba(78, 205, 196, 0.3);
 }
 .manacite-manager .manager-badge.badge-art {
   background: var(--mm-art);
-  color: #16111e;
+  color: var(--manashard-text-bright);
   box-shadow: 0 0 6px rgba(249, 202, 36, 0.3);
 }
 .manacite-manager .manager-badge.badge-passive {
   background: var(--mm-passive);
-  color: #fff;
+  color: var(--manashard-text-on-accent);
   box-shadow: 0 0 6px rgba(155, 89, 182, 0.3);
 }
 .manacite-manager .manager-badge.badge-job {

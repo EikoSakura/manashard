@@ -1,3 +1,5 @@
+import { renderIconHtml } from "./config.mjs";
+
 /**
  * VS Canvas Overlay Splash — Fire Emblem-style battle cut-in with
  * combat resolution animation. Shows attacker and defender portraits
@@ -122,7 +124,7 @@ export function showVsSplash({
     const successStatuses = statusResults.filter(s => s.success);
     const statusIconsHtml = successStatuses.map(s => {
       const iconClass = STATUS_ICONS[s.status] || "fas fa-circle-exclamation";
-      return `<div class="vs-splash-status-icon" title="${s.statusLabel}"><i class="${iconClass}"></i></div>`;
+      return `<div class="vs-splash-status-icon" title="${s.statusLabel}">${renderIconHtml(iconClass)}</div>`;
     }).join("");
 
     // Build outcome badge

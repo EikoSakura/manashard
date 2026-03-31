@@ -60,6 +60,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       portraitOffsetY: new NumberField({ required: true, initial: 0, min: 0, max: 100 }),
       portraitMirrored: new BooleanField({ initial: false }),
 
+      // Sheet accent color
+      sheetAccentPreset: new StringField({ required: true, initial: "gold" }),
+      sheetAccentCustom: new StringField({ required: false, blank: true, initial: "" }),
+
       biography: new HTMLField({ required: false, blank: true }),
       age: new StringField({ required: false, blank: true, initial: "" }),
       height: new StringField({ required: false, blank: true, initial: "" }),
@@ -296,9 +300,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     const rules = collectRules(actor);
     const engine = createRuleEngine(this, rules, { weaponCategory: equippedWeapon?.category ?? null });
 
-    engine.applyCoreModifiers();
-
-    // Enforce rank stat caps (after rule modifiers, hard ceiling)
+    // Enforce rank stat caps on BASE values (before rule modifiers, so job/equipment
+    // bonuses stack on top and are never eaten by the cap)
     if (rankStatCaps) {
       for (const key of Object.keys(stats)) {
         const cap = rankStatCaps[key];
@@ -313,6 +316,18 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       }
     }
 
+    // Store base stats (post-cap, pre-modifier) for UI comparison and level-up cap checks
+    this._baseStats = {};
+    for (const key of Object.keys(stats)) {
+      if (key === "hp" || key === "mp") {
+        this._baseStats[key] = stats[key].max;
+      } else {
+        this._baseStats[key] = stats[key].value;
+      }
+    }
+
+    engine.applyCoreModifiers();
+
     // --- Rank HP/MP Base Bonuses ---
     const rankData = CONFIG.MANASHARD.ranks?.[this.rank];
     const rankHpBase = rankData?.hpBase ?? 0;
@@ -321,13 +336,6 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     if (stats.hp.value > stats.hp.max) stats.hp.value = stats.hp.max;
     stats.mp.max += rankMpBase;
     if (stats.mp.value > stats.mp.max) stats.mp.value = stats.mp.max;
-
-    // Store base stats (pre-modifier) for UI comparison
-    this._baseStats = {};
-    for (const key of Object.keys(stats)) {
-      if (key === "hp" || key === "mp") continue;
-      this._baseStats[key] = stats[key].value - (engine.tracker.getTotal(key));
-    }
 
     // ═══════════════════════════════════════════════════════
     // Derived Stats (computed from now-modified core stats)
@@ -347,29 +355,34 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     const weaponCrit = equippedWeapon?.crit ?? 0;
     const weaponDamageType = equippedWeapon?.damageType ?? "physical";
 
-    // Damage = Scaling Stat × 2 + Weapon Might (character power drives damage)
-    // Swords (Versatile): physical damage uses max(STR, AGI)
+    // Damage = STR/MAG + Weapon Might (character power drives damage)
+    // Scaling stat determined by weapon category and damage type:
+    //   Staves/Grimoires → MAG (inherently magical weapons)
+    //   Swords (Versatile) → max(STR, AGI)
+    //   Magical damageType → MAG
+    //   Everything else → STR
     const weaponCategory = equippedWeapon?.category ?? null;
-    if (weaponDamageType === "magical") {
-      this.damage = (stats.mag.value * 2) + weaponMight;
+    const isMagicCategory = weaponCategory === "staves" || weaponCategory === "grimoires";
+    if (weaponDamageType === "magical" || isMagicCategory) {
+      this.damage = stats.mag.value + weaponMight;
     } else if (weaponCategory === "swords") {
-      this.damage = (Math.max(stats.str.value, stats.agi.value) * 2) + weaponMight;
+      this.damage = Math.max(stats.str.value, stats.agi.value) + weaponMight;
     } else {
-      this.damage = (stats.str.value * 2) + weaponMight;
+      this.damage = stats.str.value + weaponMight;
     }
 
-    // Accuracy = 80 (base hit rate) + AGI * 2
-    this.accuracy = 80 + (stats.agi.value * 2);
+    // Accuracy = 60 + AGI × 2 + LUK
+    this.accuracy = 60 + (stats.agi.value * 2) + stats.luk.value;
 
-    // Critical = LUK * 2 + Weapon Crit
-    this.critical = (stats.luk.value * 2) + weaponCrit;
+    // Critical = AGI/2 + LUK/2 + Weapon Crit
+    this.critical = Math.floor(stats.agi.value / 2) + Math.floor(stats.luk.value / 2) + weaponCrit;
 
-    // P.EVA = AGI, M.EVA = SPI (evasion builds scale via skill bonuses)
-    this.peva = stats.agi.value;
-    this.meva = stats.spi.value;
+    // P.EVA = 20 + AGI × 2, M.EVA = 20 + SPI × 2
+    this.peva = 20 + (stats.agi.value * 2);
+    this.meva = 20 + (stats.spi.value * 2);
 
-    // Crit Avoid = LUK * 2
-    this.critAvoid = stats.luk.value * 2;
+    // C.EVO (Crit Evasion) = 5 + LUK
+    this.critEvo = 5 + stats.luk.value;
 
     // Armor Stats
     this.armorPdef = equippedArmor?.pdef ?? 0;
@@ -379,18 +392,24 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     this.pdef = this.armorPdef + stats.end.value;
     this.mdef = this.armorMdef + stats.spi.value;
 
-    // Block Chance (Shields) = Shield Block + (END / 2)
+    // Shield Block = Shield + END
     this.blockChance = 0;
     const blockSource = equippedOffhand?.block ? equippedOffhand : equippedWeapon;
     if (blockSource?.block) {
-      this.blockChance = blockSource.block + Math.floor(stats.end.value / 2);
+      this.blockChance = blockSource.block + stats.end.value;
     }
+
+    // Loadout Slots (base from rank, modifiable by effects)
+    this.loadoutSlots = this.maxLoadoutSlots;
 
     // ═══════════════════════════════════════════════════════
     // PHASE 2: Apply DERIVED STAT rule modifiers
     // (after derived formulas, adds flat bonuses to derived stats)
     // ═══════════════════════════════════════════════════════
     engine.applyDerivedModifiers();
+
+    // Apply loadout slot modifiers back to maxLoadoutSlots
+    this.maxLoadoutSlots = this.loadoutSlots;
 
     // Cache combat-time rules (GrantElement, ElementalAffinity, conditionals, etc.)
     engine.cacheRemainingRules();
@@ -405,7 +424,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       critical: this.critical - engine.tracker.getTotal("critical"),
       peva: this.peva - engine.tracker.getTotal("peva"),
       meva: this.meva - engine.tracker.getTotal("meva"),
-      critAvoid: this.critAvoid - engine.tracker.getTotal("critAvoid"),
+      critEvo: this.critEvo - engine.tracker.getTotal("critEvo"),
       mov: this.mov - engine.tracker.getTotal("mov"),
       blockChance: this.blockChance - engine.tracker.getTotal("blockChance"),
       mpRegen: this.mpRegen - engine.tracker.getTotal("mpRegen"),

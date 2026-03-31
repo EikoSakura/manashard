@@ -2,6 +2,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 import { RuleElementEditor } from "../apps/rule-element-editor.mjs";
 import { ruleSummary } from "../helpers/rule-engine.mjs";
+import { renderTagInput, bindTagInput } from "../apps/tag-input.mjs";
 
 
 /**
@@ -46,6 +47,7 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
       removeTag: ManashardItemSheet.#onRemoveTag,
       useConsumable: ManashardItemSheet.#onUseConsumable,
       removePrerequisite: ManashardItemSheet.#onRemovePrerequisite,
+      removeGrant: ManashardItemSheet.#onRemoveGrant,
     }
   };
 
@@ -164,6 +166,56 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
     await this.document.update({ "system.prerequisites": prereqs });
   }
 
+  /**
+   * Remove a Grant Item rule by its index in the rules array.
+   */
+  static async #onRemoveGrant(event, target) {
+    const index = Number(target.dataset.ruleIndex);
+    if (isNaN(index) || index < 0) return;
+    const rules = foundry.utils.deepClone(this.document.system.rules ?? []);
+    if (index >= rules.length) return;
+    rules.splice(index, 1);
+    await this.document.update({ "system.rules": rules });
+  }
+
+  /**
+   * Handle dropping an item onto the Grants zone — creates a Grant rule.
+   */
+  async #onGrantDrop(event) {
+    let data;
+    try {
+      data = JSON.parse(event.dataTransfer?.getData("text/plain") ?? "{}");
+    } catch {
+      return;
+    }
+    if (data.type !== "Item") return;
+
+    const item = await fromUuid(data.uuid);
+    if (!item) {
+      ui.notifications.warn("Could not resolve the dropped item.");
+      return;
+    }
+
+    // Prevent duplicate grants for the same UUID
+    const existing = this.document.system.rules ?? [];
+    if (existing.some(r => r.key === "Grant" && r.subtype === "item" && r.uuid === data.uuid)) {
+      ui.notifications.warn("This item is already granted.");
+      return;
+    }
+
+    const rule = {
+      key: "Grant",
+      subtype: "item",
+      uuid: data.uuid,
+      grantType: "Item",
+      grantName: item.name,
+      grantImg: item.img,
+      label: `Grants ${item.name}`,
+      choiceMode: "off"
+    };
+    await this.document.update({ "system.rules": [...existing, rule] });
+  }
+
   static async #onDeleteRule(event, target) {
     const index = Number(target.dataset.ruleIndex);
     if (isNaN(index) || index < 0) return;
@@ -239,14 +291,19 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
     }
 
     // When switching tabs we need all parts to re-render so the old tab
-    // hides properly. Only protect the ProseMirror editor during in-place
+    // hides properly. Only protect editors/inputs during in-place
     // re-renders (e.g. submitOnChange from other fields).
     if (this._switchingTab) {
       this._switchingTab = false;
     } else if (this.element) {
-      const activePM = document.activeElement?.closest("prose-mirror");
-      if (activePM) {
-        const partEl = activePM.closest("[data-application-part]");
+      // Protect any part that contains the currently focused input or editor
+      const active = document.activeElement;
+      // Don't guard selects that reshape the form layout — they need a full re-render
+      const layoutSelects = ['system.skillType', 'system.manaciteType'];
+      const isLayoutSelect = active?.matches("select") && layoutSelects.includes(active.name);
+      const guardEl = isLayoutSelect ? null : (active?.closest("prose-mirror") ?? (active?.matches("input, select, textarea") ? active : null));
+      if (guardEl) {
+        const partEl = guardEl.closest("[data-application-part]");
         if (partEl) {
           const activePartId = partEl.dataset.applicationPart;
           if (!options.parts) {
@@ -282,6 +339,26 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
   /** @override */
   _onRender(context, options) {
     super._onRender(context, options);
+
+    // Apply crystal theme classes to the sheet's inner content wrapper
+    const windowContent = this.element.querySelector(".window-content") ?? this.element;
+    // Compute type class directly from the document
+    let typeClass = "type-item";
+    const docType = this.document.type;
+    const mType = this.document.system?.manaciteType;
+    if (docType === "weapon") typeClass = "type-weapon";
+    else if (docType === "armor") typeClass = "type-armor";
+    else if (docType === "accessory") typeClass = "type-accessory";
+    else if (docType === "manacite" && mType === "skill") typeClass = "type-skill";
+    else if (docType === "manacite" && mType === "job") typeClass = "type-job";
+    else if (docType === "consumable") typeClass = "type-consumable";
+    else if (docType === "species") typeClass = "type-species";
+    else if (docType === "material") typeClass = "type-material";
+    // Remove any previous type classes before adding the current one
+    for (const cls of [...windowContent.classList]) {
+      if (cls.startsWith("type-")) windowContent.classList.remove(cls);
+    }
+    windowContent.classList.add("ms-item-sheet", typeClass);
 
     if (this.document.type === "species") {
       this.element.classList.add("species-sheet");
@@ -322,6 +399,22 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
           this.#onPrerequisiteDrop(e);
         });
       }
+
+      // Bind drag-and-drop for grants zone
+      const grantZone = this.element.querySelector(".grant-drop-zone");
+      if (grantZone) {
+        grantZone.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          grantZone.classList.add("drag-over");
+        });
+        grantZone.addEventListener("dragleave", () => {
+          grantZone.classList.remove("drag-over");
+        });
+        grantZone.addEventListener("drop", (e) => {
+          grantZone.classList.remove("drag-over");
+          this.#onGrantDrop(e);
+        });
+      }
     }
 
     if (this.document.type === "accessory") {
@@ -346,6 +439,13 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
         this._weaponResized = true;
         this.setPosition({ width: 480, height: 520 });
       }
+      // Bind weapon tag input widget
+      const weaponKeywords = CONFIG.MANASHARD.weaponKeywords ?? {};
+      const tagChoices = {};
+      for (const [k, v] of Object.entries(weaponKeywords)) tagChoices[k] = v.label;
+      bindTagInput(this.element, "weaponTags", tagChoices, (tags) => {
+        this.document.update({ "system.tags": tags.join(", ") });
+      });
     }
 
     // Bind tag select change handlers
@@ -429,6 +529,19 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
     context.editable = this.isEditable;
     context.itemTypeLabel = game.i18n.localize(`TYPES.Item.${item.type}`);
 
+    // Crystal theme type class and label
+    const isSkill = item.type === "manacite" && item.system.manaciteType === "skill";
+    const isJob = item.type === "manacite" && item.system.manaciteType === "job";
+    if (item.type === "weapon") { context.typeClass = "type-weapon"; context.typeLabel = `Weapon · ${L(CONFIG.MANASHARD.weaponCategories[item.system.category]) || item.system.category}`; }
+    else if (item.type === "armor") { context.typeClass = "type-armor"; context.typeLabel = "Armor"; }
+    else if (item.type === "accessory") { context.typeClass = "type-accessory"; context.typeLabel = "Accessory"; }
+    else if (isSkill) { context.typeClass = "type-skill"; context.typeLabel = "Manacite · Skill"; }
+    else if (isJob) { context.typeClass = "type-job"; context.typeLabel = "Manacite · Job"; }
+    else if (item.type === "consumable") { context.typeClass = "type-consumable"; context.typeLabel = "Consumable"; }
+    else if (item.type === "species") { context.typeClass = "type-species"; context.typeLabel = "Species"; }
+    else if (item.type === "material") { context.typeClass = "type-material"; context.typeLabel = "Material"; }
+    else { context.typeClass = "type-item"; context.typeLabel = item.type; }
+
     // Tab state
     context.tabs = this._getTabs();
     context.activeTab = this._activeTab;
@@ -454,6 +567,21 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
     );
 
     // Type-specific enrichment and display data
+    if (item.type === "manacite" && item.system.manaciteType === "job" && item.system.growthRates) {
+      const statCategories = {
+        hp: "resource", mp: "resource",
+        str: "phys", agi: "phys",
+        mag: "mag", end: "mag", spi: "mag",
+        luk: "util",
+        int: "soc", chm: "soc"
+      };
+      context.growthEntries = Object.entries(item.system.growthRates).map(([key, value]) => ({
+        key,
+        label: key.toUpperCase(),
+        value,
+        category: statCategories[key] ?? "phys"
+      }));
+    }
     if (item.type === "manacite" && item.system.manaciteType === "job") {
       // Resolve prerequisite UUIDs into display objects
       const rawPrereqs = item.system.prerequisites ?? [];
@@ -472,6 +600,51 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
           context.prerequisites.push({
             uuid: prereq.uuid, name: "(broken link)", img: "icons/svg/mystery-man.svg",
             type: prereq.type, level: prereq.level ?? 1
+          });
+        }
+      }
+
+      // Resolve Grant Item rules into display objects
+      context.grantedItems = [];
+      const allRules = item.system.rules ?? [];
+      for (let i = 0; i < allRules.length; i++) {
+        const rule = allRules[i];
+        if (rule.key !== "Grant" || rule.subtype !== "item") continue;
+        let name = rule.grantName ?? "(unknown)";
+        let img = rule.grantImg ?? "icons/svg/item-bag.svg";
+        // Try to resolve fresh data from UUID
+        if (rule.uuid) {
+          try {
+            const resolved = await fromUuid(rule.uuid);
+            if (resolved) { name = resolved.name; img = resolved.img; }
+          } catch { /* use cached grantName/grantImg */ }
+        }
+        context.grantedItems.push({ ruleIndex: i, uuid: rule.uuid, name, img, type: rule.grantType ?? "Item" });
+      }
+
+      // Derive stat bonuses and other effects from rule elements (for description display)
+      context.jobStatBonuses = [];
+      context.jobEffects = [];
+      for (const rule of allRules) {
+        if (rule.key === "Grant") continue; // Already shown in Granted Skills
+        if (rule.key === "Modifier" && !rule.condition && rule.mode !== "checkOnly"
+            && !(rule.selector ?? "").startsWith("growth.")) {
+          const selectorLabels = CONFIG.MANASHARD.ruleSelectors ?? {};
+          const locKey = selectorLabels[rule.selector];
+          const label = locKey ? game.i18n.localize(locKey) : (rule.selector ?? "").toUpperCase();
+          const pct = rule.mode === "percent" ? "%" : "";
+          const val = rule.value ?? 0;
+          context.jobStatBonuses.push({
+            label,
+            value: val,
+            display: (val >= 0 ? "+" : "") + val + pct,
+            negative: val < 0
+          });
+        } else if (!(rule.key === "Modifier" && (rule.selector ?? "").startsWith("growth."))) {
+          const jMeta = (CONFIG.MANASHARD?.ruleCategories ?? {})[rule.key] ?? { icon: "fa-diamond" };
+          context.jobEffects.push({
+            summary: ruleSummary(rule),
+            icon: jMeta.icon
           });
         }
       }
@@ -516,6 +689,24 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
       // Parse tags into array
       const tagStr = item.system.tags ?? "";
       context.weaponTags = tagStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
+
+      // Build tag input widget with weapon keyword choices
+      const weaponKeywords = CONFIG.MANASHARD.weaponKeywords ?? {};
+      const tagChoices = {};
+      for (const [k, v] of Object.entries(weaponKeywords)) tagChoices[k] = v.label;
+      context.weaponTagInputHtml = renderTagInput({ name: "weaponTags", choices: tagChoices, selected: context.weaponTags, placeholder: "Add tag..." });
+
+      // Category identity for display
+      const catEntry = CONFIG.MANASHARD.weaponCategoryRules?.[item.system.category];
+      if (catEntry?.label) {
+        context.categoryIdentity = { label: catEntry.label, description: catEntry.description ?? "" };
+      }
+
+      // Tag details for display
+      context.weaponTagDetails = context.weaponTags
+        .map(t => weaponKeywords[t.toLowerCase()])
+        .filter(Boolean)
+        .map(kw => ({ label: kw.label, description: kw.description }));
     }
     if (item.type === "armor") {
       context.categoryLabel = L(CONFIG.MANASHARD.armorCategories[item.system.category]) || item.system.category;

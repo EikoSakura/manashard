@@ -4,13 +4,13 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .compendium-browser {
-  --cb-bg: var(--manashard-bg-dark, #1a1520);
-  --cb-surface: var(--manashard-bg-mid, #211b2a);
-  --cb-surface-light: var(--manashard-bg-light, #2a2335);
-  --cb-input: var(--manashard-bg-input, #16111e);
-  --cb-border: var(--manashard-border, #3d3250);
-  --cb-text: var(--manashard-text, #ede4d4);
-  --cb-text-dim: var(--manashard-text-dim, #b8a898);
+  --cb-bg: var(--manashard-bg-dark, #e0ecf6);
+  --cb-surface: var(--manashard-bg-mid, #e8f0f8);
+  --cb-surface-light: var(--manashard-bg-light, #f0f5fb);
+  --cb-input: var(--manashard-bg-input, #ffffff);
+  --cb-border: var(--manashard-border, #b8cade);
+  --cb-text: var(--manashard-text, #2a3040);
+  --cb-text-dim: var(--manashard-text-dim, #5a6a7d);
   --cb-text-label: var(--manashard-text-label, #9a8b7a);
   --cb-accent: var(--manashard-accent, #d4a030);
   --cb-accent-glow: var(--manashard-accent-glow, rgba(212, 160, 48, 0.35));
@@ -227,18 +227,18 @@
 
 /* Element-colored chips */
 .compendium-browser .browser-filter-chip.el-fire.active { background: var(--manashard-fire, #ff6644); border-color: var(--manashard-fire, #ff6644); }
-.compendium-browser .browser-filter-chip.el-ice.active { background: var(--manashard-ice, #44ccff); border-color: var(--manashard-ice, #44ccff); color: #16111e; }
+.compendium-browser .browser-filter-chip.el-ice.active { background: var(--manashard-ice, #44ccff); border-color: var(--manashard-ice, #44ccff); color: var(--manashard-text-bright); }
 .compendium-browser .browser-filter-chip.el-water.active { background: #3388ee; border-color: #3388ee; }
-.compendium-browser .browser-filter-chip.el-lightning.active { background: #ffcc22; border-color: #ffcc22; color: #16111e; }
-.compendium-browser .browser-filter-chip.el-wind.active { background: #66cc88; border-color: #66cc88; color: #16111e; }
+.compendium-browser .browser-filter-chip.el-lightning.active { background: #ffcc22; border-color: #ffcc22; color: var(--manashard-text-bright); }
+.compendium-browser .browser-filter-chip.el-wind.active { background: #66cc88; border-color: #66cc88; color: var(--manashard-text-bright); }
 .compendium-browser .browser-filter-chip.el-earth.active { background: #cc8844; border-color: #cc8844; }
-.compendium-browser .browser-filter-chip.el-light.active { background: #ffffaa; border-color: #ffffaa; color: #16111e; }
+.compendium-browser .browser-filter-chip.el-light.active { background: #ffffaa; border-color: #ffffaa; color: var(--manashard-text-bright); }
 .compendium-browser .browser-filter-chip.el-dark.active { background: #8844cc; border-color: #8844cc; }
 .compendium-browser .browser-filter-chip.el-null.active { background: #888; border-color: #888; }
 
 /* Manacite sub-type chips */
-.compendium-browser .browser-filter-chip.filter-magic.active { background: #4ecdc4; border-color: #4ecdc4; color: #16111e; }
-.compendium-browser .browser-filter-chip.filter-art.active { background: #f9ca24; border-color: #f9ca24; color: #16111e; }
+.compendium-browser .browser-filter-chip.filter-magic.active { background: #4ecdc4; border-color: #4ecdc4; color: var(--manashard-text-bright); }
+.compendium-browser .browser-filter-chip.filter-art.active { background: #f9ca24; border-color: #f9ca24; color: var(--manashard-text-bright); }
 .compendium-browser .browser-filter-chip.filter-passive.active { background: #9b59b6; border-color: #9b59b6; }
 
 /* Clear Filters button */
@@ -409,7 +409,7 @@
   color: var(--cb-text-dim);
 }
 
-.compendium-browser .browser-result-badge.badge-rank { color: #fff; }
+.compendium-browser .browser-result-badge.badge-rank { color: var(--manashard-text-on-accent); }
 .compendium-browser .browser-result-badge.badge-rank-f { background: var(--manashard-rank-f, #888); }
 .compendium-browser .browser-result-badge.badge-rank-e { background: var(--manashard-rank-e, #4caf50); }
 .compendium-browser .browser-result-badge.badge-rank-d { background: var(--manashard-rank-d, #2196f3); }
@@ -418,9 +418,9 @@
 .compendium-browser .browser-result-badge.badge-rank-a { background: var(--manashard-rank-a, #f44336); }
 .compendium-browser .browser-result-badge.badge-rank-s { background: var(--manashard-rank-s, #ffd700); color: #1a1a2e; }
 
-.compendium-browser .browser-result-badge.badge-magic { background: #4ecdc4; color: #16111e; }
-.compendium-browser .browser-result-badge.badge-art { background: #f9ca24; color: #16111e; }
-.compendium-browser .browser-result-badge.badge-passive { background: #9b59b6; color: #fff; }
+.compendium-browser .browser-result-badge.badge-magic { background: #4ecdc4; color: var(--manashard-text-bright); }
+.compendium-browser .browser-result-badge.badge-art { background: #f9ca24; color: var(--manashard-text-bright); }
+.compendium-browser .browser-result-badge.badge-passive { background: #9b59b6; color: var(--manashard-text-on-accent); }
 
 .compendium-browser .browser-result-stats {
   display: flex;

@@ -1,73 +1,69 @@
-<div class="manashard attack-chat-card {{#if critHit}}acc-crit{{/if}} {{#if isHostile}}acc-hostile{{/if}} {{#if element}}element-{{element}}{{/if}}">
+<div class="ms-card card-attack {{#if critHit}}acc-crit{{/if}} {{#if isHostile}}acc-hostile{{/if}} {{#if element}}element-{{element}}{{/if}}">
 
   {{!-- ═══ HEADER ═══ --}}
-  <div class="acc-header">
-    <div class="acc-portrait-frame">
-      <div class="acc-portrait-diamond">
-        <img src="{{actorImg}}" class="acc-portrait" />
-      </div>
-    </div>
-    <div class="acc-header-info">
-      <div class="acc-actor-name">{{actorName}}</div>
-      <div class="acc-action-line">
+  <div class="ms-card-header">
+    <div class="ms-card-portrait"><img src="{{actorImg}}" /></div>
+    <div class="ms-card-identity">
+      <div class="ms-card-name">{{actorName}}</div>
+      <div class="ms-card-subtitle">
         {{#if isSkill}}
-          casts <span class="acc-skill-name">{{skillName}}</span>
+          casts <strong>{{skillName}}</strong>
         {{else if isOffhand}}
-          off-hand strike with <span class="acc-weapon-name">{{weaponName}}</span> <small>(½ dmg)</small>
+          off-hand strike with <strong>{{weaponName}}</strong> <small>(½ dmg)</small>
         {{else}}
-          attacks with <span class="acc-weapon-name">{{weaponName}}</span>
+          attacks with <strong>{{weaponName}}</strong>
         {{/if}}
       </div>
     </div>
     {{#if (gt mpCost 0)}}
-      <div class="acc-mp-badge">MP &minus;{{mpCost}}</div>
+      <span class="ms-card-header-badge badge-mp">MP &minus;{{mpCost}}</span>
     {{/if}}
   </div>
 
   {{!-- ═══ TARGET LINE ═══ --}}
   {{#if targetName}}
-  <div class="acc-target-line">
-    <span class="acc-target-arrow">&#9656;</span>
-    <span class="acc-target-label">TARGET</span>
-    <span class="acc-target-name">{{targetName}}</span>
+  <div class="ms-card-target">
+    <span class="ms-card-target-arrow">&#9656;</span>
+    <span class="ms-card-target-label">TARGET</span>
+    <span class="ms-card-target-name">{{targetName}}</span>
     {{#if isSkill}}
-      {{#if (eq targetType "aoe")}}<span class="acc-aoe-badge"><i class="fas fa-burst"></i> AoE</span>{{/if}}
-      {{#if isHealing}}<span class="acc-heal-badge"><i class="fas fa-heart"></i></span>{{/if}}
+      {{#if (eq targetType "aoe")}}<span class="ms-card-target-badge badge-aoe"><i class="fas fa-burst"></i> AoE</span>{{/if}}
+      {{#if isHealing}}<span class="ms-card-target-badge badge-heal"><i class="fas fa-heart"></i></span>{{/if}}
     {{/if}}
   </div>
   {{/if}}
 
   {{!-- ═══ ROLL ZONE ═══ --}}
-  <div class="acc-rolls">
+  <div class="ms-card-roll">
     {{!-- Hit Roll --}}
     {{#if isHealing}}
-      <div class="acc-roll-row acc-roll-hit acc-autohit">
-        <i class="acc-roll-icon fas fa-heart"></i>
-        <span class="acc-roll-label">HIT</span>
-        <span class="acc-outcome-badge badge-hit">HIT</span>
+      <div class="ms-card-roll-row roll-hit roll-autohit">
+        <i class="ms-card-roll-icon fas fa-heart"></i>
+        <span class="ms-card-roll-label">HIT</span>
+        <span class="ms-card-outcome-badge badge-hit">HIT</span>
       </div>
     {{else if isBarrier}}
-      <div class="acc-roll-row acc-roll-hit acc-autohit">
-        <i class="acc-roll-icon fas fa-shield-halved"></i>
-        <span class="acc-roll-label">HIT</span>
-        <span class="acc-outcome-badge badge-hit">HIT</span>
+      <div class="ms-card-roll-row roll-hit roll-autohit">
+        <i class="ms-card-roll-icon fas fa-shield-halved"></i>
+        <span class="ms-card-roll-label">HIT</span>
+        <span class="ms-card-outcome-badge badge-hit">HIT</span>
       </div>
     {{else if isRetaliatory}}
-      <div class="acc-roll-row acc-roll-hit acc-autohit">
-        <i class="acc-roll-icon fas fa-fire-flame-curved"></i>
-        <span class="acc-roll-label">HIT</span>
-        <span class="acc-outcome-badge badge-hit">HIT</span>
+      <div class="ms-card-roll-row roll-hit roll-autohit">
+        <i class="ms-card-roll-icon fas fa-fire-flame-curved"></i>
+        <span class="ms-card-roll-label">HIT</span>
+        <span class="ms-card-outcome-badge badge-hit">HIT</span>
       </div>
     {{else}}
-      <div class="acc-roll-row {{#if hit}}acc-roll-hit{{else}}acc-roll-miss{{/if}}">
-        <i class="acc-roll-icon fas fa-dice-d20"></i>
-        <span class="acc-roll-label">HIT</span>
-        <div class="acc-roll-values">
-          <span class="acc-roll-result">{{hitRoll}}</span>
-          <span class="acc-roll-sep">/</span>
-          <span class="acc-roll-threshold">{{hitChance}}</span>
+      <div class="ms-card-roll-row {{#if hit}}roll-hit{{else}}roll-miss{{/if}}">
+        <i class="ms-card-roll-icon fas fa-dice-d20"></i>
+        <span class="ms-card-roll-label">HIT</span>
+        <div class="ms-card-roll-values">
+          <span class="ms-card-roll-result">{{hitRoll}}</span>
+          <span class="ms-card-roll-sep">/</span>
+          <span class="ms-card-roll-threshold">{{hitChance}}</span>
         </div>
-        <span class="acc-outcome-badge {{#if hit}}badge-hit{{else}}badge-miss{{/if}}">
+        <span class="ms-card-outcome-badge {{#if hit}}badge-hit{{else}}badge-miss{{/if}}">
           {{#if hit}}HIT{{else}}MISS{{/if}}
         </span>
       </div>
@@ -76,30 +72,30 @@
     {{#if hit}}
       {{!-- Crit Row --}}
       {{#if critHit}}
-        <div class="acc-roll-row acc-roll-crit">
-          <i class="acc-roll-icon fas fa-star"></i>
-          <span class="acc-roll-label">CRIT</span>
-          <div class="acc-roll-values">
-            <span class="acc-roll-result">{{critRoll}}</span>
-            <span class="acc-roll-sep">&le;</span>
-            <span class="acc-roll-threshold">{{critChance}}</span>
+        <div class="ms-card-roll-row roll-crit">
+          <i class="ms-card-roll-icon fas fa-star"></i>
+          <span class="ms-card-roll-label">CRIT</span>
+          <div class="ms-card-roll-values">
+            <span class="ms-card-roll-result">{{critRoll}}</span>
+            <span class="ms-card-roll-sep">&le;</span>
+            <span class="ms-card-roll-threshold">{{critChance}}</span>
           </div>
-          <span class="acc-outcome-badge badge-crit">CRIT!</span>
+          <span class="ms-card-outcome-badge badge-crit">CRIT!</span>
         </div>
       {{/if}}
 
       {{!-- Block Row --}}
       {{#unless isHealing}}
         {{#if blocked}}
-          <div class="acc-roll-row acc-roll-block">
-            <i class="acc-roll-icon fas fa-shield"></i>
-            <span class="acc-roll-label">BLOCK</span>
-            <div class="acc-roll-values">
-              <span class="acc-roll-result">{{blockRoll}}</span>
-              <span class="acc-roll-sep">/</span>
-              <span class="acc-roll-threshold">{{blockChance}}</span>
+          <div class="ms-card-roll-row roll-block">
+            <i class="ms-card-roll-icon fas fa-shield"></i>
+            <span class="ms-card-roll-label">BLOCK</span>
+            <div class="ms-card-roll-values">
+              <span class="ms-card-roll-result">{{blockRoll}}</span>
+              <span class="ms-card-roll-sep">/</span>
+              <span class="ms-card-roll-threshold">{{blockChance}}</span>
             </div>
-            <span class="acc-outcome-badge badge-block">BLOCKED</span>
+            <span class="ms-card-outcome-badge badge-block">BLOCKED</span>
           </div>
         {{/if}}
       {{/unless}}
@@ -111,8 +107,8 @@
   {{#unless isBarrier}}
   {{#unless isRetaliatory}}
     {{#unless hit}}
-      <div class="acc-miss-zone">
-        <div class="acc-miss-text">MISS</div>
+      <div class="ms-card-miss-zone">
+        <div class="ms-card-miss-text">MISS</div>
       </div>
     {{/unless}}
   {{/unless}}
@@ -121,62 +117,60 @@
 
   {{!-- ═══ DAMAGE / HEALING DISPLAY ═══ --}}
   {{#if hit}}
-    <div class="acc-damage-zone {{#if isHealing}}acc-healing{{/if}} {{#if isRetaliatory}}acc-retaliatory{{/if}} {{#if critHit}}acc-crit-damage{{/if}} {{#if (eq finalDamage 0)}}acc-immune{{/if}}">
-      <div class="acc-damage-inner">
-        <div class="acc-damage-label">
-          {{#if (eq finalDamage 0)}}NO EFFECT{{else}}{{#if isRetaliatory}}RETALIATORY{{else}}{{#if isBarrier}}BARRIER{{else}}{{#if isHealing}}HEALING{{else}}{{#if critHit}}CRITICAL DAMAGE{{else}}DAMAGE{{/if}}{{/if}}{{/if}}{{/if}}{{/if}}
-        </div>
-        <div class="acc-damage-value">{{#if (eq finalDamage 0)}}&mdash;{{else}}{{finalDamage}}{{/if}}</div>
+    <div class="ms-card-damage {{#if isHealing}}dmg-healing{{/if}} {{#if isRetaliatory}}dmg-retaliatory{{/if}} {{#if critHit}}dmg-crit{{/if}} {{#if (eq finalDamage 0)}}dmg-immune{{/if}} {{#if isBarrier}}dmg-barrier{{/if}}">
+      <div class="ms-card-dmg-label">
+        {{#if (eq finalDamage 0)}}NO EFFECT{{else}}{{#if isRetaliatory}}RETALIATORY{{else}}{{#if isBarrier}}BARRIER{{else}}{{#if isHealing}}HEALING{{else}}{{#if critHit}}CRITICAL DAMAGE{{else}}DAMAGE{{/if}}{{/if}}{{/if}}{{/if}}{{/if}}
+      </div>
+      <div class="ms-card-dmg-val">{{#if (eq finalDamage 0)}}&mdash;{{else}}{{finalDamage}}{{/if}}</div>
 
-        {{#if critHit}}
-          <div class="acc-crit-multiplier">&times;2 CRIT</div>
+      {{#if critHit}}
+        <div class="ms-card-crit-mult">&times;2 CRIT</div>
+      {{/if}}
+
+      {{!-- Damage Type & Element Badges --}}
+      <div class="ms-card-dmg-badges">
+        {{#if isRetaliatory}}
+          <span class="ms-card-dmg-badge badge-retaliatory"><span class="badge-dot"></span>RETALIATORY</span>
+        {{else if isBarrier}}
+          <span class="ms-card-dmg-badge badge-barrier"><span class="badge-dot"></span>BARRIER</span>
+        {{else if (eq damageType "none")}}
+          <span class="ms-card-dmg-badge badge-none"><span class="badge-dot"></span>NONE</span>
+        {{else if (eq damageType "physical")}}
+          <span class="ms-card-dmg-badge badge-physical"><span class="badge-dot"></span>PHYSICAL</span>
+        {{else}}
+          <span class="ms-card-dmg-badge badge-magical"><span class="badge-dot"></span>MAGICAL</span>
         {{/if}}
-
-        {{!-- Damage Type & Element Badges --}}
-        <div class="acc-damage-badges">
-          {{#if isRetaliatory}}
-            <span class="acc-badge acc-badge-retaliatory"><span class="acc-badge-dot"></span>RETALIATORY</span>
-          {{else if isBarrier}}
-            <span class="acc-badge acc-badge-barrier"><span class="acc-badge-dot"></span>BARRIER</span>
-          {{else if (eq damageType "none")}}
-            <span class="acc-badge acc-badge-none"><span class="acc-badge-dot"></span>NONE</span>
-          {{else if (eq damageType "physical")}}
-            <span class="acc-badge acc-badge-physical"><span class="acc-badge-dot"></span>PHYSICAL</span>
-          {{else}}
-            <span class="acc-badge acc-badge-magical"><span class="acc-badge-dot"></span>MAGICAL</span>
-          {{/if}}
-          {{#if element}}
-            <span class="acc-badge acc-badge-elem acc-elem-{{element}}"><span class="acc-badge-dot"></span>{{upper element}}</span>
-          {{else}}
-            <span class="acc-badge acc-badge-elem acc-elem-neutral"><span class="acc-badge-dot"></span>NEUTRAL</span>
-          {{/if}}
-        </div>
+        {{#if element}}
+          <span class="ms-card-dmg-badge badge-elem elem-{{element}}"><span class="badge-dot"></span>{{upper element}}</span>
+        {{else}}
+          <span class="ms-card-dmg-badge badge-elem elem-neutral"><span class="badge-dot"></span>NEUTRAL</span>
+        {{/if}}
       </div>
     </div>
 
     {{!-- ═══ MODIFIER NOTES ═══ --}}
     {{#if elementTierLabel}}
-      <div class="acc-element-tier tier-{{elementTier}}">{{elementTierLabel}}</div>
+      <div class="ms-card-element-tier tier-{{elementTier}}">{{elementTierLabel}}</div>
     {{/if}}
     {{#if blocked}}
-      <div class="acc-modifier-note acc-note-block"><i class="fas fa-shield"></i> Blocked — damage halved</div>
+      <div class="ms-card-modifier acc-note-block"><i class="fas fa-shield"></i> Blocked — damage halved</div>
     {{/if}}
     {{#if impairApplied}}
-      <div class="acc-modifier-note acc-note-impair"><i class="fas fa-eye-slash"></i> Impair — ACC and CRIT halved</div>
+      <div class="ms-card-modifier acc-note-impair"><i class="fas fa-eye-slash"></i> Impair — ACC and CRIT halved</div>
     {{/if}}
     {{#if exposeApplied}}
-      <div class="acc-modifier-note acc-note-expose"><i class="fas fa-shield-virus"></i> Expose — EVA/DEF halved</div>
+      <div class="ms-card-modifier acc-note-expose"><i class="fas fa-shield-virus"></i> Expose — EVA/DEF halved</div>
     {{/if}}
 
     {{!-- ═══ STATUS INFLICTIONS ═══ --}}
     {{#each statusResults}}
       {{#if this.success}}
-        <div class="acc-status-inflict">
+        <div class="ms-card-status-line status-success">
           <i class="fas fa-skull-crossbones"></i>
           <span>Inflicted <strong>{{this.statusLabel}}</strong>!</span>
         </div>
       {{else}}
-        <div class="acc-status-failed">
+        <div class="ms-card-status-line status-failed">
           <i class="fas fa-shield-halved"></i>
           <span>{{this.statusLabel}} resisted ({{this.roll}} / {{this.chance}})</span>
         </div>
@@ -185,12 +179,12 @@
 
     {{!-- ═══ COMBAT NOTES ═══ --}}
     {{#each combatNotes}}
-      <div class="acc-combat-note">
+      <div class="ms-card-combat-note">
         <i class="fas fa-scroll acc-note-icon"></i>
         <div class="acc-note-body">
           <span class="acc-note-text">{{this.text}}</span>
           {{#if this.source.itemName}}
-            <span class="acc-note-source">{{this.source.itemName}}</span>
+            <span class="ms-card-note-source">{{this.source.itemName}}</span>
           {{/if}}
         </div>
       </div>
@@ -198,7 +192,7 @@
 
     {{!-- ═══ APPLY BUTTON ═══ --}}
     {{#if targetTokenId}}
-      <div class="acc-apply-row">
+      <div class="ms-card-apply-row">
         <button type="button" class="acc-apply-damage"
                 data-token-id="{{targetTokenId}}"
                 data-attacker-token-id="{{attackerTokenId}}"
