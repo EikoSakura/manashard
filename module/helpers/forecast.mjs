@@ -181,11 +181,11 @@ export function buildForecastContext(actor, targetToken, options = {}) {
       scalingStatVal = system.stats?.[ssKey]?.value ?? 0;
     }
     baseDmg = scalingStatVal + effectiveBaseRate + (condBonuses.damage ?? 0);
-    // Accuracy: fixed-mode skills with skillHit use 80 base + scaling stat instead of AGI
+    // Accuracy: fixed-mode skills with skillHit use scaling stat instead of AGI
     const skillHitVal = skillData.skillHit ?? 0;
     if (skillData.baseRateMode === "fixed" && skillHitVal > 0) {
       const accStat = ssKey === "none" ? 0 : scalingStatVal;
-      acc = 80 + (accStat * 2) + skillHitVal + (condBonuses.accuracy ?? 0);
+      acc = (accStat * 2) + skillHitVal + (condBonuses.accuracy ?? 0);
     } else {
       acc = (system.accuracy ?? 0) + (condBonuses.accuracy ?? 0);
     }
@@ -241,10 +241,13 @@ export function buildForecastContext(actor, targetToken, options = {}) {
   const skipDefenses = healMode || isRetaliatory;
   const defEva = skipDefenses ? 0 : baseDefEva + defEvaBonus;
   let defDefRaw = (skipDefenses || isNoneDamage) ? 0 : Math.max(0, (isMagical ? (defActor?.system?.mdef ?? 0) : (defActor?.system?.pdef ?? 0)) + (defCondBonuses.def ?? 0) - piercingAmount);
-  // Firearms (Penetrating): ignore percentage of DEF
-  if (atkGrants.percentPiercing) {
-    const pct = atkGrants.percentPiercing.percentPiercing ?? 0;
-    defDefRaw = Math.floor(defDefRaw * (1 - pct / 100));
+  // Percent piercing: ignore percentage of DEF after flat piercing
+  const grantPct = atkGrants.percentPiercing?.percentPiercing ?? 0;
+  const modPct = condBonuses.percentPiercing ?? 0;
+  const uncondPct = system?.percentPiercing ?? 0;
+  const totalPctPiercing = grantPct + modPct + uncondPct;
+  if (totalPctPiercing > 0) {
+    defDefRaw = Math.floor(defDefRaw * (1 - totalPctPiercing / 100));
   }
   const defDef = defDefRaw;
   const defCritAvoid = skipDefenses ? 0 : (defActor?.system?.critEvo ?? 0) + (defCondBonuses.critEvo ?? 0);

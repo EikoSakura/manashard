@@ -284,7 +284,12 @@ export function evaluateConditionalRules(conditionalRules, context) {
     if (rule.stacks && typeof condResult === "number" && condResult > 1) {
       effectiveValue *= condResult;
     }
-    statBonuses[rule.selector] = (statBonuses[rule.selector] ?? 0) + effectiveValue;
+    // Percent-mode piercing → accumulate separately as percentPiercing
+    if (rule.selector === "piercing" && rule.mode === "percent") {
+      statBonuses.percentPiercing = (statBonuses.percentPiercing ?? 0) + effectiveValue;
+    } else {
+      statBonuses[rule.selector] = (statBonuses[rule.selector] ?? 0) + effectiveValue;
+    }
   }
   context.ruleSource = null;
 
@@ -507,11 +512,15 @@ export function resolveAttack(params) {
   // Apply defender conditional bonuses, then subtract piercing
   let modDefenderDef = Math.max(0, defenderDef + (defCond.statBonuses.def ?? 0) - piercingAmount);
 
-  // Firearms (Penetrating): ignore percentage of DEF after flat piercing
+  // Percent piercing: ignore percentage of DEF after flat piercing
+  // Sources: Grant rules (e.g. Penetrating keyword), percent-mode piercing modifiers, unconditional percent piercing
   const grants = ruleCache.grants ?? {};
-  if (grants.percentPiercing) {
-    const pct = grants.percentPiercing.percentPiercing ?? 0;
-    modDefenderDef = Math.floor(modDefenderDef * (1 - pct / 100));
+  const grantPct = grants.percentPiercing?.percentPiercing ?? 0;
+  const modPct = atkCond.statBonuses.percentPiercing ?? 0;
+  const uncondPct = attackerSystem?.percentPiercing ?? 0;
+  const totalPctPiercing = grantPct + modPct + uncondPct;
+  if (totalPctPiercing > 0) {
+    modDefenderDef = Math.floor(modDefenderDef * (1 - totalPctPiercing / 100));
   }
 
   const evaBonus = damageType === "magical" ? (defCond.statBonuses.meva ?? 0) : (defCond.statBonuses.peva ?? 0);
@@ -653,6 +662,55 @@ export async function executeCombatRolls(result, attackerSystem, defenderActor, 
 // APPLY DAMAGE (Chat Button Handler)
 // ═══════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════
+// DEFEAT / REVIVAL HELPER
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Mark a token's combatant as defeated or revived, toggling the crystallize
+ * status effect and hiding/showing hostile tokens accordingly.
+ * @param {Token} token - The canvas token
+ * @param {boolean} defeated - true = defeat, false = revive
+ */
+export async function setDefeated(token, defeated) {
+  const actor = token.actor;
+  if (!actor || !game.combat?.started) return;
+
+  const combatant = game.combat.combatants.find(c => c.tokenId === token.id);
+  if (!combatant) return;
+
+  // Mark combatant defeated/revived if not already in desired state.
+  // (Foundry v13 may auto-mark defeated when HP reaches 0, so skip the
+  //  combatant update but still proceed with crystallize + hide below.)
+  if (combatant.isDefeated !== defeated) {
+    await combatant.update({ defeated });
+  }
+
+  // Toggle crystallize status
+  const current = new Set(actor.system.statusEffects ?? []);
+  if (defeated) {
+    current.add("crystallize");
+  } else {
+    current.delete("crystallize");
+  }
+  await actor.update({ "system.statusEffects": [...current] });
+
+  // Force token visual refresh so the status ring redraws immediately
+  // (the global updateActor hook doesn't fire for unlinked-token actors)
+  token.renderFlags.set({ refreshEffects: true });
+
+  // Hide/unhide hostile tokens
+  if (defeated && token.document.disposition <= -1) {
+    if (actor.system.crystallizeInstantly) {
+      await token.document.update({ hidden: true });
+    } else {
+      setTimeout(() => token.document.update({ hidden: true }), 1500);
+    }
+  } else if (!defeated && token.document.hidden) {
+    await token.document.update({ hidden: false });
+  }
+}
+
 /**
  * Apply damage or healing to a token from a chat card button click.
  * Also applies any inflicted status effects.
@@ -715,10 +773,13 @@ export async function applyDamageFromChat(event, buttonEl) {
   // Auto-defeat: mark combatant as defeated when HP reaches 0
   const wasJustDowned = newHp <= 0 && oldHp > 0 && !isHealing && !isBarrier && !isRetaliatory;
   if (newHp <= 0 && game.combat?.started) {
-    const combatant = game.combat.combatants.find(c => c.tokenId === tokenId);
-    if (combatant && !combatant.isDefeated) {
-      await combatant.update({ defeated: true });
-    }
+    await setDefeated(token, true);
+  }
+
+  // Auto-revive: clear defeated state when healed from 0 HP
+  const wasRevived = isHealing && oldHp <= 0 && newHp > 0;
+  if (wasRevived && game.combat?.started) {
+    await setDefeated(token, false);
   }
 
   // Loot resolution: Eiress + Pillage + Party Loot
@@ -794,10 +855,7 @@ export async function applyDamageFromChat(event, buttonEl) {
 
           // Auto-defeat attacker if HP reaches 0
           if (atkNewHp <= 0 && game.combat?.started) {
-            const atkCombatant = game.combat.combatants.find(c => c.tokenId === attackerTokenId);
-            if (atkCombatant && !atkCombatant.isDefeated) {
-              await atkCombatant.update({ defeated: true });
-            }
+            await setDefeated(attackerToken, true);
           }
 
           // Post retaliation chat card
@@ -867,6 +925,7 @@ export async function applyBuffEffect(actor, name, img, duration, rules, descrip
   );
   if (existing) {
     await existing.setFlag("manashard", "duration", duration);
+    await existing.setFlag("manashard", "freshlyApplied", true);
     if (retaliationFlags) {
       for (const [key, val] of Object.entries(retaliationFlags)) {
         await existing.setFlag("manashard", key, val);
@@ -878,6 +937,7 @@ export async function applyBuffEffect(actor, name, img, duration, rules, descrip
   const flagData = {
     buffDebuff: true,
     duration,
+    freshlyApplied: true,
     rules: rules ?? [],
     description: description || ""
   };
@@ -1257,16 +1317,39 @@ export async function resolvePartyLoot(defenderActor, pillagerActor = null) {
         break; // max 1 item from Pillage
       }
     }
-    // If Pillage holder had entries but all rolls failed
+    // Guarantee: if all rolls failed, award the bottom-most available entry
     if (!pillageResult) {
-      const hasEntries = lootTable.some(e => !e.stolen && defenderActor.items.get(e.itemId));
-      pillageResult = {
-        actorId: pillagerActor.id,
-        actorName: pillagerActor.name,
-        actorImg: pillagerActor.img ?? "icons/svg/mystery-man.svg",
-        pillaged: false,
-        noLoot: !hasEntries
-      };
+      let guaranteedEntry = null;
+      for (let i = lootTable.length - 1; i >= 0; i--) {
+        const entry = lootTable[i];
+        if (entry.stolen || claimed.has(i)) continue;
+        const item = defenderActor.items.get(entry.itemId);
+        if (!item) continue;
+        guaranteedEntry = { index: i, item, entry };
+        break;
+      }
+      if (guaranteedEntry) {
+        claimed.add(guaranteedEntry.index);
+        pillageResult = {
+          actorId: pillagerActor.id,
+          actorName: pillagerActor.name,
+          actorImg: pillagerActor.img ?? "icons/svg/mystery-man.svg",
+          itemIndex: guaranteedEntry.index,
+          itemName: guaranteedEntry.item.name,
+          itemImg: guaranteedEntry.item.img ?? "icons/svg/item-bag.svg",
+          itemUuid: guaranteedEntry.item.uuid ?? "",
+          pillaged: true,
+          guaranteed: true
+        };
+      } else {
+        pillageResult = {
+          actorId: pillagerActor.id,
+          actorName: pillagerActor.name,
+          actorImg: pillagerActor.img ?? "icons/svg/mystery-man.svg",
+          pillaged: false,
+          noLoot: true
+        };
+      }
     }
   }
 
@@ -1277,8 +1360,7 @@ export async function resolvePartyLoot(defenderActor, pillagerActor = null) {
 
   const partyResults = [];
   for (const memberId of shuffled) {
-    // Skip the pillager — they already had priority
-    if (pillagerActor && memberId === pillagerActor.id) continue;
+    // Killer participates in loot rolls equally with everyone else
     const member = game.actors.get(memberId);
     if (!member || member.type !== "character") continue;
     // Skip downed members (HP <= 0)

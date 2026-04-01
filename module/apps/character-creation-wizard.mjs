@@ -74,7 +74,11 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
     // Initialize state — pre-fill from actor if it has data
     const sys = actor.system;
     const mins = CONFIG.MANASHARD.statMinimums;
-    const hasCustomStats = Object.keys(mins).some(k => (sys.stats?.[k]?.value ?? 0) > (mins[k] ?? 0));
+    // Use _baseStats (pre-modifier base values) so rule bonuses from species/job/equipment
+    // don't inflate the wizard's stat pool and cause negative remaining points.
+    const baseStats = sys._baseStats ?? {};
+    const getBase = (k) => baseStats[k] ?? (k === "hp" || k === "mp" ? sys.stats?.[k]?.max : sys.stats?.[k]?.value) ?? mins[k];
+    const hasCustomStats = Object.keys(mins).some(k => getBase(k) > (mins[k] ?? 0));
 
     this.#wizardState = {
       step: 0,
@@ -94,7 +98,7 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
       skillElementFilter: "all",
       skillSearchQuery: "",
       stats: hasCustomStats
-        ? Object.fromEntries(Object.keys(mins).map(k => [k, sys.stats[k]?.value ?? mins[k]]))
+        ? Object.fromEntries(Object.keys(mins).map(k => [k, getBase(k)]))
         : { ...mins },
       growthRates: Object.fromEntries(
         Object.keys(mins).map(k => [k, sys.stats?.[k]?.growth ?? (game.settings.get("manashard", "creationGrowthBaseline") ?? CONFIG.MANASHARD.growthRateBaseline)])

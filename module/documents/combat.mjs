@@ -79,7 +79,9 @@ export class ManashardCombat extends Combat {
     // Initialize pool-based turn tracking
     await this.setFlag("manashard", "currentSide", firstSide);
     await this.setFlag("manashard", "actedThisRound", []);
-    await this.setFlag("manashard", "actionsTaken", {});
+    // Use -=delete to fully clear actionsTaken; setFlag({}) only merges
+    // an empty object over the existing one, leaving stale keys intact.
+    await this.update({"flags.manashard.-=actionsTaken": null});
     await this.setFlag("manashard", "raisedHands", []);
     await this.setFlag("manashard", "awaitingSelection", true);
 
@@ -93,6 +95,30 @@ export class ManashardCombat extends Combat {
    */
   async nextTurn() {
     return this.endTurn();
+  }
+
+  /**
+   * Override previousTurn — side-based system has no concept of "previous".
+   * Prevents Foundry keybindings from bypassing the pool-based selection.
+   */
+  async previousTurn() {
+    return this;
+  }
+
+  /**
+   * Override nextRound — round advancement is handled automatically
+   * by endTurn when both sides have acted. Prevents Foundry keybindings
+   * from bypassing the side-based flow.
+   */
+  async nextRound() {
+    return this;
+  }
+
+  /**
+   * Override previousRound — not supported in side-based combat.
+   */
+  async previousRound() {
+    return this;
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -128,15 +154,25 @@ export class ManashardCombat extends Combat {
    * @param {string} combatantId
    */
   async selectCombatant(combatantId) {
+    console.debug(`Manashard | selectCombatant called for ${combatantId}`);
     const combatant = this.combatants.get(combatantId);
-    if (!combatant || combatant.isDefeated) return;
+    if (!combatant || combatant.isDefeated) {
+      console.debug(`Manashard | selectCombatant EXIT: no combatant or defeated`);
+      return;
+    }
 
     const currentSide = this.getFlag("manashard", "currentSide") ?? "players";
     const combatantSide = this._getCombatantSide(combatant);
-    if (combatantSide !== currentSide) return;
+    if (combatantSide !== currentSide) {
+      console.debug(`Manashard | selectCombatant EXIT: wrong side (${combatantSide} vs ${currentSide})`);
+      return;
+    }
 
     const acted = this.getFlag("manashard", "actedThisRound") ?? [];
-    if (acted.includes(combatantId)) return;
+    if (acted.includes(combatantId)) {
+      console.debug(`Manashard | selectCombatant EXIT: already acted`, acted);
+      return;
+    }
 
     // Set this combatant as active and clear raised hands
     await this.setFlag("manashard", "awaitingSelection", false);
@@ -147,9 +183,14 @@ export class ManashardCombat extends Combat {
     // Only process start-of-turn effects on the FIRST action of a multi-action turn
     const actionsTaken = this.getFlag("manashard", "actionsTaken") ?? {};
     const takenSoFar = actionsTaken[combatantId] ?? 0;
+    console.debug(`Manashard | selectCombatant ${combatant.name}: takenSoFar=${takenSoFar}, actionsTaken=`, actionsTaken);
     if (takenSoFar === 0) {
       if (combatant.actor?.processStartOfTurn) {
-        await combatant.actor.processStartOfTurn();
+        try {
+          await combatant.actor.processStartOfTurn();
+        } catch (err) {
+          console.error(`Manashard | processStartOfTurn failed for ${combatant.name}:`, err);
+        }
       }
       // Check for charged spells resolving (first action only)
       await this._checkChargeResolutions(combatant);
@@ -225,7 +266,8 @@ export class ManashardCombat extends Combat {
 
     await this.setFlag("manashard", "currentSide", firstSide);
     await this.setFlag("manashard", "actedThisRound", []);
-    await this.setFlag("manashard", "actionsTaken", {});
+    // Use -=delete to fully clear actionsTaken (same merge issue as startCombat)
+    await this.update({"flags.manashard.-=actionsTaken": null});
     await this.setFlag("manashard", "raisedHands", []);
     await this.setFlag("manashard", "awaitingSelection", true);
 
@@ -393,8 +435,15 @@ export class ManashardCombat extends Combat {
     const charging = combatant.getFlag("manashard", "charging");
     if (!charging) return;
 
-    await this._resolveCharge(combatant, charging);
+    try {
+      await this._resolveCharge(combatant, charging);
+    } catch (err) {
+      console.error("Manashard | Error resolving charge, clearing flag anyway:", err);
+    }
     await combatant.unsetFlag("manashard", "charging");
+
+    // Auto-end the caster's turn after the charged spell fires
+    await this.endTurn();
   }
 
   /**

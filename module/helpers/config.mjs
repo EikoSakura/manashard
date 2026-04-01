@@ -464,7 +464,7 @@ MANASHARD.movementModes = {
 MANASHARD.chantModes = {
   swift: { label: "MANASHARD.ChantModes.Swift", effectModifier: 0.75, mpMultiplier: 0.5, chargesTurn: false },
   normal: { label: "MANASHARD.ChantModes.Normal", effectModifier: 1.0, mpMultiplier: 1.0, chargesTurn: false },
-  full: { label: "MANASHARD.ChantModes.Full", effectModifier: 1.5, mpMultiplier: 2.0, chargesTurn: true }
+  full: { label: "MANASHARD.ChantModes.Full", effectModifier: 1.5, mpMultiplier: 1.5, chargesTurn: true }
 };
 
 /**
@@ -488,14 +488,15 @@ MANASHARD.castingModifiers = {
  * the skill has an element, the condition does not.
  */
 MANASHARD.statusEffects = {
-  beguile:    { label: "MANASHARD.StatusEffects.Beguile",    description: "MANASHARD.StatusEffects.BeguileDesc",    duration: 1, category: "debuff" },
-  blight:     { label: "MANASHARD.StatusEffects.Blight",     description: "MANASHARD.StatusEffects.BlightDesc",     duration: 3, category: "debuff" },
-  expose:     { label: "MANASHARD.StatusEffects.Expose",     description: "MANASHARD.StatusEffects.ExposeDesc",     duration: 2, category: "debuff" },
-  immobilize: { label: "MANASHARD.StatusEffects.Immobilize", description: "MANASHARD.StatusEffects.ImmobilizeDesc", duration: 2, category: "debuff" },
-  impair:     { label: "MANASHARD.StatusEffects.Impair",     description: "MANASHARD.StatusEffects.ImpairDesc",     duration: 2, category: "debuff" },
-  silence:    { label: "MANASHARD.StatusEffects.Silence",    description: "MANASHARD.StatusEffects.SilenceDesc",    duration: 2, category: "debuff" },
-  stun:       { label: "MANASHARD.StatusEffects.Stun",       description: "MANASHARD.StatusEffects.StunDesc",       duration: 1, category: "debuff" },
-  taunt:      { label: "MANASHARD.StatusEffects.Taunt",      description: "MANASHARD.StatusEffects.TauntDesc",      duration: 2, category: "debuff" },
+  beguile:     { label: "MANASHARD.StatusEffects.Beguile",     description: "MANASHARD.StatusEffects.BeguileDesc",     duration: 1,    category: "debuff" },
+  blight:      { label: "MANASHARD.StatusEffects.Blight",      description: "MANASHARD.StatusEffects.BlightDesc",      duration: 3,    category: "debuff" },
+  crystallize: { label: "MANASHARD.StatusEffects.Crystallize", description: "MANASHARD.StatusEffects.CrystallizeDesc", duration: null, category: "special" },
+  expose:      { label: "MANASHARD.StatusEffects.Expose",      description: "MANASHARD.StatusEffects.ExposeDesc",      duration: 2,    category: "debuff" },
+  immobilize:  { label: "MANASHARD.StatusEffects.Immobilize",  description: "MANASHARD.StatusEffects.ImmobilizeDesc",  duration: 2,    category: "debuff" },
+  impair:      { label: "MANASHARD.StatusEffects.Impair",      description: "MANASHARD.StatusEffects.ImpairDesc",      duration: 2,    category: "debuff" },
+  silence:     { label: "MANASHARD.StatusEffects.Silence",     description: "MANASHARD.StatusEffects.SilenceDesc",     duration: 2,    category: "debuff" },
+  stun:        { label: "MANASHARD.StatusEffects.Stun",        description: "MANASHARD.StatusEffects.StunDesc",        duration: 1,    category: "debuff" },
+  taunt:       { label: "MANASHARD.StatusEffects.Taunt",       description: "MANASHARD.StatusEffects.TauntDesc",       duration: 2,    category: "debuff" },
 };
 
 
@@ -537,28 +538,30 @@ MANASHARD.objectiveIcons = {
  * Font Awesome icons for status effects.
  */
 MANASHARD.statusIcons = {
-  beguile:    "gi-beguile",
-  blight:     "gi-blight",
-  expose:     "gi-expose",
-  immobilize: "gi-immobilize",
-  impair:     "gi-impair",
-  silence:    "gi-silence",
-  stun:       "gi-stun",
-  taunt:      "gi-taunt"
+  beguile:     "gi-beguile",
+  blight:      "gi-blight",
+  crystallize: "gi-crystallize",
+  expose:      "gi-expose",
+  immobilize:  "gi-immobilize",
+  impair:      "gi-impair",
+  silence:     "gi-silence",
+  stun:        "gi-stun",
+  taunt:       "gi-taunt"
 };
 
 /**
  * SVG icon paths for status effects displayed on tokens.
  */
 MANASHARD.statusIconPaths = {
-  beguile:    "systems/manashard/assets/icons/status/beguile.svg",
-  blight:     "systems/manashard/assets/icons/status/blight.svg",
-  expose:     "systems/manashard/assets/icons/status/expose.svg",
-  immobilize: "systems/manashard/assets/icons/status/immobilize.svg",
-  impair:     "systems/manashard/assets/icons/status/impair.svg",
-  silence:    "systems/manashard/assets/icons/status/silence.svg",
-  stun:       "systems/manashard/assets/icons/status/stun.svg",
-  taunt:      "systems/manashard/assets/icons/status/taunt.svg"
+  beguile:     "systems/manashard/assets/icons/status/beguile.svg",
+  blight:      "systems/manashard/assets/icons/status/blight.svg",
+  crystallize: "systems/manashard/assets/icons/status/crystallize.svg",
+  expose:      "systems/manashard/assets/icons/status/expose.svg",
+  immobilize:  "systems/manashard/assets/icons/status/immobilize.svg",
+  impair:      "systems/manashard/assets/icons/status/impair.svg",
+  silence:     "systems/manashard/assets/icons/status/silence.svg",
+  stun:        "systems/manashard/assets/icons/status/stun.svg",
+  taunt:       "systems/manashard/assets/icons/status/taunt.svg"
 };
 
 /**
@@ -1008,6 +1011,8 @@ MANASHARD.statusEffectRules = {
   beguile: [],
   // Blight: 2 HP DoT at turn start (handled in processStartOfTurn)
   blight: [],
+  // Crystallize: Dead — no rules, permanent until revived
+  crystallize: [],
   // Expose: EVA, P.DEF, M.DEF halved at combat resolution (handled in combat.mjs)
   expose: [],
   // Immobilize: MOV = 0

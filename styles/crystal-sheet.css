@@ -811,12 +811,27 @@
   position: absolute;
   top: 3px;
   right: 6px;
-  font-size: 10px;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-.ms-skill-grid .ms-skill-card:hover .ms-skill-action {
+  font-size: 14px;
   opacity: 1;
+  color: rgba(200, 200, 220, 0.5);
+  transition: color 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.ms-skill-grid .ms-skill-action:hover {
+  color: #fff;
+}
+.ms-skill-grid .ms-skill-action.cast {
+  color: rgba(78, 185, 212, 0.6);
+}
+.ms-skill-grid .ms-skill-action.cast:hover {
+  color: rgba(78, 185, 212, 1);
+}
+.ms-skill-grid .ms-skill-action.activate {
+  color: rgba(255, 204, 68, 0.6);
+}
+.ms-skill-grid .ms-skill-action.activate:hover {
+  color: rgba(255, 204, 68, 1);
 }
 .ms-skill-grid .ms-skill-meta { display: none; }
 

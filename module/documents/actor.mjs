@@ -104,6 +104,11 @@ export class ManashardActor extends Actor {
     // Sync status effects → display-only ActiveEffects for token icons
     if (changed.system?.statusEffects !== undefined || changed.flags?.manashard?.statusDurations !== undefined) {
       scheduleSyncStatusEffects(this);
+      // Force token refresh for unlinked-token actors where the global
+      // updateActor hook won't fire (ensures the status ring redraws)
+      for (const t of this.getActiveTokens(true)) {
+        t.renderFlags.set({ refreshEffects: true });
+      }
     }
 
     // Boss HP phase alerts — fire once per threshold crossing
@@ -1395,6 +1400,7 @@ export class ManashardActor extends Actor {
    * 5. Duration decrement + removal of expired statuses
    */
   async processStartOfTurn() {
+    console.debug(`Manashard | processStartOfTurn for ${this.name} (mpRegen=${this.system.mpRegen}, MP=${this.system.stats.mp.value}/${this.system.stats.mp.max})`);
     const system = this.system;
     const statuses = new Set(system.statusEffects ?? []);
     const hp = system.stats.hp;
@@ -1455,10 +1461,12 @@ export class ManashardActor extends Actor {
     }
 
     // Base MP Regen (from equipment/stats — derived stat, not a status)
+    // Re-read this.system fresh in case intermediate updates replaced the DataModel
     {
-      const currentMp = this.system.stats.mp.value;
-      const mpMax = this.system.stats.mp.max;
-      const regen = system.mpRegen ?? 0;
+      const freshSystem = this.system;
+      const currentMp = freshSystem.stats.mp.value;
+      const mpMax = freshSystem.stats.mp.max;
+      const regen = freshSystem.mpRegen ?? 0;
       if (regen > 0 && currentMp < mpMax) {
         const actual = Math.min(regen, mpMax - currentMp);
         await this.update({ "system.stats.mp.value": currentMp + actual });
@@ -1543,6 +1551,8 @@ export class ManashardActor extends Actor {
         delete durations[key];
         continue;
       }
+      // Skip permanent statuses (null duration, e.g. Crystallize)
+      if (turns == null) continue;
       durations[key] = turns - 1;
       if (durations[key] <= 0) {
         current.delete(key);
@@ -1570,6 +1580,11 @@ export class ManashardActor extends Actor {
     const removed = [];
 
     for (const effect of buffEffects) {
+      // Skip buffs applied this same turn — clear the flag so they decrement next turn
+      if (effect.getFlag("manashard", "freshlyApplied")) {
+        await effect.unsetFlag("manashard", "freshlyApplied");
+        continue;
+      }
       let dur = effect.getFlag("manashard", "duration");
       if (dur === undefined || dur === null) continue;
       dur -= 1;
@@ -1607,7 +1622,7 @@ export class ManashardActor extends Actor {
 
     if (shouldBeActive && !current.has(statusId)) {
       current.add(statusId);
-      durations[statusId] = duration ?? cfg.duration ?? 3;
+      durations[statusId] = duration ?? cfg.duration ?? null;
     } else if (!shouldBeActive && current.has(statusId)) {
       current.delete(statusId);
       delete durations[statusId];

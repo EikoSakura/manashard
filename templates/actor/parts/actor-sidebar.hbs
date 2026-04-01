@@ -106,7 +106,7 @@
       </div>
       <div style="position: relative;">
         <div class="ms-vital-track">
-          <div class="ms-vital-fill mp" style="width: {{#if system.stats.mp.max}}{{math system.stats.mp.value "/" system.stats.mp.max "*" 100}}{{else}}0{{/if}}%;"></div>
+          <div class="ms-vital-fill mp" style="width: {{mpPercent}}%;"></div>
         </div>
         <div class="ms-vital-border"></div>
       </div>

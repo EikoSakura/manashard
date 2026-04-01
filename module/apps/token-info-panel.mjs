@@ -1,3 +1,5 @@
+import { gridDistance } from "../helpers/combat.mjs";
+
 /**
  * Floating token info panel.
  * Renders as an HTML overlay anchored above the selected token on the canvas.
@@ -141,6 +143,13 @@ export class TokenInfoPanel {
       typeTag = "Rank " + (rankKey ? game.i18n.localize(rankKey) : sys.rank?.toUpperCase());
     }
 
+    // Distance from controlled token to hovered token (in tiles)
+    let tileDistance = null;
+    const controlled = canvas.tokens?.controlled?.[0];
+    if (controlled && controlled.id !== token.id) {
+      tileDistance = gridDistance(controlled, token);
+    }
+
     return {
       name: token.name,
       level: sys.level ?? 1,
@@ -152,7 +161,8 @@ export class TokenInfoPanel {
       mp, mpPercent,
       typeTag,
       isNPC,
-      isBoss: isNPC && sys.isBoss
+      isBoss: isNPC && sys.isBoss,
+      tileDistance
     };
   }
 

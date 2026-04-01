@@ -177,14 +177,23 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     };
     context.editable = this.isEditable;
 
+    // Base HP/MP max values (pre-modifier) for form inputs — prevents derived bonuses
+    // from being written back to the database on form submission (submitOnChange).
+    context.baseHpMax = system._baseStats?.hp ?? system.stats?.hp?.max ?? 0;
+    context.baseMpMax = system._baseStats?.mp ?? system.stats?.mp?.max ?? 0;
+
     // Barrier HP bar percentages (precomputed for templates)
     const hp = system.stats?.hp ?? { value: 0, max: 0, barrier: 0 };
-    const hpPct = hp.max > 0 ? Math.round((hp.value / hp.max) * 100) : 0;
+    const hpPct = hp.max > 0 ? Math.min(100, Math.round((hp.value / hp.max) * 100)) : 0;
     const barrierRaw = hp.barrier ?? 0;
     const barrierPct = (barrierRaw > 0 && hp.max > 0) ? Math.min(hpPct, Math.round((barrierRaw / hp.max) * 100)) : 0;
     context.hpPercent = hpPct;
     context.barrierPercent = barrierPct;
     context.barrierRight = 100 - hpPct;
+
+    // MP bar percentage (capped at 100%)
+    const mp = system.stats?.mp ?? { value: 0, max: 0 };
+    context.mpPercent = mp.max > 0 ? Math.min(100, Math.round((mp.value / mp.max) * 100)) : 0;
 
     // Tab state — ensure active tab is valid for this actor type
     const availableTabs = this._getTabs();
@@ -667,6 +676,42 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
 
     this._lastContext = context;
     return context;
+  }
+
+  /**
+   * Prevent derived HP/MP bonuses (from jobs, rank, rule modifiers) from being
+   * written back to the database on form submission. The inputs display the
+   * derived total, but we must save the base value.
+   *
+   * If the user didn't change the max (it still matches the derived value),
+   * restore the original stored base. If the user DID change it, compute the
+   * intended base by subtracting the modifier portion.
+   * @override
+   */
+  _prepareSubmitData(event, form, formData) {
+    const data = foundry.utils.expandObject(formData.object);
+    const system = this.actor.system;
+
+    for (const key of ["hp", "mp"]) {
+      const submittedMax = data.system?.stats?.[key]?.max;
+      if (submittedMax === undefined) continue;
+
+      const derivedMax = system.stats[key].max;    // current derived total (base + bonuses)
+      const baseMax = system._baseStats?.[key] ?? derivedMax; // stored base before modifiers
+
+      if (submittedMax === derivedMax) {
+        // User didn't touch the max input — restore the original base
+        data.system.stats[key].max = baseMax;
+      } else {
+        // User manually edited the max — treat their input as the new desired
+        // derived total and back out the bonus portion to get the new base
+        const modBonus = system._modifiers?.getTotal(`${key}.max`) ?? 0;
+        const rankBonus = CONFIG.MANASHARD.ranks?.[system.rank]?.[`${key}Base`] ?? 0;
+        data.system.stats[key].max = submittedMax - modBonus - rankBonus;
+      }
+    }
+
+    return data;
   }
 
   /**
@@ -1990,7 +2035,9 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     if (type === "weapon") {
       stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">Might</span><span class="ms-tt-stat-val">${sys.might ?? 0}</span></div>`;
       stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">Crit</span><span class="ms-tt-stat-val">${sys.crit ?? 0}</span></div>`;
-      stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">Crit</span><span class="ms-tt-stat-val">${sys.crit ?? 0}</span></div>`;
+      const rangeLabel = sys.rangeType === "melee" ? "Reach" : "Range";
+      const rangeVal = sys.minRange === sys.maxRange ? `${sys.minRange}` : `${sys.minRange}\u2013${sys.maxRange}`;
+      stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">${rangeLabel}</span><span class="ms-tt-stat-val">${rangeVal}</span></div>`;
       stats += `<div class="ms-tt-stat"><span class="ms-tt-stat-lbl">Weight</span><span class="ms-tt-stat-val">${sys.weight ?? 0}</span></div>`;
 
       // Comparison deltas
@@ -2427,9 +2474,9 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       && (skillData.skillHit ?? 0) > 0
       && (skillData.baseRate ?? 0) === 0;
 
-    // Check if this is an offensive skill (magic or art with baseRate > 0, or weapon mode)
+    // Check if this is an offensive skill (magic or art with baseRate > 0, weapon mode, or skillHit > 0)
     const isOffensive = (skillData.skillType === "magic" || skillData.skillType === "art")
-      && ((skillData.baseRate ?? 0) > 0 || skillData.baseRateMode === "weapon");
+      && ((skillData.baseRate ?? 0) > 0 || skillData.baseRateMode === "weapon" || (skillData.skillHit ?? 0) > 0);
 
     // Barrier / healing / retaliatory skills route through forecast even with baseRate 0
     const isBarrierSkill = skillData.isBarrier ?? skillData.damageType === "barrier";
@@ -2538,6 +2585,10 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
             .replace(/"/g, "&quot;");
         })()
       };
+
+      // Non-offensive buffs auto-apply below — hide the manual button to prevent double-application
+      templateData.buffDuration = 0;
+      templateData.buffRulesJson = "";
 
       const content = await foundry.applications.handlebars.renderTemplate(
         "systems/manashard/templates/chat/skill-info.hbs",

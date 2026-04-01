@@ -12324,8 +12324,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 .manashard .skill-grid-card-summary {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 6px;
+  gap: 8px;
+  padding: 4px 8px;
   cursor: pointer;
   list-style: none;
   min-width: 0;
@@ -12350,10 +12350,10 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 
 .manashard .skill-grid-card-img {
-  width: 36px;
-  height: 36px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  width: 38px;
+  height: 38px;
+  border-radius: 0;
+  border: none;
   object-fit: cover;
   flex-shrink: 0;
 }
@@ -12373,6 +12373,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   flex: 1;
   min-width: 0;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .manashard .skill-grid-card-stats {
@@ -12402,24 +12405,30 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
 
 /* Skill card action buttons (use/remove/levelup/equip) */
 .manashard .skill-card-action {
-  font-size: 11px;
-  color: var(--manashard-text-muted, rgba(255,255,255,0.4));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
   cursor: pointer;
-  padding: 2px;
   flex-shrink: 0;
-  transition: color 0.15s;
-  opacity: 0;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.15s;
 }
-.manashard .skill-grid-card:hover .skill-card-action {
-  opacity: 1;
+.manashard .skill-card-action:hover {
+  color: var(--manashard-accent);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
 }
-.manashard .skill-card-action:hover { color: var(--manashard-accent); }
-.manashard .skill-card-action.cast-button { color: rgba(68, 170, 255, 0.6); }
-.manashard .skill-card-action.cast-button:hover { color: rgba(68, 170, 255, 1); }
-.manashard .skill-card-action.activate-button { color: rgba(255, 204, 68, 0.6); }
-.manashard .skill-card-action.activate-button:hover { color: rgba(255, 204, 68, 1); }
-.manashard .skill-card-action.remove-button { color: rgba(255, 80, 80, 0.4); }
-.manashard .skill-card-action.remove-button:hover { color: rgba(255, 80, 80, 0.9); }
+.manashard .skill-card-action.cast-button { color: rgba(68, 170, 255, 0.7); border-color: rgba(68, 170, 255, 0.15); }
+.manashard .skill-card-action.cast-button:hover { color: rgba(68, 170, 255, 1); background: rgba(68, 170, 255, 0.1); }
+.manashard .skill-card-action.activate-button { color: rgba(255, 204, 68, 0.7); border-color: rgba(255, 204, 68, 0.15); }
+.manashard .skill-card-action.activate-button:hover { color: rgba(255, 204, 68, 1); background: rgba(255, 204, 68, 0.1); }
+.manashard .skill-card-action.remove-button { color: rgba(255, 80, 80, 0.5); border-color: rgba(255, 80, 80, 0.1); }
+.manashard .skill-card-action.remove-button:hover { color: rgba(255, 80, 80, 0.9); background: rgba(255, 80, 80, 0.1); }
 .manashard .skill-card-action.disabled {
   opacity: 0.3;
   pointer-events: none;
@@ -12867,6 +12876,25 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   color: var(--manashard-text-muted);
   text-transform: uppercase;
   letter-spacing: 1.5px;
+}
+
+/* ─── Distance Row ─── */
+.token-info-panel .tip-distance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 3px 8px 4px;
+  border-top: 1px solid var(--manashard-border);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--manashard-text-muted);
+  letter-spacing: 0.5px;
+}
+
+.token-info-panel .tip-distance i {
+  font-size: 9px;
+  color: var(--manashard-accent);
 }
 
 
@@ -17008,9 +17036,28 @@ select.hu-rank-inline-select option {
 /* =====================================================
    COLLAPSIBLE TILE GRID — Used across all tabs
    ===================================================== */
+/* ── Combat Hex Frame ── */
+.combat-hex-frame {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: rgba(20, 30, 55, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.combat-hex-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+  border-radius: 0;
+}
+
 .adv-tile-grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 4px;
 }
 .adv-tile {
@@ -17026,8 +17073,8 @@ select.hu-rank-inline-select option {
 .adv-tile > summary {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 6px;
+  gap: 8px;
+  padding: 4px 8px;
   cursor: pointer;
   border-radius: 3px;
   list-style: none;
@@ -17035,17 +17082,21 @@ select.hu-rank-inline-select option {
 .adv-tile > summary::-webkit-details-marker { display: none; }
 .adv-tile > summary::marker { display: none; content: ""; }
 .adv-tile-img {
-  width: 32px;
-  height: 32px;
-  border-radius: 3px;
+  width: 38px;
+  height: 38px;
+  border-radius: 0;
   object-fit: cover;
   flex-shrink: 0;
 }
 .adv-tile-name {
+  flex: 1;
+  min-width: 0;
   font-size: 12px;
   font-weight: 600;
   color: var(--manashard-text);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .adv-tile-badge {
   font-size: 9px;
@@ -17057,24 +17108,34 @@ select.hu-rank-inline-select option {
   flex-shrink: 0;
 }
 .adv-tile-action {
-  font-size: 12px;
-  color: var(--manashard-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
   cursor: pointer;
-  padding: 2px;
   flex-shrink: 0;
-  transition: color 0.15s;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.15s;
 }
-.adv-tile-action:hover { color: var(--manashard-accent); }
-.adv-tile-action.cast-button { color: rgba(68, 170, 255, 0.6); }
-.adv-tile-action.cast-button:hover { color: rgba(68, 170, 255, 1); }
-.adv-tile-action.activate-button { color: rgba(255, 204, 68, 0.6); }
-.adv-tile-action.activate-button:hover { color: rgba(255, 204, 68, 1); }
-.adv-tile-action.attack-button { color: rgba(255, 100, 80, 0.6); }
-.adv-tile-action.attack-button:hover { color: rgba(255, 100, 80, 1); }
-.adv-tile-action.remove-button { color: rgba(255, 80, 80, 0.4); }
-.adv-tile-action.remove-button:hover { color: rgba(255, 80, 80, 0.9); }
-.adv-tile-action.consumable-button { color: rgba(102, 221, 170, 0.6); }
-.adv-tile-action.consumable-button:hover { color: rgba(102, 221, 170, 1); }
+.adv-tile-action:hover {
+  color: var(--manashard-accent);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.adv-tile-action.cast-button { color: rgba(68, 170, 255, 0.7); border-color: rgba(68, 170, 255, 0.15); }
+.adv-tile-action.cast-button:hover { color: rgba(68, 170, 255, 1); background: rgba(68, 170, 255, 0.1); }
+.adv-tile-action.activate-button { color: rgba(255, 204, 68, 0.7); border-color: rgba(255, 204, 68, 0.15); }
+.adv-tile-action.activate-button:hover { color: rgba(255, 204, 68, 1); background: rgba(255, 204, 68, 0.1); }
+.adv-tile-action.attack-button { color: rgba(255, 100, 80, 0.7); border-color: rgba(255, 100, 80, 0.15); }
+.adv-tile-action.attack-button:hover { color: rgba(255, 100, 80, 1); background: rgba(255, 100, 80, 0.1); }
+.adv-tile-action.remove-button { color: rgba(255, 80, 80, 0.5); border-color: rgba(255, 80, 80, 0.1); }
+.adv-tile-action.remove-button:hover { color: rgba(255, 80, 80, 0.9); background: rgba(255, 80, 80, 0.1); }
+.adv-tile-action.consumable-button { color: rgba(102, 221, 170, 0.7); border-color: rgba(102, 221, 170, 0.15); }
+.adv-tile-action.consumable-button:hover { color: rgba(102, 221, 170, 1); background: rgba(102, 221, 170, 0.1); }
 
 /* Expanded tile spans full width */
 .adv-tile[open] {

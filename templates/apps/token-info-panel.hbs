@@ -40,4 +40,11 @@
   </div>
   {{/if}}
 
+  {{#if tileDistance}}
+  <div class="tip-distance">
+    <i class="fa-solid fa-arrows-left-right"></i>
+    <span>{{tileDistance}} {{#if (eq tileDistance 1)}}tile{{else}}tiles{{/if}}</span>
+  </div>
+  {{/if}}
+
 </div>

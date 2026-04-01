@@ -8,7 +8,7 @@
  * - Debuffs: system.statusEffects entries (red border)
  *
  * Each icon shows artwork, duration counter, and tooltip with details.
- * Right-click (GM only) removes the effect.
+ * Right-click (token owner) removes the effect.
  */
 export class StatusEffectPanel {
   /** @type {HTMLElement|null} */
@@ -113,9 +113,9 @@ export class StatusEffectPanel {
     this.#element.querySelectorAll(".sep-icon").forEach(icon => {
       icon.addEventListener("contextmenu", async (e) => {
         e.preventDefault();
-        if (!game.user.isGM) return;
         const actor = this.#token?.actor;
         if (!actor) return;
+        if (!actor.isOwner) return;
 
         const effectId = icon.dataset.effectId;
         const statusKey = icon.dataset.statusKey;

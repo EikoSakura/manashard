@@ -28,7 +28,11 @@ export class ManashardItem extends Item {
     if (options._lootOnly) return; // Loot-table items should not fire grants
 
     // Foundry V13 strips ObjectField array contents during embedded document creation.
-    // Recover rules from the source world/compendium item.
+    // It can also reset other field values to their schema defaults.
+    // Recover from the creation data or from the source world/compendium item.
+    const recoveryUpdates = {};
+
+    // ── Recover rules ──
     let itemRules = this.system.rules ?? [];
     if (!itemRules.length) {
       // Try creation data first
@@ -57,10 +61,32 @@ export class ManashardItem extends Item {
           }
         }
       }
-      // Persist recovered rules onto the actor's copy
       if (itemRules.length) {
-        await this.update({ "system.rules": itemRules });
+        recoveryUpdates["system.rules"] = itemRules;
       }
+    }
+
+    // ── Recover damageType for manacite items ──
+    // Foundry V13 may reset damageType to its schema default ("none") during
+    // embedded document creation. Restore from creation data or source item.
+    if (this.type === "manacite") {
+      const createdDT = this.system.damageType;
+      const sourceDT = data.system?.damageType;
+      if (sourceDT && sourceDT !== createdDT) {
+        recoveryUpdates["system.damageType"] = sourceDT;
+      } else if (createdDT === "none") {
+        // Creation data was also stripped — try world/compendium lookup
+        const sourceItem = game.items.find(i => i.name === this.name && i.type === this.type);
+        const srcDT = sourceItem?.system?.damageType;
+        if (srcDT && srcDT !== "none") {
+          recoveryUpdates["system.damageType"] = srcDT;
+        }
+      }
+    }
+
+    // Persist all recovered fields in a single update
+    if (Object.keys(recoveryUpdates).length) {
+      await this.update(recoveryUpdates);
     }
 
     // Direct grant rules on this item (Grant with item/proficiency subtypes)

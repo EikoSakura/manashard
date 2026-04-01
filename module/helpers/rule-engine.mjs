@@ -98,6 +98,10 @@ export function collectRules(actor) {
   const rules = [];
   if (!actor?.items) return rules;
 
+  // For NPCs, track which skill names have already contributed rules so that
+  // duplicate copies (e.g. loot-table copies) don't double-apply.
+  const seenNpcSkills = new Set();
+
   // Collect from equipped items and species
   for (const item of actor.items) {
     let isActive = item.system.equipped === true || item.type === "species"
@@ -110,7 +114,10 @@ export function collectRules(actor) {
     }
 
     // For NPCs, skill manacites are always active (no loadout system)
+    // but deduplicate by name so loot-table copies don't stack rules.
     if (actor.type !== "character" && item.type === "manacite" && item.system.manaciteType === "skill") {
+      if (seenNpcSkills.has(item.name)) continue;
+      seenNpcSkills.add(item.name);
       isActive = true;
     }
 
@@ -266,6 +273,10 @@ function applyModifier(systemData, rule, tracker, targetSet) {
       : effectiveValue;
     systemData.stats.mp.max += bonus;
     tracker.add("mp.max", { value: bonus, source: rule._source, type: mode });
+  } else if (selector === "piercing" && mode === "percent") {
+    // Percent piercing = "ignore X% of DEF", stored separately for combat resolution
+    systemData.percentPiercing = (systemData.percentPiercing ?? 0) + effectiveValue;
+    tracker.add("percentPiercing", { value: effectiveValue, source: rule._source, type: mode });
   } else if (DERIVED_STATS.has(selector)) {
     const bonus = mode === "percent"
       ? Math.floor((systemData[selector] ?? 0) * effectiveValue / 100)
@@ -340,6 +351,10 @@ function applyGrant(systemData, rule, tracker) {
  */
 export function createRuleEngine(systemData, rules, { weaponCategory = null } = {}) {
   const tracker = new ModifierTracker();
+
+  // Track weapon-condition rules applied in Phase 2 so they aren't
+  // double-applied in the forecast/combat conditional evaluation.
+  const appliedWeaponCondRules = new Set();
 
   return {
     tracker,
@@ -417,7 +432,8 @@ export function createRuleEngine(systemData, rules, { weaponCategory = null } = 
           // Evaluate weapon-category conditions at prep time if weapon is known
           if (weaponCategory && WEAPON_CONDITIONS.has(rule.condition)) {
             if (WEAPON_COND_MAP[rule.condition] !== weaponCategory) continue;
-            // Condition matches — fall through to apply
+            // Condition matches — mark as applied and fall through
+            appliedWeaponCondRules.add(rule);
           } else {
             continue; // Other conditions deferred to combat
           }
@@ -486,7 +502,7 @@ export function createRuleEngine(systemData, rules, { weaponCategory = null } = 
         castingModifiers: [], // CastingModifier removed — keep empty for compat
         combatNotes: rules.filter(r => r.key === "CombatNote"),
         conditionalCheckBonuses: rules.filter(r => r.key === "Modifier" && r.mode === "checkOnly" && r.condition),
-        conditionalRules: rules.filter(r => !!r.condition || r.targetTypes?.length),
+        conditionalRules: rules.filter(r => (!!r.condition || r.targetTypes?.length) && !appliedWeaponCondRules.has(r)),
         damageReductions: rules.filter(r => r.key === "Modifier" && r.selector === "damageTaken" && r.damageType),
         damageTaken: rules.filter(r => r.key === "Modifier" && r.selector === "damageTaken" && !r.damageType),
         elementalAffinities: rules.filter(r => r.key === "Elemental"),

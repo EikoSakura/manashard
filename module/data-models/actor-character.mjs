@@ -33,7 +33,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // Migrate old status effect keys → new conditions
     if (source.statusEffects) {
       const oldToNew = { burn: "blight", poison: "blight", hex: "blight", frozen: "stun", shock: "stun", root: "immobilize", blind: "impair", windshear: "impair", soak: "expose" };
-      const validKeys = new Set(["beguile","blight","expose","immobilize","impair","silence","stun","taunt"]);
+      const validKeys = new Set(["beguile","blight","crystallize","expose","immobilize","impair","silence","stun","taunt"]);
       const migrated = new Set();
       for (const key of (source.statusEffects ?? [])) {
         const mapped = oldToNew[key] ?? key;
@@ -44,7 +44,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
 
     // Clear old statusResistances keys
     if (source.statusResistances) {
-      const validKeys = new Set(["beguile","blight","expose","immobilize","impair","silence","stun","taunt"]);
+      const validKeys = new Set(["beguile","blight","crystallize","expose","immobilize","impair","silence","stun","taunt"]);
       for (const key of Object.keys(source.statusResistances)) {
         if (!validKeys.has(key)) delete source.statusResistances[key];
       }
@@ -307,8 +307,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         const cap = rankStatCaps[key];
         if (cap !== undefined) {
           if (key === "hp" || key === "mp") {
-            if (stats[key].max > cap) stats[key].max = cap;
-            if (stats[key].value > stats[key].max) stats[key].value = stats[key].max;
+            // HP/MP value is not clamped here — the max hasn't received rank
+            // or rule bonuses yet, so clamping now would silently lower the
+            // current value.  The display percentage is capped at 100% in the
+            // sheet instead.
           } else {
             if (stats[key].value > cap) stats[key].value = cap;
           }
@@ -333,9 +335,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     const rankHpBase = rankData?.hpBase ?? 0;
     const rankMpBase = rankData?.mpBase ?? 0;
     stats.hp.max += rankHpBase;
-    if (stats.hp.value > stats.hp.max) stats.hp.value = stats.hp.max;
     stats.mp.max += rankMpBase;
-    if (stats.mp.value > stats.mp.max) stats.mp.value = stats.mp.max;
 
     // ═══════════════════════════════════════════════════════
     // Derived Stats (computed from now-modified core stats)

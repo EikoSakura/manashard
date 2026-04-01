@@ -19,7 +19,7 @@
       {{#if equippedWeapon}}
       <details class="adv-tile" data-item-id="{{equippedWeapon.id}}">
         <summary>
-          <img src="{{equippedWeapon.img}}" class="adv-tile-img" data-action="editItem" />
+          <div class="combat-hex-frame"><img src="{{equippedWeapon.img}}" class="adv-tile-img" data-action="editItem" /></div>
           <span class="adv-tile-name">{{equippedWeapon.name}}</span>
           <a class="adv-tile-action attack-button" data-action="rollAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
         </summary>
@@ -50,7 +50,7 @@
       {{#each naturalWeapons}}
       <details class="adv-tile" data-item-id="{{this.id}}">
         <summary>
-          <img src="{{this.img}}" class="adv-tile-img" data-action="editItem" />
+          <div class="combat-hex-frame"><img src="{{this.img}}" class="adv-tile-img" data-action="editItem" /></div>
           <span class="adv-tile-name">{{this.name}}</span>
           <a class="adv-tile-action attack-button" data-action="rollNaturalAttack" title="Attack"><i class="fas fa-dice-d20"></i></a>
         </summary>
@@ -78,7 +78,7 @@
       {{#each allActiveSkills}}
       <div class="skill-grid-card {{this.skillType}} {{#if this._isTaught}}taught{{/if}}" data-item-id="{{this.id}}">
         <div class="skill-grid-card-summary">
-          <img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" />
+          <div class="combat-hex-frame"><img src="{{this.img}}" class="skill-grid-card-img" data-action="postItemToChat" title="Post to chat" /></div>
           <span class="skill-grid-card-name">{{this.name}}</span>
           {{#if (eq this.skillType "magic")}}
           <a class="skill-card-action cast-button" data-action="useSkill" title="Cast"><i class="fas fa-hat-wizard"></i></a>
@@ -130,7 +130,7 @@
       {{#each consumables}}
       <details class="adv-tile" data-item-id="{{this.id}}">
         <summary>
-          <img src="{{this.img}}" class="adv-tile-img" />
+          <div class="combat-hex-frame"><img src="{{this.img}}" class="adv-tile-img" /></div>
           <span class="adv-tile-name">{{this.name}}</span>
           <span class="adv-tile-badge">x{{this.system.quantity}}</span>
           <a class="adv-tile-action consumable-button" data-action="useConsumable" title="Use"><i class="fas fa-flask"></i></a>

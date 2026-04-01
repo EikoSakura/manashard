@@ -42,7 +42,7 @@ import { ManashardItemSheet } from "./module/sheets/item-sheet.mjs";
 
 // Import helpers
 import { ruleSummary } from "./module/helpers/rule-engine.mjs";
-import { applyDamageFromChat, applyStealFromChat, applyPillageFromChat, applyLootFromChat, applyConsumableFromChat, applyBuffEffect } from "./module/helpers/combat.mjs";
+import { applyDamageFromChat, applyStealFromChat, applyPillageFromChat, applyLootFromChat, applyConsumableFromChat, applyBuffEffect, setDefeated } from "./module/helpers/combat.mjs";
 import { applyItemCardEffect } from "./module/helpers/item-cards.mjs";
 import { scheduleAuraRefresh, cleanupAuras } from "./module/helpers/aura-engine.mjs";
 import { syncAllTokenStatuses } from "./module/helpers/status-effects.mjs";
@@ -740,9 +740,24 @@ Hooks.on("deleteCombat", () => {
   game.manashard?.partyHUD?.refresh();
 });
 
-// Refresh panel when actor HP/MP changes
-Hooks.on("updateActor", () => {
+// Refresh panel when actor HP/MP changes + auto-revive defeated combatants
+Hooks.on("updateActor", (actor, changes) => {
   game.manashard?.partyHUD?.refresh();
+
+  // Auto-revive: when HP rises above 0 during combat, clear defeated state.
+  // Covers healing via sheet edits, consumables, rests, and any other path
+  // that bypasses applyDamageFromChat.
+  if (changes.system?.stats?.hp?.value !== undefined && game.combat?.started && game.user.isGM) {
+    const newHp = actor.system.stats.hp.value;
+    if (newHp > 0) {
+      for (const token of actor.getActiveTokens()) {
+        const combatant = game.combat.combatants.find(c => c.tokenId === token.id);
+        if (combatant?.isDefeated) {
+          setDefeated(token, false);
+        }
+      }
+    }
+  }
 });
 
 // Refresh panel when combatant state changes (defeated, turn advancement, etc.)

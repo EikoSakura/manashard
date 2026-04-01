@@ -56,7 +56,7 @@
         </div>
       </div>
       <div class="hdr-bar-track">
-        <div class="hdr-hp-bar" style="width: {{#if system.stats.hp.max}}{{math system.stats.hp.value "/" system.stats.hp.max "*" 100}}%{{else}}0%{{/if}}"></div>
+        <div class="hdr-hp-bar" style="width: {{hpPercent}}%"></div>
         {{#if system.stats.hp.barrier}}
         <div class="hdr-barrier-bar" style="right: {{barrierRight}}%; width: {{barrierPercent}}%"></div>
         {{/if}}
@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="hdr-bar-track">
-        <div class="hdr-mp-bar" style="width: {{#if system.stats.mp.max}}{{math system.stats.mp.value "/" system.stats.mp.max "*" 100}}%{{else}}0%{{/if}}"></div>
+        <div class="hdr-mp-bar" style="width: {{mpPercent}}%"></div>
       </div>
 
       {{!-- NPC Detail Rows --}}

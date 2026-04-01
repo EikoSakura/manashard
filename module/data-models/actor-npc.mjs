@@ -27,7 +27,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     // Migrate old status effect keys → new conditions
     if (source.statusEffects) {
       const oldToNew = { burn: "blight", poison: "blight", hex: "blight", frozen: "stun", shock: "stun", root: "immobilize", blind: "impair", windshear: "impair", soak: "expose" };
-      const validKeys = new Set(["beguile","blight","expose","immobilize","impair","silence","stun","taunt"]);
+      const validKeys = new Set(["beguile","blight","crystallize","expose","immobilize","impair","silence","stun","taunt"]);
       const migrated = new Set();
       for (const key of (source.statusEffects ?? [])) {
         const mapped = oldToNew[key] ?? key;
@@ -38,7 +38,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
 
     // Clear old statusResistances keys
     if (source.statusResistances) {
-      const validKeys = new Set(["beguile","blight","expose","immobilize","impair","silence","stun","taunt"]);
+      const validKeys = new Set(["beguile","blight","crystallize","expose","immobilize","impair","silence","stun","taunt"]);
       for (const key of Object.keys(source.statusResistances)) {
         if (!validKeys.has(key)) delete source.statusResistances[key];
       }

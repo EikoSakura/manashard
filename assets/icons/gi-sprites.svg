@@ -56,6 +56,14 @@
     <path d="M12 8v4M12 14v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
   </symbol>
 
+  <symbol id="gi-crystallize" viewBox="0 0 24 24">
+    <path d="M12 2L17 7L18 15L14 21H10L6 15L7 7Z" fill="currentColor" opacity="0.4"/>
+    <path d="M12 2L17 7L18 15L14 21H10L6 15L7 7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M12 2L6 15M12 2L18 15" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+    <circle cx="12" cy="10" r="1.5" fill="currentColor" opacity="0.6"/>
+    <path d="M12 12v3" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+  </symbol>
+
   <!-- === ELEMENTS === -->
   <symbol id="gi-fire" viewBox="0 0 24 24">
     <path d="M12 2c-1 4-4 6-4 10 0 3.31 2.69 6 6 6 1.66 0 3.16-.67 4.24-1.76C18.84 15.64 19 14.84 19 14c0-4-3-6-4-8-1 2-3 3-3 6 0 1.1-.9 2-2 2s-2-.9-2-2c0-2 2-5 4-10z" fill="currentColor" opacity="0.8"/>

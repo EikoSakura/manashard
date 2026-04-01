@@ -34,22 +34,18 @@
           <img src="{{pillage.itemImg}}" />
           {{pillage.itemName}}
         </span>
-        <span class="ms-card-loot-roll"><i class="fas fa-dice-d20"></i> {{pillage.lootRoll}} / {{pillage.lootChance}}{{#if pillage.lukBonus}} <small>({{pillage.baseChance}}+{{pillage.lukBonus}} LUK)</small>{{/if}}</span>
+        {{#if pillage.guaranteed}}
+          <span class="ms-card-loot-roll"><i class="fas fa-shield-alt"></i> Guaranteed</span>
+        {{else}}
+          <span class="ms-card-loot-roll"><i class="fas fa-dice-d20"></i> {{pillage.lootRoll}} / {{pillage.lootChance}}{{#if pillage.lukBonus}} <small>({{pillage.baseChance}}+{{pillage.lukBonus}} LUK)</small>{{/if}}</span>
+        {{/if}}
       </div>
     {{else}}
-      {{#if pillage.noLoot}}
-        <div class="ms-card-loot-member">
-          <img src="{{pillage.actorImg}}" />
-          <span class="ms-card-loot-member-name">{{pillage.actorName}}</span>
-          <span class="ms-card-loot-miss">No loot available</span>
-        </div>
-      {{else}}
-        <div class="ms-card-loot-member">
-          <img src="{{pillage.actorImg}}" />
-          <span class="ms-card-loot-member-name">{{pillage.actorName}}</span>
-          <span class="ms-card-loot-miss">Rolls failed</span>
-        </div>
-      {{/if}}
+      <div class="ms-card-loot-member">
+        <img src="{{pillage.actorImg}}" />
+        <span class="ms-card-loot-member-name">{{pillage.actorName}}</span>
+        <span class="ms-card-loot-miss">No loot available</span>
+      </div>
     {{/if}}
   </div>
   {{/if}}

@@ -79,7 +79,11 @@ export class ManaciteData extends foundry.abstract.TypeDataModel {
     delete source.isHealing;
 
     // Migrate empty/blank damageType (old "Auto") → "none"
-    if (source.damageType === "" || source.damageType === undefined || source.damageType === null) {
+    // Do NOT include undefined here: migrateData is called on partial update
+    // payloads in Foundry V13, where damageType may simply be absent. Treating
+    // undefined as "" would overwrite the stored value (e.g. "healing") with
+    // "none". Schema initial:"none" handles truly missing fields on new items.
+    if (source.damageType === "" || source.damageType === null) {
       source.damageType = "none";
     }
 
