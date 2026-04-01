@@ -233,7 +233,7 @@ function checkCondition(condition, context) {
       if (!tgtTok || !atkTok) return 0;
       const atkDisp = atkTok.document.disposition;
       return canvas.tokens.placeables.filter(t => {
-        if (!t.actor || t.actor.id === attackerActorId) return false;
+        if (!t.actor || t.id === atkTok.id) return false;
         if (t.document.disposition !== atkDisp) return false;
         const allyReach = t.actor.system?.reach ?? 1;
         return gridDistance(t, tgtTok) <= allyReach;
@@ -451,6 +451,7 @@ export function rollStatusInflictions(inflictions, defenderActor) {
  * @param {number} params.defenderCritAvoid - Defender's crit avoid
  * @param {number} params.defenderBlockChance - Defender's block chance (shield)
  * @param {number} [params.chantModifier=1.0] - Chant effect modifier for skills
+ * @param {number} [params.chantAccuracyBonus=0] - Flat accuracy bonus from chant mode (e.g. Full Cast +15)
  * @param {boolean} [params.isInitiator=false] - Whether the attacker is initiating (their turn) vs reacting
  * @returns {object} CombatResult object (pre-roll)
  */
@@ -461,6 +462,7 @@ export function resolveAttack(params) {
     baseDamage, accuracy, critical,
     defenderEvasion, defenderDef, defenderCritAvoid, defenderBlockChance,
     chantModifier = 1.0,
+    chantAccuracyBonus = 0,
     damageMultiplier = 1.0,
     isInitiator = false,
     isHealing = false,
@@ -493,8 +495,8 @@ export function resolveAttack(params) {
   const defContext = { system: defenderActor?.system, defenderActor: null, element: resolvedElement, damageType, isInitiator: defIsInitiator, isHealing };
   const defCond = evaluateConditionalRules(defRuleCache.conditionalRules, defContext);
 
-  // Apply attacker conditional bonuses
-  let modAccuracy = accuracy + (atkCond.statBonuses.accuracy ?? 0);
+  // Apply attacker conditional bonuses + chant accuracy bonus
+  let modAccuracy = accuracy + (atkCond.statBonuses.accuracy ?? 0) + chantAccuracyBonus;
   let modCritical = critical + (atkCond.statBonuses.critical ?? 0);
   let modDamage = baseDamage + (atkCond.statBonuses.damage ?? 0);
 

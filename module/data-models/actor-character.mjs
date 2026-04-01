@@ -347,9 +347,6 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // Carrying Capacity = 10 + STR + (END / 2), rounded down
     this.carryingCapacity = 10 + stats.str.value + Math.floor(stats.end.value / 2);
 
-    // Overencumbered check
-    this.overencumbered = this.totalWeight > this.carryingCapacity;
-
     // Weapon stats
     const weaponMight = equippedWeapon?.might ?? 0;
     const weaponCrit = equippedWeapon?.crit ?? 0;
@@ -407,6 +404,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // (after derived formulas, adds flat bonuses to derived stats)
     // ═══════════════════════════════════════════════════════
     engine.applyDerivedModifiers();
+
+    // Overencumbered check (after modifiers so capacity bonuses are included)
+    this.overencumbered = this.totalWeight > this.carryingCapacity;
 
     // Apply loadout slot modifiers back to maxLoadoutSlots
     this.maxLoadoutSlots = this.loadoutSlots;

@@ -824,13 +824,9 @@ Hooks.on("preCreateToken", (tokenDoc, data, options, userId) => {
   if (tokenDoc.actorLink) {
     const actor = tokenDoc.actor;
     const vision = actor?.system?.vision;
-    if (Number.isFinite(vision)) {
-      const gridDist = scene.grid?.distance ?? 1;
-      const sightRange = Math.max(0, vision) * gridDist;
-      tokenDoc.updateSource({ "sight.enabled": true, "sight.range": sightRange, displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
-    } else {
-      tokenDoc.updateSource({ displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
-    }
+    const gridDist = scene.grid?.distance ?? 1;
+    const sightRange = Math.max(0, Number.isFinite(vision) ? vision : 6) * gridDist;
+    tokenDoc.updateSource({ "sight.enabled": true, "sight.range": sightRange, displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
     return;
   }
 
@@ -857,19 +853,15 @@ Hooks.on("preCreateToken", (tokenDoc, data, options, userId) => {
   // Convert tiles → scene distance units.
   const actor = tokenDoc.actor;
   const vision = actor?.system?.vision;
-  if (Number.isFinite(vision)) {
-    const gridDist = scene.grid?.distance ?? 1;
-    const sightRange = Math.max(0, vision) * gridDist;
-    tokenDoc.updateSource({
-      name: `${stripped} ${letter}`,
-      displayName: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-      displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-      "sight.enabled": true,
-      "sight.range": sightRange
-    });
-  } else {
-    tokenDoc.updateSource({ name: `${stripped} ${letter}`, displayName: CONST.TOKEN_DISPLAY_MODES.ALWAYS, displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS });
-  }
+  const gridDist = scene.grid?.distance ?? 1;
+  const sightRange = Math.max(0, Number.isFinite(vision) ? vision : 6) * gridDist;
+  tokenDoc.updateSource({
+    name: `${stripped} ${letter}`,
+    displayName: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+    displayBars: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+    "sight.enabled": true,
+    "sight.range": sightRange
+  });
 });
 
 let _gmVisionActive = false;

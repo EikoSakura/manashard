@@ -312,6 +312,7 @@
   border: none;
   font: inherit;
   color: var(--ms-gold);
+  -webkit-text-fill-color: var(--ms-gold);
   text-align: center;
   width: 100%;
   letter-spacing: inherit;

@@ -440,7 +440,7 @@ export function buildForecastContext(actor, targetToken, options = {}) {
 
     // Forecast
     forecast: {
-      hit: (healMode || isRetaliatory) ? 100 : Math.max(0, acc - defEva),
+      hit: (healMode || isRetaliatory) ? 100 : Math.max(0, acc + (chantData.accuracyBonus ?? 0) - defEva),
       crit: (healMode || isRetaliatory) ? crit : Math.max(0, crit - defCritAvoid),
       damage: forecastDmg,
       block: defBlockChance,
@@ -567,7 +567,7 @@ export function recalculateForecast(raw, overrides = {}) {
   const mpWarning = outOfMp ? `Need ${chantMpCost} MP, have ${currentMp}.` : "";
 
   return {
-    hit: raw.healMode ? 100 : Math.max(0, raw.acc - eva),
+    hit: raw.healMode ? 100 : Math.max(0, raw.acc + (chantData.accuracyBonus ?? 0) - eva),
     crit: raw.healMode ? raw.crit : Math.max(0, raw.crit - critEvo),
     damage: forecastDmg,
     projectedDefHpPct,

@@ -464,7 +464,7 @@ MANASHARD.movementModes = {
 MANASHARD.chantModes = {
   swift: { label: "MANASHARD.ChantModes.Swift", effectModifier: 0.75, mpMultiplier: 0.5, chargesTurn: false },
   normal: { label: "MANASHARD.ChantModes.Normal", effectModifier: 1.0, mpMultiplier: 1.0, chargesTurn: false },
-  full: { label: "MANASHARD.ChantModes.Full", effectModifier: 1.5, mpMultiplier: 1.5, chargesTurn: true }
+  full: { label: "MANASHARD.ChantModes.Full", effectModifier: 2.0, mpMultiplier: 1.5, chargesTurn: true, accuracyBonus: 15 }
 };
 
 /**

@@ -387,24 +387,9 @@ export class ManashardItem extends Item {
     }
 
     if (itemsToCreate.length) {
-      const created = await this.actor.createEmbeddedDocuments("Item", itemsToCreate, {
+      await this.actor.createEmbeddedDocuments("Item", itemsToCreate, {
         _grantDepth: depth + 1
       });
-
-      // Auto-add granted skill manacites to the loadout
-      const loadout = [...(this.actor.system.skillLoadout ?? [])];
-      let loadoutChanged = false;
-      for (const doc of created) {
-        if (doc.type === "manacite" && doc.system.manaciteType === "skill" && doc.system.absorbed) {
-          if (!loadout.includes(doc.id)) {
-            loadout.push(doc.id);
-            loadoutChanged = true;
-          }
-        }
-      }
-      if (loadoutChanged) {
-        await this.actor.update({ "system.skillLoadout": loadout });
-      }
     }
 
     if (effectsToCreate.length) {

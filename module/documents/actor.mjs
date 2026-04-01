@@ -702,6 +702,7 @@ export class ManashardActor extends Actor {
     const system = this.system;
     const chant = CONFIG.MANASHARD.chantModes[chantMode];
     const chantModifier = chant?.effectModifier ?? 1.0;
+    const chantAccuracyBonus = chant?.accuracyBonus ?? 0;
     const chantLabel = chant ? game.i18n.localize(chant.label) : "";
 
     // ── Target restriction check ──
@@ -911,6 +912,7 @@ export class ManashardActor extends Actor {
       defenderCritAvoid: (isHealing && !targetIsUndead) || isBarrier || noneAutoHit ? 0 : defenderCritAvoid,
       defenderBlockChance: isHealing || isBarrier || isNoneDamage ? 0 : defenderBlockChance,
       chantModifier,
+      chantAccuracyBonus,
       isInitiator,
       isHealing,
       weaponItemId: itemId,
@@ -1123,6 +1125,7 @@ export class ManashardActor extends Actor {
     const system = this.system;
     const chant = CONFIG.MANASHARD.chantModes[chantMode];
     const chantModifier = chant?.effectModifier ?? 1.0;
+    const chantAccuracyBonus = chant?.accuracyBonus ?? 0;
     const chantLabel = chant ? game.i18n.localize(chant.label) : "";
 
     // Determine element and damage type from skill
@@ -1273,6 +1276,7 @@ export class ManashardActor extends Actor {
         defenderCritAvoid: 0,
         defenderBlockChance: 0,
         chantModifier,
+        chantAccuracyBonus,
         isInitiator,
         isHealing,
         weaponItemId: itemId,

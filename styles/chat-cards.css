@@ -448,7 +448,7 @@
   color: #e84393;
 }
 .ms-card-status-line.status-failed {
-  color: #5a7a94;
+  color: #d4a843;
 }
 .ms-card-status-line i { font-size: 8px; width: 12px; text-align: center; }
 
@@ -459,12 +459,12 @@
   gap: 6px;
   padding: 2px 10px;
   font-size: 9px;
-  color: #6a8ba4;
+  color: #d4a843;
 }
-.ms-card-combat-note i { color: #5a7a94; margin-top: 1px; font-size: 8px; }
+.ms-card-combat-note i { color: #c49a38; margin-top: 1px; font-size: 8px; }
 .ms-card-note-source {
   font-size: 8px;
-  color: #4a6a84;
+  color: #b8922f;
   font-style: italic;
 }
 
