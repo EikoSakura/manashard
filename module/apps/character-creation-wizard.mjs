@@ -349,18 +349,36 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
     const allocated = Object.values(stats).reduce((sum, v) => sum + v, 0);
     const spent = allocated - minsTotal;
     const remaining = pool - spent;
-    const rows = Object.entries(stats).map(([key, value]) => ({
-      key,
-      label: game.i18n.localize(CONFIG.MANASHARD.stats[key]),
-      abbr: game.i18n.localize(CONFIG.MANASHARD.statAbbreviations[key]),
-      value,
-      min: mins[key],
-      max: caps[key],
-      barWidth: Math.round((value / caps[key]) * 100),
-      canIncrease: value < caps[key] && remaining > 0,
-      canDecrease: value > mins[key]
-    }));
-    return { rows, remaining, pool, isComplete: remaining === 0 };
+
+    // Collect flat stat bonuses from the selected job's rule elements
+    const jobBonuses = {};
+    const jobData = this.#wizardState.jobData;
+    if (jobData) {
+      for (const rule of jobData.system?.rules ?? []) {
+        if (rule.key === "Modifier" && (rule.selector in stats) && rule.mode !== "override") {
+          jobBonuses[rule.selector] = (jobBonuses[rule.selector] ?? 0) + (Number(rule.value) || 0);
+        }
+      }
+    }
+
+    const rows = Object.entries(stats).map(([key, value]) => {
+      const jobBonus = jobBonuses[key] ?? 0;
+      return {
+        key,
+        label: game.i18n.localize(CONFIG.MANASHARD.stats[key]),
+        abbr: game.i18n.localize(CONFIG.MANASHARD.statAbbreviations[key]),
+        value,
+        min: mins[key],
+        max: caps[key],
+        barWidth: Math.round((value / caps[key]) * 100),
+        jobBonus,
+        jobBarWidth: jobBonus > 0 ? Math.round((jobBonus / caps[key]) * 100) : 0,
+        canIncrease: value < caps[key] && remaining > 0,
+        canDecrease: value > mins[key]
+      };
+    });
+    const hasJobBonuses = Object.values(jobBonuses).some(v => v > 0);
+    return { rows, remaining, pool, isComplete: remaining === 0, hasJobBonuses, jobName: jobData?.name ?? "" };
   }
 
   #prepareGrowthContext() {
@@ -1141,6 +1159,7 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
     }
 
     // Add chosen skills (absorbed + loadout) — free picks + constrained slot picks
+    const createdSkillIds = [];
     const allPicks = [
       ...state.selectedSkills,
       ...(state.constrainedSlots || []).filter(s => s.pick).map(s => s.pick)
@@ -1152,18 +1171,32 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
       const itemData = skillDoc.toObject();
       itemData.system.absorbed = true;
       itemData.system.equipped = true;
-      await actor.createEmbeddedDocuments("Item", [itemData]);
+      const created = await actor.createEmbeddedDocuments("Item", [itemData]);
+      if (created?.[0]) createdSkillIds.push(created[0].id);
     }
 
-    // Collect ALL absorbed skill IDs (both player-selected and granted by species/job)
-    // This must happen after all item creation so granted skills from _onCreate are included.
-    const allSkillIds = actor.items
-      .filter(i => i.type === "manacite" && i.system.manaciteType === "skill" && i.system.absorbed)
-      .map(i => i.id);
-    if (allSkillIds.length) {
+    // Also include any skills granted by species/job _onCreate processing.
+    // _onCreate is async and may not have finished yet, so scan actor.items
+    // for skill manacites we didn't create directly (granted by job/species).
+    for (const item of actor.items) {
+      if (item.type !== "manacite" || item.system.manaciteType !== "skill") continue;
+      if (createdSkillIds.includes(item.id)) continue;
+      createdSkillIds.push(item.id);
+    }
+
+    // Force-ensure all skills are absorbed (V13 may strip boolean fields to
+    // schema defaults during createEmbeddedDocuments) and update library/loadout.
+    if (createdSkillIds.length) {
+      const absorbUpdates = createdSkillIds
+        .map(id => actor.items.get(id))
+        .filter(i => i && !i.system.absorbed)
+        .map(i => ({ _id: i.id, "system.absorbed": true, "system.equipped": true }));
+      if (absorbUpdates.length) {
+        await actor.updateEmbeddedDocuments("Item", absorbUpdates);
+      }
       await actor.update({
-        "system.skillLibrary": allSkillIds,
-        "system.skillLoadout": allSkillIds
+        "system.skillLibrary": createdSkillIds,
+        "system.skillLoadout": createdSkillIds
       });
     }
 

@@ -1244,3 +1244,211 @@
   text-transform: capitalize;
   flex-shrink: 0;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   COMBAT INSPECTOR DIALOG
+   ═══════════════════════════════════════════════════════════════ */
+
+.combat-inspector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--manashard-font-body, "Inter", sans-serif);
+  font-size: 12px;
+  color: var(--manashard-text, #c8dce8);
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+/* Toolbar / Search */
+.ci-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px;
+}
+.ci-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+.ci-search-wrap i {
+  color: #7a92a8;
+  font-size: 11px;
+}
+.ci-search {
+  background: transparent;
+  border: none;
+  color: var(--manashard-text, #c8dce8);
+  font-size: 11px;
+  flex: 1;
+  outline: none;
+}
+.ci-search::placeholder { color: #5a7088; }
+
+/* Filter Tabs */
+.ci-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 2px;
+}
+.ci-filter-tab {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #7a92a8;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ci-filter-tab:hover {
+  background: rgba(212, 160, 48, 0.1);
+  color: #d4a030;
+  border-color: rgba(212, 160, 48, 0.2);
+}
+.ci-filter-tab.active {
+  background: rgba(212, 160, 48, 0.15);
+  color: #d4a030;
+  border-color: rgba(212, 160, 48, 0.3);
+}
+
+/* Sections */
+.ci-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ci-section {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ci-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #8a9eb4;
+}
+.ci-section-header i {
+  font-size: 11px;
+  color: #d4a030;
+}
+.ci-side-badge {
+  margin-left: auto;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.ci-side-atk {
+  background: rgba(232, 67, 147, 0.15);
+  color: #e84393;
+}
+.ci-side-def {
+  background: rgba(0, 184, 212, 0.15);
+  color: #00b8d4;
+}
+.ci-side-res {
+  background: rgba(212, 160, 48, 0.15);
+  color: #d4a030;
+}
+.ci-section-body {
+  padding: 4px 0;
+}
+
+/* Rows */
+.ci-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  transition: background 0.1s;
+}
+.ci-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.ci-row-icon {
+  width: 14px;
+  text-align: center;
+  font-size: 10px;
+  color: #7a92a8;
+  flex-shrink: 0;
+}
+.ci-row-label {
+  flex: 1;
+  font-size: 11px;
+  color: #8a9eb4;
+}
+.ci-row-value {
+  font-family: var(--manashard-font-heading, "Share Tech Mono", monospace);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+  min-width: 50px;
+  color: #c8dce8;
+}
+
+/* Row type styles */
+.ci-row-formula .ci-row-label { color: #5a7088; font-style: italic; font-size: 10px; }
+.ci-row-formula .ci-row-value { color: #5a7088; font-size: 10px; }
+.ci-row-base .ci-row-value { color: #c8dce8; }
+.ci-row-modifier .ci-row-icon { color: #d4a030; }
+.ci-row-modifier .ci-row-value { color: #d4a030; }
+.ci-row-status .ci-row-icon { color: #e84393; }
+.ci-row-status .ci-row-label { color: #e84393; }
+.ci-row-status .ci-row-value { color: #e84393; }
+.ci-row-crit .ci-row-icon { color: #ff6b6b; }
+.ci-row-crit .ci-row-label { color: #ff6b6b; font-weight: 600; }
+.ci-row-crit .ci-row-value { color: #ff6b6b; }
+.ci-row-total {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 2px;
+  padding-top: 5px;
+}
+.ci-row-total .ci-row-label { font-weight: 700; color: #c8dce8; }
+.ci-row-total .ci-row-value { color: #c8dce8; font-weight: 700; }
+.ci-row-grand-total {
+  border-top: 1px solid rgba(212, 160, 48, 0.3);
+  margin-top: 2px;
+  padding-top: 5px;
+}
+.ci-row-grand-total .ci-row-label { font-weight: 700; color: #d4a030; }
+.ci-row-grand-total .ci-row-value { color: #d4a030; font-weight: 700; font-size: 14px; }
+.ci-row-roll-hit .ci-row-value { color: #51cf66; }
+.ci-row-roll-miss .ci-row-value { color: #ff6b6b; }
+.ci-row-result-hit .ci-row-label { color: #51cf66; font-weight: 700; }
+.ci-row-result-hit .ci-row-value { color: #51cf66; font-weight: 700; }
+.ci-row-result-miss .ci-row-label { color: #ff6b6b; font-weight: 700; }
+.ci-row-result-miss .ci-row-value { color: #ff6b6b; font-weight: 700; }
+
+/* Search highlight */
+.ci-search-highlight {
+  background: rgba(212, 160, 48, 0.1) !important;
+}
+
+/* Combat context menu (right-click on cards) */
+.ms-combat-ctx {
+  animation: ms-ctx-fadein 0.1s ease;
+}
+@keyframes ms-ctx-fadein {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

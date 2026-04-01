@@ -35,6 +35,7 @@ import { CompendiumBrowser } from "./module/apps/compendium-browser.mjs";
 import { ManaciteManager } from "./module/apps/manacite-manager.mjs";
 import { SpatialInventory } from "./module/apps/spatial-inventory.mjs";
 import { EncounterBuilder } from "./module/apps/encounter-builder.mjs";
+import { showCombatInspector } from "./module/apps/combat-inspector-dialog.mjs";
 
 // Import sheets
 import { ManashardActorSheet } from "./module/sheets/actor-sheet.mjs";
@@ -592,13 +593,11 @@ async function _handleApplyBuff(btn) {
     return;
   }
 
-  // Collect target tokens (prefer targets, fall back to controlled)
-  const targets = game.user.targets.size > 0
-    ? [...game.user.targets]
-    : canvas.tokens?.controlled ?? [];
+  // Collect targeted tokens only (no fallback to selected/controlled)
+  const targets = [...game.user.targets];
 
   if (!targets.length) {
-    ui.notifications.warn("Select or target tokens to apply the effect to.");
+    ui.notifications.warn("Target tokens to apply the effect to.");
     return;
   }
 
@@ -664,32 +663,81 @@ Hooks.once("ready", () => {
     }
   });
 
-  // Right-click context menu: toggle formula panel on attack & stat check cards
-  // Use capture phase so this fires before Foundry's native context menu handler
+  // Right-click context menu on attack & stat check cards
+  // Shows a context menu with "Formula" toggle and "Inspect" option
   document.addEventListener("contextmenu", (event) => {
-    const card = event.target.closest(".ms-card");
+    // Close any existing combat context menu
+    document.querySelector(".ms-combat-ctx")?.remove();
+
+    const card = event.target.closest(".ms-card") || event.target.closest(".ms-card-aoe-target");
     if (!card) return;
     // Don't intercept if clicking inside the formula panel itself
     if (event.target.closest(".acc-formula-context") || event.target.closest(".sc-formula-context")) return;
-    const formula = card.querySelector(".acc-formula-context") || card.querySelector(".sc-formula-context");
-    if (!formula) return;
+    const formula = card.closest(".ms-card")?.querySelector(".acc-formula-context")
+      || card.closest(".ms-card")?.querySelector(".sc-formula-context")
+      || card.querySelector(".acc-formula-context")
+      || card.querySelector(".sc-formula-context");
+    if (!formula && !card.dataset.debug && !card.closest(".ms-card")?.dataset.debug) return;
     event.preventDefault();
     event.stopPropagation();
-    // Close all other open panels first
-    document.querySelectorAll(".acc-formula-context.visible, .sc-formula-context.visible").forEach(el => {
-      if (el !== formula) el.classList.remove("visible");
+
+    // Build context menu
+    const menu = document.createElement("div");
+    menu.classList.add("ms-combat-ctx", "ms-context-menu");
+
+    if (formula) {
+      menu.innerHTML += `<a class="ms-ctx-option" data-ctx="formula"><i class="fas fa-scroll"></i> Formula</a>`;
+    }
+    // Check for debug data on the card itself or on the closest .ms-card (for AoE per-target)
+    const debugSource = card.dataset.debug ? card : card.closest("[data-debug]");
+    if (debugSource?.dataset.debug) {
+      menu.innerHTML += `<a class="ms-ctx-option" data-ctx="inspect"><i class="fas fa-magnifying-glass"></i> Inspect</a>`;
+    }
+
+    menu.style.position = "fixed";
+    menu.style.left = `${event.clientX}px`;
+    menu.style.top = `${event.clientY}px`;
+    menu.style.zIndex = "10000";
+    document.body.appendChild(menu);
+
+    // Keep on screen
+    const rect = menu.getBoundingClientRect();
+    if (rect.right > window.innerWidth) menu.style.left = `${window.innerWidth - rect.width - 4}px`;
+    if (rect.bottom > window.innerHeight) menu.style.top = `${window.innerHeight - rect.height - 4}px`;
+
+    menu.addEventListener("click", (e) => {
+      const action = e.target.closest("[data-ctx]")?.dataset.ctx;
+      menu.remove();
+      if (action === "formula" && formula) {
+        // Close all other open panels first
+        document.querySelectorAll(".acc-formula-context.visible, .sc-formula-context.visible").forEach(el => {
+          if (el !== formula) el.classList.remove("visible");
+        });
+        formula.classList.toggle("visible");
+      } else if (action === "inspect" && debugSource?.dataset.debug) {
+        try {
+          const debug = JSON.parse(debugSource.dataset.debug);
+          showCombatInspector(debug);
+        } catch (err) {
+          console.error("Manashard | Failed to parse combat debug data", err);
+          ui.notifications.error("Failed to open combat inspector.");
+        }
+      }
     });
-    formula.classList.toggle("visible");
   }, { capture: true });
 
-  // Close formula panel on click outside or Escape
+  // Close formula panel and combat context menu on click outside or Escape
   document.addEventListener("click", (event) => {
+    if (!event.target.closest(".ms-combat-ctx")) {
+      document.querySelector(".ms-combat-ctx")?.remove();
+    }
     if (!event.target.closest(".acc-formula-context") && !event.target.closest(".sc-formula-context") && !event.target.closest(".acc-apply-damage")) {
       document.querySelectorAll(".acc-formula-context.visible, .sc-formula-context.visible").forEach(el => el.classList.remove("visible"));
     }
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      document.querySelector(".ms-combat-ctx")?.remove();
       document.querySelectorAll(".acc-formula-context.visible, .sc-formula-context.visible").forEach(el => el.classList.remove("visible"));
     }
   });
@@ -1343,6 +1391,7 @@ function _preloadHandlebarsTemplates() {
     "systems/manashard/templates/item/parts/item-rules.hbs",
     "systems/manashard/templates/dialog/combat-forecast.hbs",
     "systems/manashard/templates/dialog/stat-check-forecast.hbs",
+    "systems/manashard/templates/dialog/combat-inspector.hbs",
     "systems/manashard/templates/chat/attack-result.hbs",
     "systems/manashard/templates/chat/stat-check.hbs",
     "systems/manashard/templates/chat/skill-info.hbs",

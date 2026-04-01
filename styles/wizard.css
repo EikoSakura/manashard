@@ -996,6 +996,55 @@
   background: linear-gradient(90deg, var(--wizard-growth), #8e44ad);
 }
 
+/* Job bonus bar segment — green overlay positioned after the player's bar */
+.stat-bar-container {
+  position: relative;
+}
+
+.stat-bar-job {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--wizard-success), #43a047);
+  border-radius: 0 5px 5px 0;
+  opacity: 0.7;
+  transition: left 0.2s ease, width 0.2s ease;
+}
+
+/* Job bonus indicator next to stat value */
+.stat-job-bonus {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wizard-success);
+  margin-left: 2px;
+}
+
+/* Legend bar showing what the green means */
+.wizard-job-bonus-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  background: rgba(72, 176, 94, 0.08);
+  border: 1px solid rgba(72, 176, 94, 0.25);
+  border-radius: 4px;
+}
+
+.job-bonus-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--wizard-success), #43a047);
+  flex-shrink: 0;
+}
+
+.job-bonus-legend-text {
+  font-size: 12px;
+  color: var(--wizard-success);
+  font-weight: 600;
+}
+
 .stat-range {
   font-size: 11px;
   color: var(--wizard-text-dim);

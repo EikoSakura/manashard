@@ -92,13 +92,13 @@ MANASHARD.ranks = {
  * Stats cannot grow above these values regardless of growth rates or modifiers.
  */
 MANASHARD.rankStatCaps = {
-  f: { hp: 30, mp: 20, str: 8, agi: 8, mag: 8, end: 8, spi: 8, luk: 8, int: 8, chm: 8 },
-  e: { hp: 40, mp: 28, str: 12, agi: 12, mag: 12, end: 12, spi: 12, luk: 12, int: 12, chm: 12 },
-  d: { hp: 52, mp: 36, str: 16, agi: 16, mag: 16, end: 16, spi: 16, luk: 16, int: 16, chm: 16 },
-  c: { hp: 68, mp: 46, str: 21, agi: 21, mag: 21, end: 21, spi: 21, luk: 21, int: 21, chm: 21 },
-  b: { hp: 88, mp: 58, str: 27, agi: 27, mag: 27, end: 27, spi: 27, luk: 27, int: 27, chm: 27 },
-  a: { hp: 115, mp: 75, str: 33, agi: 33, mag: 33, end: 33, spi: 33, luk: 33, int: 33, chm: 33 },
-  s: { hp: 150, mp: 100, str: 40, agi: 40, mag: 40, end: 40, spi: 40, luk: 40, int: 40, chm: 40 }
+  f: { hp: 35, mp: 20, str: 8, agi: 8, mag: 8, end: 8, spi: 8, luk: 8, int: 8, chm: 8 },
+  e: { hp: 45, mp: 28, str: 12, agi: 12, mag: 12, end: 12, spi: 12, luk: 12, int: 12, chm: 12 },
+  d: { hp: 57, mp: 36, str: 16, agi: 16, mag: 16, end: 16, spi: 16, luk: 16, int: 16, chm: 16 },
+  c: { hp: 73, mp: 46, str: 21, agi: 21, mag: 21, end: 21, spi: 21, luk: 21, int: 21, chm: 21 },
+  b: { hp: 93, mp: 58, str: 27, agi: 27, mag: 27, end: 27, spi: 27, luk: 27, int: 27, chm: 27 },
+  a: { hp: 120, mp: 75, str: 33, agi: 33, mag: 33, end: 33, spi: 33, luk: 33, int: 33, chm: 33 },
+  s: { hp: 155, mp: 100, str: 40, agi: 40, mag: 40, end: 40, spi: 40, luk: 40, int: 40, chm: 40 }
 };
 
 /**

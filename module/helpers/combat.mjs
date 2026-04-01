@@ -253,7 +253,8 @@ function checkCondition(condition, context) {
  */
 export function evaluateConditionalRules(conditionalRules, context) {
   const statBonuses = {};
-  if (!conditionalRules?.length) return { statBonuses };
+  const statBonusEntries = [];
+  if (!conditionalRules?.length) return { statBonuses, statBonusEntries };
 
   // Filter by skill scope — active skill rules only apply when that skill is attacking
   const scoped = filterBySkillScope(conditionalRules, context.weaponItemId);
@@ -285,15 +286,41 @@ export function evaluateConditionalRules(conditionalRules, context) {
       effectiveValue *= condResult;
     }
     // Percent-mode piercing → accumulate separately as percentPiercing
-    if (rule.selector === "piercing" && rule.mode === "percent") {
+    const effectiveSelector = (rule.selector === "piercing" && rule.mode === "percent")
+      ? "percentPiercing" : rule.selector;
+    if (effectiveSelector === "percentPiercing") {
       statBonuses.percentPiercing = (statBonuses.percentPiercing ?? 0) + effectiveValue;
     } else {
       statBonuses[rule.selector] = (statBonuses[rule.selector] ?? 0) + effectiveValue;
     }
+    // Track per-rule source for inspector breakdown
+    statBonusEntries.push({
+      selector: effectiveSelector,
+      value: effectiveValue,
+      source: rule._source?.itemName ?? "Unknown",
+      condition: rule.condition ?? null,
+      icon: _condEntryIcon(rule._source?.itemType)
+    });
   }
   context.ruleSource = null;
 
-  return { statBonuses };
+  return { statBonuses, statBonusEntries };
+}
+
+/** Icon for conditional bonus entries in the inspector. */
+function _condEntryIcon(itemType) {
+  switch (itemType) {
+    case "weapon": return "fas fa-sword";
+    case "armor": return "fas fa-shield-halved";
+    case "accessory": return "fas fa-ring";
+    case "manacite": return "fas fa-gem";
+    case "species": return "fas fa-dna";
+    case "activeEffect": return "fas fa-magic";
+    case "status": return "fas fa-skull-crossbones";
+    case "category": return "fas fa-tag";
+    case "keyword": return "fas fa-key";
+    default: return "fas fa-bolt";
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -920,6 +947,8 @@ export async function applyDamageFromChat(event, buttonEl) {
  */
 export async function applyBuffEffect(actor, name, img, duration, rules, description = "", retaliationFlags = null) {
   if (!actor) return;
+  console.log(`%c[DEBUG applyBuffEffect] "${name}" → ${actor.name} (id=${actor.id}) | duration=${duration} | rules=${rules?.length ?? 0} | retaliatory=${!!retaliationFlags}`, "color: lime; font-weight: bold");
+  console.trace("[DEBUG applyBuffEffect] call stack");
 
   // Refresh duration if already active
   const existing = actor.effects.find(e =>

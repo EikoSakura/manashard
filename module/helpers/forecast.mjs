@@ -161,6 +161,10 @@ export function buildForecastContext(actor, targetToken, options = {}) {
   let acc;
   let crit;
 
+  // Prep-time damage modifiers (weapon mastery, keywords, equipment bonuses)
+  // applied by the rule engine to system.damage but not to raw component formulas
+  const prepDamageBonus = system._modifiers?.getTotal?.("damage") ?? 0;
+
   if (isSkill && skillData) {
     // Skill damage: baseRate (+ weapon might if weapon mode) + scaling stat
     let effectiveBaseRate = skillData.baseRate ?? 0;
@@ -180,7 +184,7 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     } else if (ssKey !== "none") {
       scalingStatVal = system.stats?.[ssKey]?.value ?? 0;
     }
-    baseDmg = scalingStatVal + effectiveBaseRate + (condBonuses.damage ?? 0);
+    baseDmg = scalingStatVal + effectiveBaseRate + prepDamageBonus + (condBonuses.damage ?? 0);
     // Accuracy: fixed-mode skills with skillHit use scaling stat instead of AGI
     const skillHitVal = skillData.skillHit ?? 0;
     if (skillData.baseRateMode === "fixed" && skillHitVal > 0) {
@@ -196,8 +200,8 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     const natCat = weaponItem.system?.category;
     const natMagCat = natCat === "staves" || natCat === "grimoires";
     const scalingStat = (isMagical || natMagCat) ? (stats?.mag?.value ?? 0) : (stats?.str?.value ?? 0);
-    baseDmg = scalingStat + (weaponItem.system?.might ?? 0) + (condBonuses.damage ?? 0);
-    acc = 80 + (stats?.agi?.value ?? 0) * 2 + (condBonuses.accuracy ?? 0);
+    baseDmg = scalingStat + (weaponItem.system?.might ?? 0) + prepDamageBonus + (condBonuses.damage ?? 0);
+    acc = 70 + (stats?.agi?.value ?? 0) * 2 + (stats?.luk?.value ?? 0) + (condBonuses.accuracy ?? 0);
     crit = (stats?.luk?.value ?? 0) * 2 + (weaponItem.system?.crit ?? 0) + (condBonuses.critical ?? 0);
   } else if (weaponItem) {
     // Explicit weapon (e.g. off-hand) — compute from weapon stats directly
@@ -209,8 +213,8 @@ export function buildForecastContext(actor, targetToken, options = {}) {
       ? Math.max(stats?.str?.value ?? 0, stats?.agi?.value ?? 0)
       : (stats?.str?.value ?? 0);
     const scalingStat = (isMagical || wpnMagCat) ? (stats?.mag?.value ?? 0) : physStat;
-    baseDmg = scalingStat + (weaponItem.system?.might ?? 0) + (condBonuses.damage ?? 0);
-    acc = 80 + (stats?.agi?.value ?? 0) * 2 + (condBonuses.accuracy ?? 0);
+    baseDmg = scalingStat + (weaponItem.system?.might ?? 0) + prepDamageBonus + (condBonuses.damage ?? 0);
+    acc = 70 + (stats?.agi?.value ?? 0) * 2 + (stats?.luk?.value ?? 0) + (condBonuses.accuracy ?? 0);
     crit = (stats?.luk?.value ?? 0) * 2 + (weaponItem.system?.crit ?? 0) + (condBonuses.critical ?? 0);
   } else {
     // Standard weapon attack — uses derived stats (mainhand)
@@ -341,8 +345,8 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     const ohSys = offhandWeapon.system;
     const ohIsMagical = (ohSys.damageType ?? "physical") === "magical";
     const ohScaling = ohIsMagical ? (system.stats?.mag?.value ?? 0) : (system.stats?.str?.value ?? 0);
-    const ohDmg = (ohScaling * 2) + (ohSys.might ?? 0) + (condBonuses.damage ?? 0);
-    const ohAcc = 80 + (system.stats?.agi?.value ?? 0) * 2 + (condBonuses.accuracy ?? 0);
+    const ohDmg = (ohScaling * 2) + (ohSys.might ?? 0) + prepDamageBonus + (condBonuses.damage ?? 0);
+    const ohAcc = 70 + (system.stats?.agi?.value ?? 0) * 2 + (system.stats?.luk?.value ?? 0) + (condBonuses.accuracy ?? 0);
     const ohCrit = (system.stats?.luk?.value ?? 0) * 2 + (ohSys.crit ?? 0) + (condBonuses.critical ?? 0);
     const ohDefBase = ohIsMagical ? (defActor?.system?.mdef ?? 0) : (defActor?.system?.pdef ?? 0);
     const ohDefVal = Math.max(0, ohDefBase + (defCondBonuses.def ?? 0));

@@ -7,6 +7,13 @@
     <span class="pool-value">{{remaining}} / {{pool}}</span>
   </div>
 
+  {{#if hasJobBonuses}}
+  <div class="wizard-job-bonus-legend">
+    <span class="job-bonus-swatch"></span>
+    <span class="job-bonus-legend-text">Bonus from {{jobName}}</span>
+  </div>
+  {{/if}}
+
   <div class="wizard-stat-table">
     {{#each rows}}
     <div class="wizard-stat-row">
@@ -15,13 +22,21 @@
               {{#unless this.canDecrease}}disabled{{/unless}}>
         <i class="fas fa-minus"></i>
       </button>
-      <span class="stat-value">{{this.value}}</span>
+      <span class="stat-value">
+        {{this.value}}
+        {{#if this.jobBonus}}
+          <span class="stat-job-bonus">+{{this.jobBonus}}</span>
+        {{/if}}
+      </span>
       <button type="button" class="stat-btn stat-increase" data-action="adjustStat" data-stat="{{this.key}}" data-delta="1"
               {{#unless this.canIncrease}}disabled{{/unless}}>
         <i class="fas fa-plus"></i>
       </button>
       <div class="stat-bar-container">
         <div class="stat-bar-fill" style="width: {{this.barWidth}}%"></div>
+        {{#if this.jobBonus}}
+        <div class="stat-bar-job" style="left: {{this.barWidth}}%; width: {{this.jobBarWidth}}%"></div>
+        {{/if}}
       </div>
       <span class="stat-range">{{this.min}}-{{this.max}}</span>
     </div>

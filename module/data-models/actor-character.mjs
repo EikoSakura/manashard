@@ -118,8 +118,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Core stats — each has a value and a growth rate (percentage chance to increase on level-up)
       stats: new SchemaField({
         hp: new SchemaField({
-          value: new NumberField({ required: true, integer: true, min: 0, initial: 10 }),
-          max: new NumberField({ required: true, integer: true, min: 0, initial: 10 }),
+          value: new NumberField({ required: true, integer: true, min: 0, initial: 15 }),
+          max: new NumberField({ required: true, integer: true, min: 0, initial: 15 }),
           barrier: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
           growth: new NumberField({ required: true, integer: true, min: 0, max: 200, initial: 5 })
         }),
@@ -368,15 +368,15 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       this.damage = stats.str.value + weaponMight;
     }
 
-    // Accuracy = 60 + AGI × 2 + LUK
-    this.accuracy = 60 + (stats.agi.value * 2) + stats.luk.value;
+    // Accuracy = 70 + AGI × 2 + LUK
+    this.accuracy = 70 + (stats.agi.value * 2) + stats.luk.value;
 
     // Critical = AGI/2 + LUK/2 + Weapon Crit
     this.critical = Math.floor(stats.agi.value / 2) + Math.floor(stats.luk.value / 2) + weaponCrit;
 
-    // P.EVA = 20 + AGI × 2, M.EVA = 20 + SPI × 2
-    this.peva = 20 + (stats.agi.value * 2);
-    this.meva = 20 + (stats.spi.value * 2);
+    // P.EVA = 10 + AGI × 3, M.EVA = 10 + SPI × 3
+    this.peva = 10 + (stats.agi.value * 3);
+    this.meva = 10 + (stats.spi.value * 3);
 
     // C.EVO (Crit Evasion) = 5 + LUK
     this.critEvo = 5 + stats.luk.value;

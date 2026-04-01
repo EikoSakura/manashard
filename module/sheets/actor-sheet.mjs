@@ -1836,9 +1836,9 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
   static #STAT_INFO = {
     str: { name: "Strength", hint: "Physical DMG" },
     agi: { name: "Agility", hint: "ACC, CRIT, P.EVA" },
-    mag: { name: "Magic", hint: "Magical DMG, MP Regen" },
+    mag: { name: "Magic", hint: "Magical DMG" },
     end: { name: "Endurance", hint: "P.DEF, BLOCK, CARRY" },
-    spi: { name: "Spirit", hint: "M.EVA, M.DEF" },
+    spi: { name: "Spirit", hint: "M.EVA, M.DEF, MP Regen" },
     luk: { name: "Luck", hint: "ACC, CRIT, C.EVO" },
     int: { name: "Intelligence", hint: "Skill checks" },
     chm: { name: "Charisma", hint: "Skill checks" }
@@ -1846,10 +1846,10 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
 
   static #COMBAT_STAT_INFO = {
     damage:      { name: "Damage",     formula: "STR/MAG + Might" },
-    accuracy:    { name: "Accuracy",   formula: "60 + AGI\u00d72 + LUK" },
+    accuracy:    { name: "Accuracy",   formula: "70 + AGI\u00d72 + LUK" },
     critical:    { name: "Critical",   formula: "AGI/2 + LUK/2 + Weapon Crit" },
-    peva:        { name: "P.EVA",      formula: "20 + AGI×2" },
-    meva:        { name: "M.EVA",      formula: "20 + SPI×2" },
+    peva:        { name: "P.EVA",      formula: "10 + AGI×3" },
+    meva:        { name: "M.EVA",      formula: "10 + SPI×3" },
     critEvo:     { name: "C.EVO",      formula: "5 + LUK" },
     pdef:        { name: "P.DEF",      formula: "Armor + END" },
     mdef:        { name: "M.DEF",      formula: "Armor + SPI" },
@@ -2609,7 +2609,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
           const buffRadius = Number(skillData.aoeSize) || 0;
           const buffFilter = skillData.aoeTargetFilter || "allies";
 
-          if (buffRadius > 0 && canvas?.tokens) {
+          if (buffRadius > 0 && targetType !== "single" && canvas?.tokens) {
             // Area buff: apply to all matching tokens within radius of caster
             const casterToken = actor.token?.object ?? canvas.tokens.placeables.find(t => t.actor?.id === actor.id);
             if (casterToken) {

@@ -1,4 +1,5 @@
 import { resolveAttack, executeCombatRolls, getElementalTierLabel, evaluateCombatNotes, gridDistance, validateAttackRange, applyBuffEffect, checkTargetRestrictions } from "../helpers/combat.mjs";
+import { buildCombatDebugData } from "../helpers/combat-debug.mjs";
 import { scheduleSyncStatusEffects } from "../helpers/status-effects.mjs";
 import { MANASHARD, renderIconHtml } from "../helpers/config.mjs";
 import { syncTrapSenseDetection } from "../helpers/trap-sense.mjs";
@@ -521,6 +522,7 @@ export class ManashardActor extends Actor {
 
     // Compute combat stats: for weapon overrides (natural weapons), recalculate from the weapon's own stats
     let baseDamage, accuracy, critical;
+    const prepDamageBonus = system._modifiers?.getTotal?.("damage") ?? 0;
     if (weaponOverride) {
       const stats = system.stats;
       const wpnMight = weapon?.system?.might ?? 0;
@@ -532,8 +534,8 @@ export class ManashardActor extends Actor {
         ? Math.max(stats?.str?.value ?? 0, stats?.agi?.value ?? 0)
         : (stats?.str?.value ?? 0);
       const scalingStat = (damageType === "magical" || wpnMagCat) ? (stats?.mag?.value ?? 0) : physStat;
-      baseDamage = scalingStat + wpnMight;
-      accuracy = 80 + (stats?.agi?.value ?? 0) * 2;
+      baseDamage = scalingStat + wpnMight + prepDamageBonus;
+      accuracy = 70 + (stats?.agi?.value ?? 0) * 2 + (stats?.luk?.value ?? 0);
       critical = (stats?.luk?.value ?? 0) * 2 + wpnCrit;
     } else {
       baseDamage = system.damage ?? 0;
@@ -595,6 +597,15 @@ export class ManashardActor extends Actor {
       { label: scalingStat, value: scalingStatVal }
     ];
 
+    // Build debug data for combat inspector
+    const debugData = buildCombatDebugData({
+      attacker: this, defender: defenderActor, result,
+      skill: { baseRateMode: "weapon", baseRate: 0, scalingStat: "auto", skillHit: 0 },
+      formulaSteps,
+      accuracy, damageType, chantAccuracyBonus: 0, chantLabel: "",
+      chantModifier: 1.0, scalingLabel: scalingStat, scalingStat: scalingStatVal
+    });
+
     const templateData = {
       actorName: this.name,
       actorImg: this.img,
@@ -636,7 +647,8 @@ export class ManashardActor extends Actor {
         ? JSON.stringify(successfulStatuses.map(s => ({ status: s.status, duration: s.duration })))
           .replace(/"/g, "&quot;")
         : "",
-      isHostile: !!defenderActor && !defenderActor.hasPlayerOwner
+      isHostile: !!defenderActor && !defenderActor.hasPlayerOwner,
+      debugDataJson: JSON.stringify(debugData).replace(/"/g, "&quot;")
     };
 
     // VS splash animation (only for single-target attacks with a defender)
@@ -778,7 +790,9 @@ export class ManashardActor extends Actor {
     } else if (ssKey !== "none") {
       scalingStat = system.stats?.[ssKey]?.value ?? 0;
     }
-    const baseDamage = effectiveBaseRate + scalingStat;
+    // Include prep-time damage modifiers (weapon mastery, keywords, etc.)
+    const prepDamageBonus = system._modifiers?.getTotal?.("damage") ?? 0;
+    const baseDamage = effectiveBaseRate + scalingStat + prepDamageBonus;
 
     // Pick correct defense
     let defValue = damageType === "magical" ? defenderSpi : defenderDef;
@@ -808,6 +822,7 @@ export class ManashardActor extends Actor {
 
       // Apply buff to target
       const buffDuration = skill.buffDuration ?? 0;
+      console.log(`%c[DEBUG RETALIATION] ${skillName} | caster=${this.name} | defenderActor=${defenderActor?.name ?? "NONE"} | buffDuration=${buffDuration} | targetType=${skill.targetType} | isHealing=${skill.isHealing} | isBarrier=${skill.isBarrier}`, "color: magenta; font-weight: bold");
       if (buffDuration > 0) {
         const skillItem = this.items.get(itemId);
         const skillSys = skillItem?.system ?? skill;
@@ -823,7 +838,10 @@ export class ManashardActor extends Actor {
         const buffRadius = Number(skillSys.aoeSize) || 0;
         const buffFilter = skillSys.aoeTargetFilter || "allies";
 
-        if (buffRadius > 0 && canvas?.tokens) {
+        console.log(`%c[DEBUG RETALIATION] buffRadius=${buffRadius} | buffFilter=${buffFilter} | buffRules=${buffRules.length}`, "color: magenta");
+
+        if (buffRadius > 0 && skill.targetType !== "single" && canvas?.tokens) {
+          console.log(`%c[DEBUG RETALIATION] Taking AoE path`, "color: orange; font-weight: bold");
           const casterToken = this.token?.object ?? canvas.tokens.placeables.find(t => t.actor?.id === this.id);
           if (casterToken) {
             for (const t of canvas.tokens.placeables) {
@@ -833,14 +851,17 @@ export class ManashardActor extends Actor {
               const sameTeam = casterToken.document.disposition === t.document.disposition;
               if (buffFilter === "allies" && !sameTeam) continue;
               if (buffFilter === "enemies" && sameTeam) continue;
+              console.log(`%c[DEBUG RETALIATION] AoE applying to: ${t.actor.name}`, "color: orange");
               await applyBuffEffect(t.actor, skillName, skillItem?.img, buffDuration, buffRules, desc, retaliationFlags);
             }
             if (buffFilter === "allies" || buffFilter === "all") {
+              console.log(`%c[DEBUG RETALIATION] AoE also applying to SELF (${this.name}) due to filter=${buffFilter}`, "color: red; font-weight: bold");
               await applyBuffEffect(this, skillName, skillItem?.img, buffDuration, buffRules, desc, retaliationFlags);
             }
           }
         } else {
-          const targetActor = (skill.targetType === "self" || skill.isHealing) ? this : (defenderActor ?? this);
+          const targetActor = (skill.targetType === "self" || skill.isHealing) ? this : defenderActor;
+          console.log(`%c[DEBUG RETALIATION] Single-target path | resolved targetActor=${targetActor?.name ?? "NONE"} | (self=${skill.targetType === "self"}, healing=${skill.isHealing})`, "color: cyan; font-weight: bold");
           if (targetActor) {
             await applyBuffEffect(targetActor, skillName, skillItem?.img, buffDuration, buffRules, desc, retaliationFlags);
           }
@@ -849,7 +870,7 @@ export class ManashardActor extends Actor {
 
       // Resolve stat label for display
       const retStatLabel = (skill.scalingStat ?? "auto") === "auto" ? "MAG" : (skill.scalingStat ?? "mag").toUpperCase();
-      const buffTarget = (skill.targetType === "self") ? this : (defenderActor ?? this);
+      const buffTarget = (skill.targetType === "self") ? this : defenderActor;
       const skillItemForCard = this.items.get(itemId);
 
       // Render buff-applied chat card
@@ -949,7 +970,7 @@ export class ManashardActor extends Actor {
         const buffRadius = Number(skillSys.aoeSize) || 0;
         const buffFilter = skillSys.aoeTargetFilter || "allies";
 
-        if (buffRadius > 0 && canvas?.tokens) {
+        if (buffRadius > 0 && skill.targetType !== "single" && canvas?.tokens) {
           // AoE buff: apply to all matching tokens within radius of caster
           const casterToken = this.token?.object ?? canvas.tokens.placeables.find(t => t.actor?.id === this.id);
           if (casterToken) {
@@ -969,8 +990,8 @@ export class ManashardActor extends Actor {
             }
           }
         } else {
-          // Single target buff: apply to the target (healing default to self if no explicit target)
-          const targetActor = (skill.targetType === "self" || skill.isHealing) ? this : (defenderActor ?? this);
+          // Single target buff: apply to the target (healing defaults to self; otherwise requires a target)
+          const targetActor = (skill.targetType === "self" || skill.isHealing) ? this : defenderActor;
           if (targetActor) {
             await applyBuffEffect(targetActor, skillName, skillItem?.img, buffDuration, buffRules, desc);
           }
@@ -1014,6 +1035,13 @@ export class ManashardActor extends Actor {
       if (ssKey !== "none") formulaSteps.push({ label: scalingLabel, value: scalingStat });
     }
     const skillTargetType = skill.targetType || "single";
+
+    // Build debug data for combat inspector
+    const debugData = buildCombatDebugData({
+      attacker: this, defender: defenderActor, result, skill, formulaSteps,
+      accuracy, damageType, chantAccuracyBonus, chantLabel,
+      chantModifier, scalingLabel, scalingStat
+    });
 
     const templateData = {
       actorName: this.name,
@@ -1059,7 +1087,8 @@ export class ManashardActor extends Actor {
         ? JSON.stringify(successfulStatuses.map(s => ({ status: s.status, duration: s.duration })))
           .replace(/"/g, "&quot;")
         : "",
-      isHostile: !!defenderActor && !defenderActor.hasPlayerOwner
+      isHostile: !!defenderActor && !defenderActor.hasPlayerOwner,
+      debugDataJson: JSON.stringify(debugData).replace(/"/g, "&quot;")
     };
 
     const content = await foundry.applications.handlebars.renderTemplate(
@@ -1150,7 +1179,9 @@ export class ManashardActor extends Actor {
     } else if (ssKey !== "none") {
       scalingStat = system.stats?.[ssKey]?.value ?? 0;
     }
-    const baseDamage = effectiveBaseRate + scalingStat;
+    // Include prep-time damage modifiers (weapon mastery, keywords, etc.)
+    const prepDamageBonus = system._modifiers?.getTotal?.("damage") ?? 0;
+    const baseDamage = effectiveBaseRate + scalingStat + prepDamageBonus;
 
     // Compute accuracy ONCE
     // Fixed-mode skills use their scaling stat for accuracy instead of AGI
@@ -1315,6 +1346,13 @@ export class ManashardActor extends Actor {
       const successfulStatuses = result.statusResults.filter(s => s.success);
       const elementTierLabel = getElementalTierLabel(result.elementTier);
 
+      // Build per-target debug data
+      const targetDebugData = buildCombatDebugData({
+        attacker: this, defender: defenderActor, result, skill, formulaSteps,
+        accuracy, damageType, chantAccuracyBonus,
+        chantLabel, chantModifier, scalingLabel, scalingStat
+      });
+
       targetResults.push({
         targetName: defenderActor?.name ?? "Target",
         targetImg: defenderActor?.img ?? "icons/svg/mystery-man.svg",
@@ -1343,7 +1381,8 @@ export class ManashardActor extends Actor {
         statusResults: result.statusResults,
         statusDataJson: successfulStatuses.length
           ? JSON.stringify(successfulStatuses.map(s => ({ status: s.status, duration: s.duration }))).replace(/"/g, "&quot;")
-          : ""
+          : "",
+        debugDataJson: JSON.stringify(targetDebugData).replace(/"/g, "&quot;")
       });
     }
 

@@ -1,0 +1,42 @@
+<div class="combat-inspector">
+
+  {{!-- Search Bar --}}
+  <div class="ci-toolbar">
+    <div class="ci-search-wrap">
+      <i class="fas fa-search"></i>
+      <input type="text" class="ci-search" placeholder="Search sources..." />
+    </div>
+  </div>
+
+  {{!-- Filter Tabs --}}
+  <div class="ci-filters">
+    {{#each filters}}
+      <button class="ci-filter-tab {{#if (eq this.id 'all')}}active{{/if}}" data-filter="{{this.id}}">{{this.label}}</button>
+    {{/each}}
+  </div>
+
+  {{!-- Sections --}}
+  <div class="ci-sections">
+    {{#each sections}}
+    <div class="ci-section" data-section="{{this.id}}">
+      <div class="ci-section-header">
+        <i class="{{this.icon}}"></i>
+        <span class="ci-section-label">{{this.label}}</span>
+        {{#if (eq this.side 'attacker')}}<span class="ci-side-badge ci-side-atk">ATK</span>{{/if}}
+        {{#if (eq this.side 'defender')}}<span class="ci-side-badge ci-side-def">DEF</span>{{/if}}
+        {{#if (eq this.side 'resolution')}}<span class="ci-side-badge ci-side-res">RES</span>{{/if}}
+      </div>
+      <div class="ci-section-body">
+        {{#each this.rows}}
+        <div class="ci-row ci-row-{{this.cls}}">
+          {{#if this.icon}}<i class="ci-row-icon {{this.icon}}"></i>{{/if}}
+          <span class="ci-row-label">{{this.label}}</span>
+          <span class="ci-row-value">{{this.value}}</span>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+
+</div>

@@ -37,7 +37,7 @@
 
   {{!-- ═══ PER-TARGET RESULTS ═══ --}}
   {{#each targets}}
-  <div class="ms-card-aoe-target {{#if this.critHit}}aoe-crit{{/if}} {{#if this.hit}}aoe-hit{{else}}aoe-miss{{/if}}">
+  <div class="ms-card-aoe-target {{#if this.critHit}}aoe-crit{{/if}} {{#if this.hit}}aoe-hit{{else}}aoe-miss{{/if}}" {{#if this.debugDataJson}}data-debug="{{{this.debugDataJson}}}"{{/if}}>
 
     {{!-- Target Header --}}
     <div class="ms-card-aoe-target-header">

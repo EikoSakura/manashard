@@ -263,10 +263,10 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     const isMagicCategory = weaponCategory === "staves" || weaponCategory === "grimoires";
     const physScaling = weaponCategory === "swords" ? Math.max(stats.str.value, stats.agi.value) : stats.str.value;
     this.damage = ((weaponDamageType === "magical" || isMagicCategory) ? stats.mag.value : physScaling) + weaponMight;
-    this.accuracy = 60 + (stats.agi.value * 2) + stats.luk.value;
+    this.accuracy = 70 + (stats.agi.value * 2) + stats.luk.value;
     this.critical = Math.floor(stats.agi.value / 2) + Math.floor(stats.luk.value / 2) + weaponCrit;
-    this.peva = 20 + (stats.agi.value * 2);
-    this.meva = 20 + (stats.spi.value * 2);
+    this.peva = 10 + (stats.agi.value * 3);
+    this.meva = 10 + (stats.spi.value * 3);
     this.critEvo = 5 + stats.luk.value;
 
     this.armorPdef = equippedArmor?.pdef ?? 0;

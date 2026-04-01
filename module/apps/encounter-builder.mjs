@@ -606,10 +606,10 @@ export class EncounterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     const isMagicCategory = wpnCat === "staves" || wpnCat === "grimoires";
     const physScaling = (wpnCat === "swords") ? Math.max(stats.str, stats.agi) : stats.str;
     const damage = ((weaponDamageType === "magical" || isMagicCategory) ? stats.mag : physScaling) + weaponMight;
-    const accuracy = 60 + (stats.agi * 2) + stats.luk;
+    const accuracy = 70 + (stats.agi * 2) + stats.luk;
     const critical = Math.floor(stats.agi / 2) + Math.floor(stats.luk / 2) + weaponCrit;
-    const peva = 20 + (stats.agi * 2);
-    const meva = 20 + (stats.spi * 2);
+    const peva = 10 + (stats.agi * 3);
+    const meva = 10 + (stats.spi * 3);
     const critEvo = 5 + stats.luk;
     const pdef = (armor?.system?.pdef ?? 0) + stats.end;
     const mdef = (armor?.system?.mdef ?? 0) + stats.spi;
