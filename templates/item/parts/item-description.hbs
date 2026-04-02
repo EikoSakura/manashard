@@ -344,7 +344,7 @@
   </div>
   <div class="ms-granted-skills">
     {{#each grantedItems}}
-    <div class="ms-granted-skill">
+    <div class="ms-granted-skill" {{#if this.description}}data-tooltip="{{this.description}}"{{/if}} data-action="viewGrantedItem" data-uuid="{{this.uuid}}">
       <img src="{{this.img}}" alt="{{this.name}}" />
       {{this.name}}
     </div>

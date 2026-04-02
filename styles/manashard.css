@@ -10287,8 +10287,8 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   color: #bb6bd9;
 }
 
-/* ─── Hero Card AGI ─── */
-.ctb-hero-agi {
+/* ─── Hero Card MOV ─── */
+.ctb-hero-mov {
   font-size: 11px;
   font-weight: 600;
   color: var(--manashard-accent-light);
@@ -10574,7 +10574,7 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   white-space: nowrap;
 }
 
-.ctb-combatant-agi {
+.ctb-combatant-mov {
   font-family: "Consolas", "Courier New", monospace;
   font-size: 10px;
   color: #556677;
@@ -10912,9 +10912,9 @@ body.game .app.manashard prose-mirror > button.toggle:hover {
   font-size: 8px;
 }
 
-/* (ctb-combatant-ic and ctb-combatant-agi defined above in main CTB section) */
+/* (ctb-combatant-ic and ctb-combatant-mov defined above in main CTB section) */
 
-.ctb-combatant-agi {
+.ctb-combatant-mov {
   font-family: "Consolas", monospace;
   font-size: 10px;
   color: #556677;
@@ -19079,6 +19079,11 @@ select.hu-rank-inline-select option {
   color: #e8d48b;
   flex: 1;
   font-weight: 600;
+  cursor: pointer;
+}
+.ms-item-sheet .grant-item-name:hover {
+  color: #fff;
+  text-decoration: underline;
 }
 
 /* Crystal Job drop hint */

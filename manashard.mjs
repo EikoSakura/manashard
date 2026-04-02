@@ -121,6 +121,16 @@ Hooks.once("init", () => {
     }
   });
 
+  // GM Override Mode — allows direct editing of level & attributes on character sheets
+  game.settings.register("manashard", "gmOverrideMode", {
+    name: "MANASHARD.Settings.GmOverride",
+    hint: "MANASHARD.Settings.GmOverrideHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
   // Migration version tracker (hidden, world-scoped)
   game.settings.register("manashard", "migrationVersion", {
     scope: "world",

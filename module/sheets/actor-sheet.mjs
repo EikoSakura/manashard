@@ -176,6 +176,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       elements: localizeMap(CONFIG.MANASHARD.elements),
     };
     context.editable = this.isEditable;
+    context.gmOverride = game.user.isGM && game.settings.get("manashard", "gmOverrideMode");
 
     // Base HP/MP max values (pre-modifier) for form inputs — prevents derived bonuses
     // from being written back to the database on form submission (submitOnChange).
@@ -1326,6 +1327,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
    * If a target token is selected, initiates a contested check via socket.
    */
   static async #onRollStat(event, target) {
+    if (game.user.isGM && game.settings.get("manashard", "gmOverrideMode")) return;
     const statKey = target.dataset.stat;
     if (!statKey) return;
 
@@ -1539,8 +1541,8 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
     // Execute the attack
     await actor.rollAttack(attackOptions);
 
-    // Off-hand strike: if user opted in via the forecast checkbox
-    if (result.offhand) {
+    // Off-hand strike: if user opted in via the forecast checkbox (requires Dual Wield skill)
+    if (result.offhand && actor.system._hasDualWield) {
       const offhandWeapon = actor.items.find(i => i.type === "weapon" && i.system.equipSlot === "offhand");
       if (offhandWeapon) {
         const offhandIsMagical = (offhandWeapon.system?.damageType ?? "physical") === "magical";
@@ -1553,7 +1555,7 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
           defenderBlockChance: defBlockChance,
           targetTokenId: targeted?.id ?? null,
           weaponOverride: offhandWeapon,
-          damageMultiplier: 0.5,
+          damageMultiplier: 1.0,
           isOffhand: true
         });
       }
@@ -2318,47 +2320,66 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       return;
     }
 
-    // Roll growth for each stat
+    // Check for stored pending rolls (prevents re-roll exploit on dialog reopen)
+    const pending = this.actor.getFlag("manashard", "pendingLevelUp");
+
     const rankData = CONFIG.MANASHARD.ranks[system.rank];
     const growthBonus = rankData?.growthBonus ?? 0;
-    const results = [];
-
     const rankStatCaps = CONFIG.MANASHARD.rankStatCaps?.[system.rank] ?? {};
     const jobName = system._equippedJobName ?? null;
+    let results;
 
-    for (const [key, stat] of Object.entries(system.stats)) {
-      // Growth rate = base + job bonus + rule bonus + rank bonus, capped at 200%
-      const jobContribution = system._jobGrowthContributions?.[key] ?? 0;
-      const ruleBonus = system._growthRuleBonuses?.[key] ?? 0;
-      const effectiveGrowth = Math.min(200, stat.growth + jobContribution + ruleBonus + growthBonus);
+    if (pending && pending.level === system.level) {
+      // Reuse stored rolls — rebuild display data from current state
+      results = [];
+      for (const [key, stat] of Object.entries(system.stats)) {
+        const stored = pending.stats[key];
+        if (!stored) continue;
+        const jobContribution = system._jobGrowthContributions?.[key] ?? 0;
+        const ruleBonus = system._growthRuleBonuses?.[key] ?? 0;
+        const effectiveGrowth = Math.min(200, stat.growth + jobContribution + ruleBonus + growthBonus);
+        const label = game.i18n.localize(CONFIG.MANASHARD.statAbbreviations[key]) || key.toUpperCase();
+        results.push({ key, label, growth: stat.growth, effectiveGrowth, increased: stored.gainAmount > 0, gainAmount: stored.gainAmount, atCap: stored.atCap });
+      }
+    } else {
+      // Fresh rolls
+      results = [];
+      const storedStats = {};
 
-      // Check rank stat cap using base stats (excludes temporary bonuses from jobs/equipment)
-      const cap = rankStatCaps[key];
-      const currentVal = system._baseStats?.[key] ?? ((key === "hp" || key === "mp") ? stat.max : stat.value);
-      const atCap = cap !== undefined && currentVal >= cap;
+      for (const [key, stat] of Object.entries(system.stats)) {
+        const jobContribution = system._jobGrowthContributions?.[key] ?? 0;
+        const ruleBonus = system._growthRuleBonuses?.[key] ?? 0;
+        const effectiveGrowth = Math.min(200, stat.growth + jobContribution + ruleBonus + growthBonus);
 
-      // Growth rates > 100% mean guaranteed +1 with (rate-100)% chance of +2
-      let increased = false;
-      let gainAmount = 0;
-      if (!atCap) {
-        if (effectiveGrowth > 100) {
-          gainAmount = 1; // Guaranteed first point
-          const bonusChance = effectiveGrowth - 100;
-          const bonusRoll = Math.ceil(Math.random() * 100);
-          if (bonusRoll <= bonusChance) gainAmount = 2;
-        } else {
-          const roll = Math.ceil(Math.random() * 100);
-          if (roll <= effectiveGrowth) gainAmount = 1;
+        const cap = rankStatCaps[key];
+        const currentVal = system._baseStats?.[key] ?? ((key === "hp" || key === "mp") ? stat.max : stat.value);
+        const atCap = cap !== undefined && currentVal >= cap;
+
+        let increased = false;
+        let gainAmount = 0;
+        if (!atCap) {
+          if (effectiveGrowth > 100) {
+            gainAmount = 1;
+            const bonusChance = effectiveGrowth - 100;
+            const bonusRoll = Math.ceil(Math.random() * 100);
+            if (bonusRoll <= bonusChance) gainAmount = 2;
+          } else {
+            const roll = Math.ceil(Math.random() * 100);
+            if (roll <= effectiveGrowth) gainAmount = 1;
+          }
+          if (cap !== undefined && currentVal + gainAmount > cap) {
+            gainAmount = Math.max(0, cap - currentVal);
+          }
+          increased = gainAmount > 0;
         }
-        // Enforce cap on gain
-        if (cap !== undefined && currentVal + gainAmount > cap) {
-          gainAmount = Math.max(0, cap - currentVal);
-        }
-        increased = gainAmount > 0;
+
+        const label = game.i18n.localize(CONFIG.MANASHARD.statAbbreviations[key]) || key.toUpperCase();
+        results.push({ key, label, growth: stat.growth, effectiveGrowth, increased, gainAmount, atCap });
+        storedStats[key] = { gainAmount, atCap };
       }
 
-      const label = game.i18n.localize(CONFIG.MANASHARD.statAbbreviations[key]) || key.toUpperCase();
-      results.push({ key, label, growth: stat.growth, effectiveGrowth, increased, gainAmount, atCap });
+      // Persist rolls so reopening dialog shows the same results
+      await this.actor.setFlag("manashard", "pendingLevelUp", { level: system.level, stats: storedStats });
     }
 
     const totalGains = results.reduce((sum, r) => sum + r.gainAmount, 0);
@@ -2430,6 +2451,9 @@ export class ManashardActorSheet extends HandlebarsApplicationMixin(ActorSheetV2
       }
     }
     await this.actor.update(updates);
+
+    // Clear stored rolls now that level-up is confirmed
+    await this.actor.unsetFlag("manashard", "pendingLevelUp");
 
     // Chat card
     await postLevelUpCard(this.actor, system.level, newLevel, results, jobName);

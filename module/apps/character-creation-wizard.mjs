@@ -1159,7 +1159,7 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
     }
 
     // Add chosen skills (absorbed + loadout) — free picks + constrained slot picks
-    const createdSkillIds = [];
+    const chosenSkillIds = [];
     const allPicks = [
       ...state.selectedSkills,
       ...(state.constrainedSlots || []).filter(s => s.pick).map(s => s.pick)
@@ -1172,32 +1172,7 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
       itemData.system.absorbed = true;
       itemData.system.equipped = true;
       const created = await actor.createEmbeddedDocuments("Item", [itemData]);
-      if (created?.[0]) createdSkillIds.push(created[0].id);
-    }
-
-    // Also include any skills granted by species/job _onCreate processing.
-    // _onCreate is async and may not have finished yet, so scan actor.items
-    // for skill manacites we didn't create directly (granted by job/species).
-    for (const item of actor.items) {
-      if (item.type !== "manacite" || item.system.manaciteType !== "skill") continue;
-      if (createdSkillIds.includes(item.id)) continue;
-      createdSkillIds.push(item.id);
-    }
-
-    // Force-ensure all skills are absorbed (V13 may strip boolean fields to
-    // schema defaults during createEmbeddedDocuments) and update library/loadout.
-    if (createdSkillIds.length) {
-      const absorbUpdates = createdSkillIds
-        .map(id => actor.items.get(id))
-        .filter(i => i && !i.system.absorbed)
-        .map(i => ({ _id: i.id, "system.absorbed": true, "system.equipped": true }));
-      if (absorbUpdates.length) {
-        await actor.updateEmbeddedDocuments("Item", absorbUpdates);
-      }
-      await actor.update({
-        "system.skillLibrary": createdSkillIds,
-        "system.skillLoadout": createdSkillIds
-      });
+      if (created?.[0]) chosenSkillIds.push(created[0].id);
     }
 
     // Add purchased equipment — respect slot limits, extras go to inventory
@@ -1244,6 +1219,43 @@ export class CharacterCreationWizard extends HandlebarsApplicationMixin(Applicat
         return data;
       });
       if (equipData.length) await actor.createEmbeddedDocuments("Item", equipData);
+    }
+
+    // Wait for any pending _onCreate grant processing (species/job grants are
+    // created asynchronously by _onCreate and may not have finished yet).
+    // Poll until no new skill manacites appear for two consecutive checks.
+    const countSkills = () => actor.items.filter(
+      i => i.type === "manacite" && i.system.manaciteType === "skill"
+    ).length;
+    let prevCount = countSkills();
+    for (let attempt = 0; attempt < 20; attempt++) {
+      await new Promise(r => setTimeout(r, 100));
+      const now = countSkills();
+      if (now === prevCount) break;
+      prevCount = now;
+    }
+
+    // Build final skill list from ALL skill manacites on the actor
+    const allSkillIds = [];
+    for (const item of actor.items) {
+      if (item.type !== "manacite" || item.system.manaciteType !== "skill") continue;
+      allSkillIds.push(item.id);
+    }
+
+    // Force-ensure all skills are absorbed (V13 may strip boolean fields to
+    // schema defaults during createEmbeddedDocuments) and update library/loadout.
+    if (allSkillIds.length) {
+      const absorbUpdates = allSkillIds
+        .map(id => actor.items.get(id))
+        .filter(i => i && !i.system.absorbed)
+        .map(i => ({ _id: i.id, "system.absorbed": true, "system.equipped": true }));
+      if (absorbUpdates.length) {
+        await actor.updateEmbeddedDocuments("Item", absorbUpdates);
+      }
+      await actor.update({
+        "system.skillLibrary": allSkillIds,
+        "system.skillLoadout": allSkillIds
+      });
     }
 
     ui.notifications.info(`${state.name} has been created!`);

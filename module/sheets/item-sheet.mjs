@@ -48,6 +48,7 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
       useConsumable: ManashardItemSheet.#onUseConsumable,
       removePrerequisite: ManashardItemSheet.#onRemovePrerequisite,
       removeGrant: ManashardItemSheet.#onRemoveGrant,
+      viewGrantedItem: ManashardItemSheet.#onViewGrantedItem,
     }
   };
 
@@ -60,6 +61,13 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
       return;
     }
     await actor.useConsumable(item.id);
+  }
+
+  static async #onViewGrantedItem(event, target) {
+    const uuid = target.dataset.uuid;
+    if (!uuid) return;
+    const doc = await fromUuid(uuid);
+    if (doc?.sheet) doc.sheet.render(true);
   }
 
   static async #onEditImage(event, target) {
@@ -613,13 +621,20 @@ export class ManashardItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) 
         let name = rule.grantName ?? "(unknown)";
         let img = rule.grantImg ?? "icons/svg/item-bag.svg";
         // Try to resolve fresh data from UUID
+        let description = "";
         if (rule.uuid) {
           try {
             const resolved = await fromUuid(rule.uuid);
-            if (resolved) { name = resolved.name; img = resolved.img; }
+            if (resolved) {
+              name = resolved.name;
+              img = resolved.img;
+              // Strip HTML tags for tooltip display
+              const raw = resolved.system?.description ?? "";
+              description = raw.replace(/<[^>]*>/g, "").trim();
+            }
           } catch { /* use cached grantName/grantImg */ }
         }
-        context.grantedItems.push({ ruleIndex: i, uuid: rule.uuid, name, img, type: rule.grantType ?? "Item" });
+        context.grantedItems.push({ ruleIndex: i, uuid: rule.uuid, name, img, type: rule.grantType ?? "Item", description });
       }
 
       // Derive stat bonuses and other effects from rule elements (for description display)

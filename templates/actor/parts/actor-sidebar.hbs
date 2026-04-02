@@ -50,7 +50,11 @@
     </div>
     {{else}}
     <div class="ms-class-tag">
+      {{#if gmOverride}}
+      Level <input type="number" name="system.level" value="{{system.level}}" min="1" class="gm-override-input level-override" />
+      {{else}}
       Level {{system.level}}
+      {{/if}}
     </div>
     {{/if}}
 
@@ -152,7 +156,11 @@
       <div class="ms-stat {{#if (eq this.key 'str')}}phys{{/if}}{{#if (eq this.key 'agi')}}phys{{/if}}{{#if (eq this.key 'mag')}}mag{{/if}}{{#if (eq this.key 'end')}}mag{{/if}}{{#if (eq this.key 'spi')}}mag{{/if}}{{#if (eq this.key 'luk')}}util{{/if}}{{#if (eq this.key 'int')}}soc{{/if}}{{#if (eq this.key 'chm')}}soc{{/if}}"
            data-action="rollStat" data-stat="{{this.key}}">
         <span class="stat-label">{{upper this.abbr}}</span>
+        {{#if @root.gmOverride}}
+        <input type="number" name="system.stats.{{this.key}}.value" value="{{this.value}}" min="0" class="gm-override-input stat-override {{this.modClass}}" />
+        {{else}}
         <span class="stat-value {{this.modClass}}">{{this.value}}</span>
+        {{/if}}
       </div>
       {{/unless}}
       {{/each}}

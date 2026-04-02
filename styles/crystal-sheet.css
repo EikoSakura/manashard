@@ -561,6 +561,22 @@
 .ms-stat .stat-value.buffed { color: #55efc4; }
 .ms-stat .stat-value.debuffed { color: #ff6b6b; }
 
+/* GM Override inline inputs */
+.gm-override-input {
+  background: rgba(255, 180, 50, 0.12);
+  border: 1px solid rgba(255, 180, 50, 0.4);
+  border-radius: 4px;
+  color: #ffd866;
+  font-weight: 800;
+  text-align: center;
+  padding: 0;
+}
+.gm-override-input:focus { border-color: #ffd866; outline: none; }
+.gm-override-input.level-override { width: 36px; font-size: inherit; display: inline-block; }
+.gm-override-input.stat-override { width: 36px; font-size: 16px; }
+.gm-override-input.stat-override.buffed { color: #55efc4; border-color: rgba(85, 239, 196, 0.4); background: rgba(85, 239, 196, 0.1); }
+.gm-override-input.stat-override.debuffed { color: #ff6b6b; border-color: rgba(255, 107, 107, 0.4); background: rgba(255, 107, 107, 0.1); }
+
 /* Stat color categories */
 .ms-stat.phys { background: var(--ms-ruby-bg2); }
 .ms-stat.phys .stat-label { color: var(--ms-ruby); }

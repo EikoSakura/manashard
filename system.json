@@ -2,7 +2,7 @@
   "id": "manashard",
   "title": "Manashard",
   "description": "A grid-based tactical RPG system inspired by Fire Emblem, featuring side-based turns, Job/Manacite progression, and D100 roll-under mechanics.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351",
@@ -14,7 +14,7 @@
     }
   ],
   "manifest": "https://raw.githubusercontent.com/EikoSakura/manashard/main/system.json",
-  "download": "https://github.com/EikoSakura/manashard/archive/refs/tags/0.1.5.zip",
+  "download": "https://github.com/EikoSakura/manashard/archive/refs/tags/0.1.6.zip",
   "esmodules": ["manashard.mjs"],
   "styles": ["styles/manashard.css", "styles/chat-cards.css", "styles/wizard.css", "styles/party-sheet.css", "styles/compendium-browser.css", "styles/manacite-manager.css", "styles/spatial-inventory.css", "styles/encounter-builder.css", "styles/party-hud.css", "styles/crystal-sheet.css"],
   "languages": [

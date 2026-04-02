@@ -132,7 +132,7 @@ export class CTBTracker extends foundry.applications.sidebar.tabs.CombatTracker 
           mpValue: mp?.value ?? 0,
           mpMax: mp?.max ?? 0,
           mpPercent: (mp?.max > 0) ? Math.round(mp.value / mp.max * 100) : 100,
-          agi: currentCombatant.actor?.system?.stats?.agi?.value ?? 0,
+          mov: currentCombatant.actor?.system?.mov ?? 0,
           role: currentCombatant.actor?.system?.role ?? null,
           actionsPerTurn: currentCombatant.actor?.system?.actionsPerTurn ?? 1,
           actionsRemaining: (() => {
@@ -155,12 +155,12 @@ export class CTBTracker extends foundry.applications.sidebar.tabs.CombatTracker 
       context.objectiveIcon = CONFIG.MANASHARD?.objectiveIcons?.[obj.type] ?? "fas fa-skull-crossbones";
 
     } else if (combat) {
-      // Pre-combat: show combatant list with AGI values
+      // Pre-combat: show combatant list with MOV values
       context.combatants = Array.from(combat.combatants).map(c => ({
         id: c.id,
         name: c.name,
         img: c.token?.texture?.src ?? c.actor?.img ?? "icons/svg/mystery-man.svg",
-        agi: c.actor?.system?.stats?.agi?.value ?? 0,
+        mov: c.actor?.system?.mov ?? 0,
         disposition: (c.token?.disposition ?? 0) >= 1 ? "friendly" : "hostile"
       }));
 

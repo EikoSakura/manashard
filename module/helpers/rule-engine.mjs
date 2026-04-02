@@ -333,6 +333,10 @@ function applyGrant(systemData, rule, tracker) {
       systemData._hasSpatialInventory = true;
       tracker.add("spatialInventory", { value: 1, source: rule._source, type: "grant" });
       break;
+    case "dualWield":
+      systemData._hasDualWield = true;
+      tracker.add("dualWield", { value: 1, source: rule._source, type: "grant" });
+      break;
   }
 }
 
@@ -346,15 +350,10 @@ function applyGrant(systemData, rule, tracker) {
  * @param {TypeDataModel} systemData - The actor's system data model instance
  * @param {object[]} rules - Collected rules from collectRules()
  * @param {object} [options] - Optional context
- * @param {string} [options.weaponCategory] - Equipped weapon category for evaluating weapon conditions at prep time
  * @returns {{ tracker: ModifierTracker, applyCoreModifiers: Function, applyDerivedModifiers: Function, cacheRemainingRules: Function }}
  */
-export function createRuleEngine(systemData, rules, { weaponCategory = null } = {}) {
+export function createRuleEngine(systemData, rules) {
   const tracker = new ModifierTracker();
-
-  // Track weapon-condition rules applied in Phase 2 so they aren't
-  // double-applied in the forecast/combat conditional evaluation.
-  const appliedWeaponCondRules = new Set();
 
   return {
     tracker,
@@ -410,34 +409,13 @@ export function createRuleEngine(systemData, rules, { weaponCategory = null } = 
       }
 
       // Flat/percent modifiers on derived stats
-      // Weapon-category conditions can be resolved now if we know the equipped weapon.
-      // Other conditions (hp thresholds, target types, etc.) are deferred to combat.
-      const WEAPON_CONDITIONS = new Set([
-        "wieldingAxes", "wieldingBows", "wieldingChains", "wieldingDaggers",
-        "wieldingFirearms", "wieldingFist", "wieldingGrimoires", "wieldingPolearms",
-        "wieldingShields", "wieldingStaves", "wieldingSwords"
-      ]);
-      const WEAPON_COND_MAP = {
-        wieldingAxes: "axes", wieldingBows: "bows", wieldingChains: "chains",
-        wieldingDaggers: "daggers", wieldingFirearms: "firearms", wieldingFist: "fist",
-        wieldingGrimoires: "grimoires", wieldingPolearms: "polearms",
-        wieldingShields: "shields", wieldingStaves: "staves", wieldingSwords: "swords"
-      };
-
+      // All conditional modifiers (including weapon-category) are deferred to combat
+      // so they only apply when the condition is actually met for the attack being made.
       for (const rule of rules) {
         if (rule.key !== "Modifier") continue;
         if (rule.mode === "override" || rule.mode === "checkOnly") continue;
         if (rule.targetTypes?.length) continue; // Target-type modifiers deferred to combat
-        if (rule.condition) {
-          // Evaluate weapon-category conditions at prep time if weapon is known
-          if (weaponCategory && WEAPON_CONDITIONS.has(rule.condition)) {
-            if (WEAPON_COND_MAP[rule.condition] !== weaponCategory) continue;
-            // Condition matches — mark as applied and fall through
-            appliedWeaponCondRules.add(rule);
-          } else {
-            continue; // Other conditions deferred to combat
-          }
-        }
+        if (rule.condition) continue; // All conditions deferred to combat
         try {
           applyModifier(systemData, rule, tracker, DERIVED_STATS);
         } catch (e) {
@@ -448,7 +426,7 @@ export function createRuleEngine(systemData, rules, { weaponCategory = null } = 
       // Grants (movement mode, creature type, weapon proficiency, armor proficiency, trap sense)
       for (const rule of rules) {
         if (rule.key !== "Grant") continue;
-        if (!["movementMode", "creatureType", "weaponProficiency", "armorProficiency", "trapSense", "sense", "spatialInventory"].includes(rule.subtype)) continue;
+        if (!["movementMode", "creatureType", "weaponProficiency", "armorProficiency", "trapSense", "sense", "spatialInventory", "dualWield"].includes(rule.subtype)) continue;
         try {
           applyGrant(systemData, rule, tracker);
         } catch (e) {
@@ -502,7 +480,7 @@ export function createRuleEngine(systemData, rules, { weaponCategory = null } = 
         castingModifiers: [], // CastingModifier removed — keep empty for compat
         combatNotes: rules.filter(r => r.key === "CombatNote"),
         conditionalCheckBonuses: rules.filter(r => r.key === "Modifier" && r.mode === "checkOnly" && r.condition),
-        conditionalRules: rules.filter(r => (!!r.condition || r.targetTypes?.length) && !appliedWeaponCondRules.has(r)),
+        conditionalRules: rules.filter(r => !!r.condition || r.targetTypes?.length),
         damageReductions: rules.filter(r => r.key === "Modifier" && r.selector === "damageTaken" && r.damageType),
         damageTaken: rules.filter(r => r.key === "Modifier" && r.selector === "damageTaken" && !r.damageType),
         elementalAffinities: rules.filter(r => r.key === "Elemental"),
@@ -640,6 +618,8 @@ function _ruleSummaryInner(rule) {
           return `Grants Sense (Vision range)`;
         case "spatialInventory":
           return `Grants Spatial Inventory`;
+        case "dualWield":
+          return `Grants Dual Wield (off-hand at full damage)`;
         default:
           return `Grant: ${rule.subtype ?? "?"}`;
       }

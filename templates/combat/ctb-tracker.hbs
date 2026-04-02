@@ -85,7 +85,7 @@
           </div>
         </div>
       </div>
-      <span class="ctb-hero-agi" title="Agility">AGI {{heroCard.agi}}</span>
+      <span class="ctb-hero-mov" title="Movement">MOV {{heroCard.mov}}</span>
       {{#if (gt heroCard.actionsPerTurn 1)}}
       <span class="ctb-hero-actions" title="Actions Remaining">{{heroCard.actionsRemaining}}/{{heroCard.actionsPerTurn}} <i class="fas fa-bolt"></i></span>
       {{/if}}
@@ -284,7 +284,7 @@
         <li class="ctb-combatant-entry disposition-{{disposition}}" data-combatant-id="{{id}}">
           <img src="{{img}}" alt="{{name}}" class="ctb-combatant-img" />
           <span class="ctb-combatant-name">{{name}}</span>
-          <span class="ctb-combatant-agi">AGI {{agi}}</span>
+          <span class="ctb-combatant-mov">MOV {{mov}}</span>
           <button type="button" class="ctb-btn-remove" data-action="removeCombatant" data-combatant-id="{{id}}" title="Remove">
             <i class="fas fa-times"></i>
           </button>

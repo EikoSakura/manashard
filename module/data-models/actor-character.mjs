@@ -298,7 +298,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // (before derived stat formulas use the modified values)
     // ═══════════════════════════════════════════════════════
     const rules = collectRules(actor);
-    const engine = createRuleEngine(this, rules, { weaponCategory: equippedWeapon?.category ?? null });
+    const engine = createRuleEngine(this, rules);
 
     // Enforce rank stat caps on BASE values (before rule modifiers, so job/equipment
     // bonuses stack on top and are never eaten by the cap)

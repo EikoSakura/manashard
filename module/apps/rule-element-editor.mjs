@@ -464,6 +464,10 @@ export class RuleElementEditor {
         return `
           <p class="re-hint"><em>Grants Spatial Inventory: access a pocket dimension to store and retrieve items. Stored items are weightless.</em></p>`;
 
+      case "dualWield":
+        return `
+          <p class="re-hint"><em>Grants Dual Wield: allows off-hand weapon strikes at full damage instead of half.</em></p>`;
+
       default:
         return `<p class="re-hint">Unknown grant subtype.</p>`;
     }

@@ -336,9 +336,10 @@ export function buildForecastContext(actor, targetToken, options = {}) {
 
   let atkProjectedHpPct = hpPct;
 
-  // ── Off-Hand Strike Indicator ──
+  // ── Off-Hand Strike Indicator (requires Dual Wield skill) ──
   const offhandWeapon = actor.items.find(i => i.type === "weapon" && i.system.equipSlot === "offhand");
-  const showOffhand = (mode === "weapon") && !!offhandWeapon;
+  const hasDualWield = !!system._hasDualWield;
+  const showOffhand = (mode === "weapon") && !!offhandWeapon && hasDualWield;
   const offhandName = offhandWeapon?.name ?? null;
   let offhandForecast = null;
   if (showOffhand) {
@@ -354,7 +355,7 @@ export function buildForecastContext(actor, targetToken, options = {}) {
     offhandForecast = {
       hit: Math.max(0, ohAcc - defEva),
       crit: Math.max(0, ohCrit - defCritAvoid),
-      damage: Math.floor(ohRawDmg * 0.5)
+      damage: ohRawDmg
     };
   }
 

@@ -233,7 +233,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     // PHASE 1: Collect and apply CORE STAT rule modifiers
     // ═══════════════════════════════════════════════════════
     const rules = collectRules(actor);
-    const engine = createRuleEngine(this, rules, { weaponCategory: equippedWeapon?.category ?? null });
+    const engine = createRuleEngine(this, rules);
     engine.applyCoreModifiers();
 
     // Store base stats (pre-modifier) for UI comparison

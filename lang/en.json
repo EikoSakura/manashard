@@ -395,6 +395,7 @@
   "MANASHARD.GrantSubtypes.TrapSense": "Trap Sense",
   "MANASHARD.GrantSubtypes.Sense": "Sense",
   "MANASHARD.GrantSubtypes.SpatialInventory": "Spatial Inventory",
+  "MANASHARD.GrantSubtypes.DualWield": "Dual Wield",
 
   "MANASHARD.StatusActions.Immune": "Immune",
   "MANASHARD.StatusActions.Inflict": "Inflict",
@@ -579,6 +580,9 @@
   "MANASHARD.Settings.CreationExcludedJobs": "Excluded Jobs",
   "MANASHARD.Settings.CreationSpeciesTitle": "Available Species",
   "MANASHARD.Settings.CreationJobsTitle": "Available Jobs",
+
+  "MANASHARD.Settings.GmOverride": "GM Override Mode",
+  "MANASHARD.Settings.GmOverrideHint": "When enabled, GMs can directly edit level and core attribute values on adventurer sheets. Useful for fixing mistakes or manual adjustments.",
 
   "MANASHARD.Controls.ManashardTools": "Manashard Tools",
   "MANASHARD.Controls.GmVision": "GM Vision (See Everything)",

@@ -535,8 +535,10 @@ export class ManashardActor extends Actor {
         : (stats?.str?.value ?? 0);
       const scalingStat = (damageType === "magical" || wpnMagCat) ? (stats?.mag?.value ?? 0) : physStat;
       baseDamage = scalingStat + wpnMight + prepDamageBonus;
-      accuracy = 70 + (stats?.agi?.value ?? 0) * 2 + (stats?.luk?.value ?? 0);
-      critical = (stats?.luk?.value ?? 0) * 2 + wpnCrit;
+      accuracy = system.accuracy ?? (70 + (stats?.agi?.value ?? 0) * 2 + (stats?.luk?.value ?? 0));
+      // Swap equipped weapon's crit for the override weapon's crit
+      const equippedCrit = this.items.find(i => i.type === "weapon" && i.system.equipped && i.system.equipSlot !== "offhand")?.system?.crit ?? 0;
+      critical = (system.critical ?? 0) - equippedCrit + wpnCrit;
     } else {
       baseDamage = system.damage ?? 0;
       accuracy = system.accuracy ?? 0;

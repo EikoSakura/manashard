@@ -645,10 +645,10 @@ MANASHARD.statPointPool = 20;
 
 /**
  * Minimum stat values at character creation.
- * Minimums sum to 28, leaving 20 free points from the pool.
+ * Minimums sum to 33, leaving 20 free points from the pool.
  */
 MANASHARD.statMinimums = {
-  hp: 10, mp: 10, str: 1, agi: 1, mag: 1, end: 1,
+  hp: 15, mp: 10, str: 1, agi: 1, mag: 1, end: 1,
   spi: 1, luk: 1, int: 1, chm: 1
 };
 
@@ -896,7 +896,8 @@ MANASHARD.grantSubtypes = {
   weaponProficiency: "MANASHARD.GrantSubtypes.WeaponProficiency",
   trapSense: "MANASHARD.GrantSubtypes.TrapSense",
   sense: "MANASHARD.GrantSubtypes.Sense",
-  spatialInventory: "MANASHARD.GrantSubtypes.SpatialInventory"
+  spatialInventory: "MANASHARD.GrantSubtypes.SpatialInventory",
+  dualWield: "MANASHARD.GrantSubtypes.DualWield"
 };
 
 /**

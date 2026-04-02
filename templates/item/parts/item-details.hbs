@@ -407,10 +407,10 @@
       <div class="equip-detail-header"><i class="fas fa-gift"></i> Grants <span class="job-drop-hint"><i class="fas fa-arrow-down"></i> Drop</span></div>
       {{#if grantedItems.length}}
       {{#each grantedItems}}
-      <div class="grant-entry">
+      <div class="grant-entry" {{#if this.description}}data-tooltip="{{this.description}}"{{/if}}>
         <img src="{{this.img}}" width="24" height="24" alt="" />
         <span class="grant-type-badge">{{this.type}}</span>
-        <span class="grant-item-name">{{this.name}}</span>
+        <span class="grant-item-name" data-action="viewGrantedItem" data-uuid="{{this.uuid}}">{{this.name}}</span>
         <button type="button" class="species-skill-delete" data-action="removeGrant" data-rule-index="{{this.ruleIndex}}" title="Remove"><i class="fas fa-trash"></i></button>
       </div>
       {{/each}}
